@@ -49,6 +49,10 @@ Research baseline: v1.7.2, `60fb3bdfddb30b7740c7ce3bd9b28d908f2af6db`, reviewed 
 | TD-15 original/corrected source / P2 | Workspace-local signatures bind original excerpts; teacher corrections remain separate in the assignment | Cross-scope/tampered proofs rejected, old no-source hashes/receipts preserved, source quotes excluded from repeated diagnostic model input |
 | TD-16 local draft recovery / P2 | Account/workspace-scoped browser drafts preserve work through settings and refresh, with explicit restore/discard | Storage failure, stale writers, staged child restoration and navigation must not silently overwrite or discard work; no automatic server confirmation |
 | TD-17 worksheet editions / P2 | Saved follow-up questions become student handouts or an explicitly selected teacher reference edition | Student output uses a field allowlist, no hidden answers/history, HTML escaping/CSP, exact old revision, print layout and download checks |
+| TD-18 stable student cases / P3 | Adapt the entity-identity boundary in the P2 Kolibri/Moodle research: a workspace-local UUID is independent of its editable label, and same-name cases remain separate | Implemented with CAS snapshots, idempotent saves, rename/archive/restore and scope isolation; row identity and raw request receipts are checked before reads and retries |
+| TD-19 explicit report links / P3 | A teacher selects the exact confirmed report revision; metadata-only edits may retain an already-linked missing source | Implemented: unique report IDs, at most 20 pins, precise historical reads, stale/unavailable warnings and no automatic latest-version substitution |
+| TD-20 evidence timeline / P3 | Adapt ASSISTments detail navigation and assessment-policy provenance: show chosen report observations and distinct nonvoid follow-up attempts in recorded-time order | Implemented: whole-dataset counts, assistance/result joint groups, real cursor pagination, void/source changes invalidate stale cursors; malformed candidate sources fail rather than silently reducing counts |
+| TD-21 case draft continuity / P3 | Extend the existing local CAS drafts with exact page/case namespaces | Implemented: one case's restore/discard does not clear another case or workbench draft; server conflicts preserve editing and require explicit reload |
 
 The code review found existing primitives in `services/practice`, `learning/assessment.py`, `learning/models.py` and the content-workspace services. They are reused as conventions where compatible; the feature does not introduce another agent framework or change mastery gates.
 
@@ -72,7 +76,7 @@ P1's evidence coverage remains partial until targeted API/UI tests and independe
 
 ## P2: collect real material and deliver usable classroom handouts
 
-The next work slice prioritizes input/output and draft continuity over an automatic cross-assignment dashboard. The [P2 research](TEACHING_ANALYSIS_P2_RESEARCH.md) shows why future student timelines require stable identities, explicit report-version links, assessment-policy provenance, and careful treatment of missing or assisted attempts. A shared text label or a report-save timestamp is insufficient. Stable student cases and classroom aggregation remain proposals, not current behavior.
+P2 prioritizes input/output and draft continuity. The [P2 research](TEACHING_ANALYSIS_P2_RESEARCH.md) shows why student timelines require stable identities, explicit report-version links, assessment-policy provenance, and careful treatment of missing or assisted attempts. A shared text label or a report-save timestamp is insufficient. The following P3 slice implements stable student cases and explicit report links; classroom aggregation and teaching-task automation remain proposals.
 
 ### Source documents
 
@@ -95,6 +99,22 @@ The saved question set can be opened as a self-contained student HTML handout or
 HTML escapes all input and loads no scripts or external resources. Use the browser print command to print or save locally. The service does not generate PDFs. Explicit historical revisions are read directly, including versions older than the list's pagination limit; a missing version never falls back to the latest question set.
 
 P2 research and tests backfill the source/behavior inventory recorded during implementation. Deterministic extraction and signature checks remain partial evidence of the overall product: real-model field classification, teacher review and classroom effectiveness still need separate evaluation.
+
+## P3: student cases and evidence history
+
+P3 adds student cases using the existing [identity and reporting research](TEACHING_ANALYSIS_P2_RESEARCH.md). Open **Teaching analysis → Student cases**, create a student code with an optional subject, then explicitly select and save confirmed report versions. A workspace-local case links at most 20 different reports. Its UUID stays stable when the label changes. Duplicate labels are allowed; the application never joins records merely because their names match.
+
+Creating, renaming, archiving, restoring, adding/removing a report, or selecting a different report revision saves a new case snapshot with an optimistic revision check. A repeated successful request is idempotent. Reports and attempts retain their original history. Metadata-only edits can retain an already-linked unavailable source, so missing material does not prevent archiving a case; new or replaced links must resolve to an authorized, confirmed version.
+
+The evidence timeline is a projection of the selected report versions and their associated nonvoid follow-up attempts. Each event retains its source and question versions. Times mean **recorded time**, because original learning-event dates are not yet captured. Newer source revisions produce a warning and do not silently replace the selected version. Missing sources remain visible as unavailable; their contents are never invented from another version.
+
+Counts describe the full selected dataset rather than the displayed page. Assistance and teacher-assessed results stay jointly distinguishable; unknown or ungraded answers are not failures. Cursor pagination binds the selected case revision and source dataset. A concurrent case/source/attempt change requires a refresh instead of mixing pages from different states. There is no inferred mastery percentage, task-wide average, automatic knowledge-point merge, student login or classroom ranking.
+
+Case-editor drafts are scoped to their precise page and case. Returning to the teaching workbench must preserve its separate pending material; discarding a case draft must not discard another case's draft. Restoring text remains explicit and cannot silently confirm a report or submit an attempt.
+
+Recent report choices and case revision history show up to 100 entries with explicit notices. Student lists and evidence events support further pages. A selected report is always read by its exact revision, including versions older than the recent-history limit. Archived cases keep a read-only view of their evidence and history; restoring the case is an explicit status action.
+
+The API adds `/student-cases`, `/student-cases/{case_id}`, `/student-cases/{case_id}/revisions`, and `/student-cases/{case_id}/timeline` below `/api/teaching-analysis`. `GET /reports/{report_id}/revisions/{revision}` reads an exact source version. Cases use a separate `student_cases.sqlite3` in the authorized teaching-analysis directory. This adds no model requests, student-account permissions or learner mastery writes.
 
 ## Verification
 

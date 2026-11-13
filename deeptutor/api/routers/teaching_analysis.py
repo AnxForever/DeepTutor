@@ -9,9 +9,11 @@ from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi import Path as PathParameter
 from pydantic import BaseModel, ConfigDict, Field
 
 from deeptutor.api.routers.auth import require_admin
+from deeptutor.api.routers.teaching_cases import router as cases_router
 from deeptutor.api.routers.teaching_documents import router as documents_router
 from deeptutor.api.routers.teaching_followups import router as followups_router
 from deeptutor.api.routers.teaching_rubrics import router as rubrics_router
@@ -50,6 +52,7 @@ router.include_router(rubrics_router)
 router.include_router(followups_router)
 router.include_router(documents_router)
 router.include_router(worksheets_router)
+router.include_router(cases_router)
 
 
 class _ReportData(BaseModel):
@@ -217,6 +220,19 @@ async def list_teaching_report_revisions(
         return await asyncio.to_thread(store.revisions, str(report_id), limit=limit)
     except ReportNotFound:
         raise HTTPException(404, "Teaching report not found in this workspace.") from None
+    except (OSError, sqlite3.Error, ValueError):
+        raise _storage_failure() from None
+
+
+@router.get("/reports/{report_id}/revisions/{revision}", response_model=SavedReport)
+async def get_teaching_report_revision(
+    report_id: UUID, revision: int = PathParameter(ge=1)
+) -> dict:
+    try:
+        store = _store()
+        return await asyncio.to_thread(store.get_revision, str(report_id), revision)
+    except ReportNotFound:
+        raise HTTPException(404, "Teaching report version not found in this workspace.") from None
     except (OSError, sqlite3.Error, ValueError):
         raise _storage_failure() from None
 

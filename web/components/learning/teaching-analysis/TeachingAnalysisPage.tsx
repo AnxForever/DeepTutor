@@ -25,6 +25,7 @@ import { PracticeFollowups } from './PracticeFollowups'
 import { TeachingDraftProvider, useTeachingDraftControls, useTeachingDraftSlot } from './TeachingDrafts'
 import { isPrimaryTeachingDraft, type PrimaryTeachingDraft } from '@/lib/teaching-draft-validation'
 import { DocumentImportPanel } from './DocumentImportPanel'
+import { STUDENT_CASES_HOME } from '@/lib/teaching-student-cases-api'
 
 type Operation = 'import' | 'analyze' | 'save' | 'load' | 'history'
 type Replacement = { kind: 'new' | 'example' } | { kind: 'load'; id: string } | { kind: 'import'; file: File; fromPaste?: boolean } | { kind: 'document'; assignment: AssignmentInput }
@@ -377,7 +378,7 @@ function TeachingAnalysisWorkspace({ workspaceId }: { workspaceId: string }) {
   const disabled = busy !== null
   const sourceDisabled = disabled || followupDirty
   return (
-    <LearningShell title={t('teaching.title')} subtitle={t('teaching.subtitle')} icon={ClipboardCheck} action={<Button size="sm" variant="secondary" icon={<Plus size={14} />} disabled={disabled} onClick={() => requestReplacement({ kind: 'new' })}>{t('teaching.new')}</Button>}>
+    <LearningShell title={t('teaching.title')} subtitle={t('teaching.subtitle')} icon={ClipboardCheck} action={<div className="flex flex-wrap gap-2"><Link href={scopedUrl(STUDENT_CASES_HOME, workspaceId)} className="inline-flex min-h-8 items-center rounded-lg border border-border px-3 text-xs hover:bg-muted">{t('teaching.cases.open')}</Link><Button size="sm" variant="secondary" icon={<Plus size={14} />} disabled={disabled} onClick={() => requestReplacement({ kind: 'new' })}>{t('teaching.new')}</Button></div>}>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground" aria-label={t('teaching.workflow')}>
         <span>1 · {t('teaching.importTitle')}</span><span>2 · {t('teaching.materialTitle')}</span><span>3 · {t('teaching.reportTitle')}</span>
         <span className="ml-auto"><StatusChip tone={status === 'confirmed' && !dirty ? 'success' : 'neutral'}>{t(`teaching.status.${status}`)}</StatusChip>{saved && <span className="ml-2">{t('teaching.revision', { n: saved.revision })}</span>}{dirty && <span className="ml-2">{t('teaching.unsaved')}</span>}</span>

@@ -17,6 +17,7 @@ import { LEARNING_SURFACES } from '@/components/learning/surfaces'
 import { categoryForPath } from '@/lib/navigation'
 import { navVisibleUnderPolicy } from './nav-entries'
 import { TEACHING_ANALYSIS_HOME } from '@/lib/teaching-analysis-api'
+import { STUDENT_CASES_HOME } from '@/lib/teaching-student-cases-api'
 
 export interface PageEntry {
   href: string
@@ -82,6 +83,7 @@ export function pageSections({
         { href: '/learning/new', label: t('navigation.createLearning'), icon: Plus },
         { href: '/learning', label: t('navigation.allLearning'), icon: LayoutGrid },
         ...(teachingAnalysisAvailable ? [{ href: TEACHING_ANALYSIS_HOME, label: t('teaching.title'), icon: ClipboardCheck }] : []),
+        ...(teachingAnalysisAvailable ? [{ href: STUDENT_CASES_HOME, label: t('teaching.cases.title'), icon: ClipboardCheck }] : []),
         ...LEARNING_SURFACES.filter(surface => surfaceAllowed(surface.kind)).map(surface => ({
           href: surface.href,
           label: t(surface.title),

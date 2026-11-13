@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import { Button, InlineAlert } from '@/shared/ui'
-import { TeachingDraftConflict, teachingDraftRepository, type TeachingDraftRecord, type TeachingDraftRepository, type TeachingDraftScope } from '@/lib/teaching-drafts'
+import { createTeachingDraftRepository, TeachingDraftConflict, teachingDraftRepository, type TeachingDraftRecord, type TeachingDraftRepository, type TeachingDraftScope } from '@/lib/teaching-drafts'
 import { isPlainTeachingJson } from '@/lib/teaching-draft-validation'
 
 type Registration = { value: unknown; dirty: boolean; validate: (value: unknown) => boolean; restore: (value: unknown) => void }
@@ -16,11 +16,15 @@ interface DraftContext {
   block(slot: string, dirty: boolean): () => void
 }
 const Context = createContext<DraftContext | null>(null)
+export const acceptsWorkbenchDraftSlot = (slot: string) => typeof slot !== 'string' || (slot !== 'student-case-create' && !slot.startsWith('student-case:'))
+export const acceptsStudentCaseCreateSlot = (slot: string) => slot === 'student-case-create'
 
-export function TeachingDraftProvider({ accountId, workspaceId, children, repository = teachingDraftRepository }: TeachingDraftScope & { children: ReactNode; repository?: TeachingDraftRepository }) {
+export function TeachingDraftProvider({ accountId, workspaceId, children, repository: suppliedRepository, namespace = 'workbench', acceptsSlot = acceptsWorkbenchDraftSlot }: TeachingDraftScope & { children: ReactNode; repository?: TeachingDraftRepository; namespace?: string; acceptsSlot?: (slot: string) => boolean }) {
   const { t } = useTranslation()
   const router = useRouter()
   const scope = useMemo(() => ({ accountId, workspaceId }), [accountId, workspaceId])
+  // The page boundary is keyed by account/workspace; each page namespace owns its CAS reader.
+  const repository = useMemo(() => suppliedRepository ?? (namespace === 'workbench' ? teachingDraftRepository : createTeachingDraftRepository()), [suppliedRepository, namespace])
   const registrations = useRef(new Map<string, Registration>())
   const blockers = useRef(new Set<string>())
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>())
@@ -98,8 +102,9 @@ export function TeachingDraftProvider({ accountId, workspaceId, children, reposi
     const scheduled = timers.current
     const activeRegistrations = registrations.current
     let alive = true
-    void repository.read(scope).then(records => {
+    void repository.read(scope).then(allRecords => {
       if (!alive) return
+      const records = allRecords.filter(record => acceptsSlot(record.slot))
       setRecovery(records)
       pendingRecovery.current = new Map(records.map(record => [record.slot, record]))
       failedSlots.current.delete('storage-read')
@@ -113,7 +118,7 @@ export function TeachingDraftProvider({ accountId, workspaceId, children, reposi
       scheduled.clear()
       for (const [slot, registration] of activeRegistrations) cleanupWrite(slot, registration)
     }
-  }, [repository, scope, readRevision, write, cleanupWrite])
+  }, [repository, scope, readRevision, write, cleanupWrite, acceptsSlot])
 
   useEffect(() => {
     const switchWorkspace = (event: Event) => { (event as CustomEvent<Promise<void>[]>).detail.push(flush()) }
@@ -136,6 +141,7 @@ export function TeachingDraftProvider({ accountId, workspaceId, children, reposi
   }, [cleanupWrite, flush, router])
 
   const clear = useCallback(async (slot: string, discardPending = false) => {
+    if (!acceptsSlot(slot)) throw new Error('Draft slot is outside this page')
     if ((!readyRef.current || pendingRecovery.current.has(slot)) && !discardPending) throw new Error('Draft restoration pending')
     const timer = timers.current.get(slot)
     if (timer) clearTimeout(timer)
@@ -147,8 +153,9 @@ export function TeachingDraftProvider({ accountId, workspaceId, children, reposi
     committedSnapshots.current.delete(slot)
     try { await track(slot, repository.clear(scope, slot)) } catch (reason) { if (clearedSnapshots.current.get(slot) === snapshot) clearedSnapshots.current.delete(slot); throw reason }
     if (pendingRecovery.current.delete(slot) && mounted.current) setRecovery(Array.from(pendingRecovery.current.values()))
-  }, [repository, scope, track])
+  }, [repository, scope, track, acceptsSlot])
   const update = useCallback((slot: string, registration: Registration) => {
+    if (!acceptsSlot(slot)) throw new Error('Draft slot is outside this page')
     const priorDirty = knownDirty.current.get(slot) ?? false
     registrations.current.set(slot, registration)
     knownDirty.current.set(slot, registration.dirty)
@@ -160,7 +167,7 @@ export function TeachingDraftProvider({ accountId, workspaceId, children, reposi
     if (!readyRef.current || pendingRecovery.current.has(slot)) return
     if (registration.dirty) timers.current.set(slot, setTimeout(() => { timers.current.delete(slot); void write(slot).catch(() => {}) }, 250))
     else if (priorDirty) void clear(slot).catch(() => {})
-  }, [clear, write])
+  }, [clear, write, acceptsSlot])
   const hydrate = useCallback((slot: string) => {
     const record = pendingRecovery.current.get(slot)
     const registration = registrations.current.get(slot)
@@ -175,9 +182,9 @@ export function TeachingDraftProvider({ accountId, workspaceId, children, reposi
   const value = useMemo<DraftContext>(() => ({
     update, clear,
     async clearAll() { if (!readyRef.current || pendingRecovery.current.size) throw new Error('Draft restoration pending'); await Promise.all(Array.from(registrations.current.keys(), slot => clear(slot))) },
-    register(slot, registration) { registrations.current.set(slot, registration); if (restoreRequested.current) hydrate(slot); return () => { const current = registrations.current.get(slot); if (current) cleanupWrite(slot, current); registrations.current.delete(slot); knownDirty.current.delete(slot) } },
+    register(slot, registration) { if (!acceptsSlot(slot)) throw new Error('Draft slot is outside this page'); registrations.current.set(slot, registration); if (restoreRequested.current) hydrate(slot); return () => { const current = registrations.current.get(slot); if (current) cleanupWrite(slot, current); registrations.current.delete(slot); knownDirty.current.delete(slot) } },
     block(slot, dirty) { if (dirty) { blockers.current.add(slot); setLocalSaved(false) } else { blockers.current.delete(slot); setBlocked(false) } return () => { blockers.current.delete(slot) } },
-  }), [clear, cleanupWrite, hydrate, update])
+  }), [clear, cleanupWrite, hydrate, update, acceptsSlot])
 
   function restore() {
     restoreRequested.current = true

@@ -196,6 +196,81 @@ class TeachingAnalysisStore:
             raise ReportNotFound("Teaching report not found in this workspace.")
         return [self._content(row) for row in rows]
 
+    def get_revision(self, report_id: str, revision: int) -> dict[str, Any]:
+        """Read one exact revision, independent of the recent-history limit."""
+        report_id = self._report_id(report_id)
+        if type(revision) is not int or revision < 1:
+            raise ValueError("Report revision must be a positive integer.")
+        with self._connection() as connection:
+            row = (
+                connection.execute(
+                    "SELECT report_id,revision,updated_at,content_json FROM teaching_report_revisions WHERE report_id=? AND revision=?",
+                    (report_id, revision),
+                ).fetchone()
+                if connection is not None
+                else None
+            )
+        if row is None:
+            raise ReportNotFound("Teaching report version not found in this workspace.")
+        content = self._content(row)
+        if (
+            not isinstance(content, dict)
+            or content.get("report_id") != row["report_id"]
+            or type(content.get("revision")) is not int
+            or content["revision"] != row["revision"]
+            or content.get("updated_at") != row["updated_at"]
+        ):
+            raise ValueError("Stored report content does not match its row identity.")
+        return content
+
+    def pinned_projection(
+        self, refs: list[tuple[str, int]]
+    ) -> tuple[dict[tuple[str, int], dict[str, Any]], dict[str, int]]:
+        """Batch-read exact pins and latest-version markers in one read snapshot."""
+        if len(refs) > 20:
+            raise ValueError("At most twenty report pins are supported.")
+        normalized = []
+        for identifier, revision in refs:
+            if type(revision) is not int or revision < 1:
+                raise ValueError("Report revision must be a positive integer.")
+            normalized.append((self._report_id(identifier), revision))
+        if not normalized:
+            return {}, {}
+        with self._connection() as connection:
+            if connection is None:
+                return {}, {}
+            connection.execute("BEGIN")
+            pins_json = json.dumps(normalized)
+            exact = connection.execute(
+                """WITH pins AS (
+                    SELECT json_extract(value,'$[0]') AS report_id,
+                           json_extract(value,'$[1]') AS revision FROM json_each(?)
+                    )
+                    SELECT saved.report_id, saved.revision, saved.updated_at,saved.content_json
+                    FROM teaching_report_revisions saved JOIN pins
+                    ON saved.report_id=pins.report_id AND saved.revision=pins.revision""",
+                (pins_json,),
+            ).fetchall()
+            latest = connection.execute(
+                """SELECT report_id, MAX(revision) AS revision FROM teaching_report_revisions
+                    WHERE report_id IN (SELECT json_extract(value,'$[0]') FROM json_each(?))
+                    GROUP BY report_id""",
+                (pins_json,),
+            ).fetchall()
+        pinned = {}
+        for row in exact:
+            content = self._content(row)
+            if (
+                not isinstance(content, dict)
+                or content.get("report_id") != row["report_id"]
+                or type(content.get("revision")) is not int
+                or content["revision"] != row["revision"]
+                or content.get("updated_at") != row["updated_at"]
+            ):
+                raise ValueError("Stored report content does not match its row identity.")
+            pinned[(row["report_id"], row["revision"])] = content
+        return pinned, {row["report_id"]: row["revision"] for row in latest}
+
     def save_report(
         self, report_id: str, expected_revision: int, payload: dict[str, Any]
     ) -> dict[str, Any]:

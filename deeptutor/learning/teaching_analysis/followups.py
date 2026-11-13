@@ -10,6 +10,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import sqlite3
@@ -222,7 +223,7 @@ class FollowupStore:
                     ) latest ON latest.followup_id=current.followup_id
                         AND latest.revision=current.revision
                     {report_filter}
-                    ORDER BY current.updated_at DESC, current.followup_id LIMIT ?""",  # nosec B608 - internal clause only
+                    ORDER BY current.updated_at DESC, current.followup_id LIMIT ?""",  # nosec B608
                 params,
             ).fetchall()
         return [self._content(row) for row in rows]
@@ -436,6 +437,189 @@ class FollowupStore:
                 (followup_id, limit),
             ).fetchall()
             return [self._attempt_content(connection, row) for row in rows]
+
+    def case_attempt_projection(
+        self, refs: list[tuple[str, int]], *, limit: int, after: tuple[float, str] | None = None
+    ) -> dict[str, Any]:
+        """Full-dataset counts and one real page, matched to immutable source pins."""
+        empty = {"attempts": [], "groups": [], "total": 0, "voided": 0, "dataset": [0, 0, 0, 0]}
+        if not refs:
+            return empty
+        if len(refs) > 20 or type(limit) is not int or not 1 <= limit <= 101:
+            raise ValueError("Invalid student-case projection bounds.")
+        normalized = []
+        for identifier, revision in refs:
+            if type(revision) is not int or revision < 1:
+                raise ValueError("Invalid source report revision.")
+            normalized.append((self._id(identifier), revision))
+        with self._connection() as connection:
+            if connection is None:
+                return empty
+            connection.execute("BEGIN")
+            cte = """WITH pins AS (
+                SELECT json_extract(value,'$[0]') AS report_id,
+                       json_extract(value,'$[1]') AS report_revision FROM json_each(?)
+            ), candidates AS (
+                SELECT a.*,a.rowid AS attempt_rowid,s.content_json AS practice_json,
+                       s.followup_id AS snapshot_followup_id,s.revision AS snapshot_revision,
+                       s.report_id AS snapshot_report_id,
+                       json_extract(s.content_json,'$.report_revision') AS snapshot_report_revision,
+                       v.attempt_id AS void_id,v.rowid AS void_rowid,v.voided_at
+                FROM teaching_followup_attempts a
+                LEFT JOIN teaching_followup_revisions s
+                    ON a.followup_id=s.followup_id AND a.followup_revision=s.revision
+                LEFT JOIN teaching_followup_voids v ON v.attempt_id=a.attempt_id
+                WHERE s.report_id IN (SELECT report_id FROM pins)
+                   OR json_extract(a.content_json,'$.report_id') IN (SELECT report_id FROM pins)
+            ), matching AS (
+                SELECT c.*,p.report_revision AS pinned_report_revision FROM candidates c JOIN pins p
+                ON c.snapshot_report_id=p.report_id AND c.snapshot_report_revision=p.report_revision
+            ) """
+            parameters: list[Any] = [json.dumps(normalized)]
+            invalid_conditions = [
+                "snapshot_followup_id IS NULL",
+                "snapshot_revision IS NULL",
+                "json_extract(content_json,'$.attempt_id') IS NOT attempt_id",
+                "json_extract(content_json,'$.followup_id') IS NOT followup_id",
+                "json_extract(content_json,'$.followup_revision') IS NOT followup_revision",
+                "json_extract(content_json,'$.report_id') IS NOT snapshot_report_id",
+                "json_extract(content_json,'$.report_revision') IS NOT snapshot_report_revision",
+                "json_extract(content_json,'$.created_at') IS NOT created_at",
+                "json_extract(content_json,'$.voided_at') IS NOT NULL",
+                "json_extract(practice_json,'$.followup_id') IS NOT snapshot_followup_id",
+                "json_extract(practice_json,'$.revision') IS NOT snapshot_revision",
+                "json_extract(practice_json,'$.report_id') IS NOT snapshot_report_id",
+                "json_type(practice_json,'$.report_revision') IS NOT 'integer'",
+                "json_extract(content_json,'$.priority_index') IS NOT json_extract(practice_json,'$.priority_index')",
+                "json_extract(content_json,'$.assistance') NOT IN ('independent','assisted','unknown')",
+                "json_extract(content_json,'$.teacher_result') NOT IN ('correct','partial','incorrect','ungraded')",
+                "json_type(content_json,'$.assistance') IS NOT 'text'",
+                "json_type(content_json,'$.teacher_result') IS NOT 'text'",
+                "json_type(content_json,'$.followup_revision') IS NOT 'integer'",
+                "json_type(content_json,'$.report_revision') IS NOT 'integer'",
+                "json_extract(content_json,'$.answer_status') NOT IN ('present','confirmed_blank','unknown')",
+                "json_type(content_json,'$.answer_status') IS NOT 'text'",
+                "(json_extract(content_json,'$.answer_status')!='present' AND json_extract(content_json,'$.teacher_result')!='ungraded')",
+                "NOT EXISTS (SELECT 1 FROM json_each(practice_json,'$.questions') q WHERE json_extract(q.value,'$.question_id')=json_extract(candidates.content_json,'$.question_id') AND json(q.value)=json_extract(candidates.content_json,'$.question_snapshot'))",
+            ]
+            invalid_conditions.extend(
+                f"json_extract(content_json,'$.{key}') IS NOT json_extract(practice_json,'$.{key}')"
+                for key in _METADATA_FIELDS
+            )
+            # Predicates and the CTE are internal constants; all report values
+            # are supplied only through the bound JSON parameter.
+            bad_count = connection.execute(
+                cte
+                + "SELECT COUNT(*) AS bad FROM candidates WHERE "  # nosec B608
+                + " OR ".join(invalid_conditions),
+                parameters,
+            ).fetchone()["bad"]
+            if bad_count:
+                raise ValueError(
+                    "Stored response or practice identity does not match its row and source pin."
+                )
+            # Only fixed SQL fragments are assembled here, without user values.
+            totals = connection.execute(
+                cte
+                + """SELECT COUNT(*) AS total,
+                COUNT(void_id) AS voided,MAX(attempt_rowid) AS last_attempt,MAX(void_rowid) AS last_void,
+                COUNT(created_at) AS valid_times,MIN(created_at) AS first_time,MAX(created_at) AS last_time,
+                COUNT(voided_at) AS valid_void_times,MIN(voided_at) AS first_void,MAX(voided_at) AS last_void_time
+                FROM matching""",  # nosec B608
+                parameters,
+            ).fetchone()
+            if (
+                totals["valid_times"] != totals["total"]
+                or totals["valid_void_times"] != totals["voided"]
+            ):
+                raise ValueError("Invalid stored response timestamps.")
+            if any(
+                value is not None and (not math.isfinite(value) or value < 0)
+                for value in (
+                    totals["first_time"],
+                    totals["last_time"],
+                    totals["first_void"],
+                    totals["last_void_time"],
+                )
+            ):
+                raise ValueError("Invalid stored response timestamps.")
+            # Only the static CTE and aggregate statement are concatenated.
+            groups = connection.execute(
+                cte
+                + """SELECT json_extract(content_json,'$.assistance') AS assistance,
+                json_extract(content_json,'$.teacher_result') AS teacher_result,COUNT(*) AS count
+                FROM matching WHERE void_id IS NULL GROUP BY assistance,teacher_result
+                ORDER BY assistance,teacher_result""",  # nosec B608
+                parameters,
+            ).fetchall()
+            if any(
+                row["assistance"] not in {"independent", "assisted", "unknown"}
+                or row["teacher_result"] not in {"correct", "partial", "incorrect", "ungraded"}
+                for row in groups
+            ):
+                raise ValueError("Invalid stored response review values.")
+            after_clause = ""
+            page_parameters: list[Any] = list(parameters)
+            if after is not None:
+                after_clause = (
+                    " AND (created_at < ? OR (created_at=? AND 'attempt:'||attempt_id > ?))"
+                )
+                page_parameters.extend([after[0], after[0], after[1]])
+            # after_clause is fixed text; timestamps, ids and limits stay bound.
+            rows = connection.execute(
+                cte
+                + f"""SELECT * FROM matching WHERE void_id IS NULL {after_clause}
+                ORDER BY created_at DESC,attempt_id ASC LIMIT ?""",  # nosec B608
+                [*page_parameters, limit],
+            ).fetchall()
+            attempts = []
+            for row in rows:
+                practice = SavedFollowup.model_validate(json.loads(row["practice_json"]))
+                attempt = SavedFollowupAttempt.model_validate(json.loads(row["content_json"]))
+                question = next(
+                    (
+                        item
+                        for item in practice.questions
+                        if item.question_id == attempt.question_id
+                    ),
+                    None,
+                )
+                if (
+                    str(attempt.attempt_id) != row["attempt_id"]
+                    or str(attempt.followup_id) != row["followup_id"]
+                    or attempt.followup_revision != row["followup_revision"]
+                    or attempt.created_at != row["created_at"]
+                    or practice.followup_id != attempt.followup_id
+                    or practice.revision != attempt.followup_revision
+                    or str(practice.followup_id) != row["snapshot_followup_id"]
+                    or practice.revision != row["snapshot_revision"]
+                    or str(practice.report_id) != row["snapshot_report_id"]
+                    or practice.report_revision != row["pinned_report_revision"]
+                    or attempt.report_id != practice.report_id
+                    or attempt.report_revision != practice.report_revision
+                    or attempt.priority_index != practice.priority_index
+                    or question != attempt.question_snapshot
+                    or attempt.voided_at is not None
+                    or any(
+                        getattr(attempt, key) != getattr(practice, key) for key in _METADATA_FIELDS
+                    )
+                ):
+                    raise ValueError(
+                        "Stored response does not match its immutable practice snapshot."
+                    )
+                attempts.append(attempt.model_dump(mode="json"))
+            return {
+                "attempts": attempts,
+                "groups": [dict(row) for row in groups],
+                "total": totals["total"],
+                "voided": totals["voided"],
+                "dataset": [
+                    totals["total"],
+                    totals["voided"],
+                    totals["last_attempt"] or 0,
+                    totals["last_void"] or 0,
+                ],
+            }
 
     def void_attempt(
         self, followup_id: str | UUID, attempt_id: str | UUID, reason: str

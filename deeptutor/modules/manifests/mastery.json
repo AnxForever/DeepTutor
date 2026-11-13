@@ -16,6 +16,7 @@
     "deeptutor/learning",
     "deeptutor/api/routers/mastery_path.py",
     "deeptutor/api/routers/teaching_analysis.py",
+    "deeptutor/api/routers/teaching_cases.py",
     "deeptutor/api/routers/teaching_rubrics.py",
     "deeptutor/api/routers/teaching_followups.py",
     "deeptutor/api/routers/teaching_documents.py",

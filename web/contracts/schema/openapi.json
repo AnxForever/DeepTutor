@@ -2245,6 +2245,376 @@
         "title": "CalendarSearchResponse",
         "type": "object"
       },
+      "CaseAssistanceCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "assisted": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Assisted",
+            "type": "integer"
+          },
+          "independent": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Independent",
+            "type": "integer"
+          },
+          "unknown": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Unknown",
+            "type": "integer"
+          }
+        },
+        "title": "CaseAssistanceCounts",
+        "type": "object"
+      },
+      "CaseAttemptEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt": {
+            "$ref": "#/components/schemas/SavedFollowupAttempt"
+          },
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "attempt",
+            "default": "attempt",
+            "title": "Kind",
+            "type": "string"
+          },
+          "recorded_at": {
+            "minimum": 0.0,
+            "title": "Recorded At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "event_id",
+          "recorded_at",
+          "attempt"
+        ],
+        "title": "CaseAttemptEvent",
+        "type": "object"
+      },
+      "CaseAttemptOutcome": {
+        "additionalProperties": false,
+        "properties": {
+          "assistance": {
+            "enum": [
+              "independent",
+              "assisted",
+              "unknown"
+            ],
+            "title": "Assistance",
+            "type": "string"
+          },
+          "count": {
+            "minimum": 0.0,
+            "title": "Count",
+            "type": "integer"
+          },
+          "teacher_result": {
+            "enum": [
+              "correct",
+              "partial",
+              "incorrect",
+              "ungraded"
+            ],
+            "title": "Teacher Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assistance",
+          "teacher_result",
+          "count"
+        ],
+        "title": "CaseAttemptOutcome",
+        "type": "object"
+      },
+      "CaseReportEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "title": "Event Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "report",
+            "default": "report",
+            "title": "Kind",
+            "type": "string"
+          },
+          "recorded_at": {
+            "minimum": 0.0,
+            "title": "Recorded At",
+            "type": "number"
+          },
+          "report_snapshot": {
+            "$ref": "#/components/schemas/CaseReportSnapshot"
+          }
+        },
+        "required": [
+          "event_id",
+          "recorded_at",
+          "report_snapshot"
+        ],
+        "title": "CaseReportEvent",
+        "type": "object"
+      },
+      "CaseReportSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "assignment_ref": {
+            "title": "Assignment Ref",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemReview"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "priorities": {
+            "items": {
+              "$ref": "#/components/schemas/TeachingPriority"
+            },
+            "title": "Priorities",
+            "type": "array"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          },
+          "student_ref": {
+            "title": "Student Ref",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id",
+          "report_revision",
+          "student_ref",
+          "assignment_ref",
+          "subject",
+          "summary",
+          "items",
+          "priorities"
+        ],
+        "title": "CaseReportSnapshot",
+        "type": "object"
+      },
+      "CaseResultCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "correct": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Correct",
+            "type": "integer"
+          },
+          "incorrect": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Incorrect",
+            "type": "integer"
+          },
+          "partial": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Partial",
+            "type": "integer"
+          },
+          "ungraded": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Ungraded",
+            "type": "integer"
+          }
+        },
+        "title": "CaseResultCounts",
+        "type": "object"
+      },
+      "CaseSourceState": {
+        "additionalProperties": false,
+        "properties": {
+          "assignment_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Ref"
+          },
+          "latest_revision": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Revision"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "current",
+              "stale",
+              "unavailable"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "student_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Ref"
+          }
+        },
+        "required": [
+          "report_id",
+          "report_revision",
+          "status"
+        ],
+        "title": "CaseSourceState",
+        "type": "object"
+      },
+      "CaseTimelineCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_assistance": {
+            "$ref": "#/components/schemas/CaseAssistanceCounts"
+          },
+          "attempt_outcomes": {
+            "items": {
+              "$ref": "#/components/schemas/CaseAttemptOutcome"
+            },
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Attempt Outcomes",
+            "type": "array"
+          },
+          "attempt_results": {
+            "$ref": "#/components/schemas/CaseResultCounts"
+          },
+          "attempts": {
+            "minimum": 0.0,
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "available_reports": {
+            "minimum": 0.0,
+            "title": "Available Reports",
+            "type": "integer"
+          },
+          "confirmed_report_count": {
+            "minimum": 0.0,
+            "title": "Confirmed Report Count",
+            "type": "integer"
+          },
+          "linked_reports": {
+            "minimum": 0.0,
+            "title": "Linked Reports",
+            "type": "integer"
+          },
+          "report_items": {
+            "minimum": 0.0,
+            "title": "Report Items",
+            "type": "integer"
+          },
+          "report_results": {
+            "$ref": "#/components/schemas/CaseResultCounts"
+          },
+          "stale_source_count": {
+            "minimum": 0.0,
+            "title": "Stale Source Count",
+            "type": "integer"
+          },
+          "total_events": {
+            "minimum": 0.0,
+            "title": "Total Events",
+            "type": "integer"
+          },
+          "unavailable_reports": {
+            "minimum": 0.0,
+            "title": "Unavailable Reports",
+            "type": "integer"
+          },
+          "voided_attempts": {
+            "minimum": 0.0,
+            "title": "Voided Attempts",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "linked_reports",
+          "available_reports",
+          "unavailable_reports",
+          "confirmed_report_count",
+          "stale_source_count",
+          "report_items",
+          "report_results",
+          "attempts",
+          "voided_attempts",
+          "attempt_results",
+          "attempt_assistance",
+          "attempt_outcomes",
+          "total_events"
+        ],
+        "title": "CaseTimelineCounts",
+        "type": "object"
+      },
       "CatalogPayload": {
         "properties": {
           "catalog": {
@@ -9720,6 +10090,27 @@
         "title": "PauseBookRequest",
         "type": "object"
       },
+      "PinnedReportRef": {
+        "additionalProperties": false,
+        "properties": {
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "report_id",
+          "report_revision"
+        ],
+        "title": "PinnedReportRef",
+        "type": "object"
+      },
       "PositionInfo": {
         "properties": {
           "locator": {
@@ -12067,6 +12458,59 @@
         "title": "SaveRubricRequest",
         "type": "object"
       },
+      "SaveStudentCaseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "default": false,
+            "title": "Archived",
+            "type": "boolean"
+          },
+          "case_id": {
+            "format": "uuid",
+            "title": "Case Id",
+            "type": "string"
+          },
+          "expected_revision": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "report_refs": {
+            "items": {
+              "$ref": "#/components/schemas/PinnedReportRef"
+            },
+            "maxItems": 20,
+            "title": "Report Refs",
+            "type": "array"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          }
+        },
+        "required": [
+          "case_id",
+          "label"
+        ],
+        "title": "SaveStudentCaseRequest",
+        "type": "object"
+      },
       "SavedFollowup": {
         "additionalProperties": false,
         "properties": {
@@ -12399,6 +12843,71 @@
           "updated_at"
         ],
         "title": "SavedReport",
+        "type": "object"
+      },
+      "SavedStudentCase": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "default": false,
+            "title": "Archived",
+            "type": "boolean"
+          },
+          "case_id": {
+            "format": "uuid",
+            "title": "Case Id",
+            "type": "string"
+          },
+          "created_at": {
+            "minimum": 0.0,
+            "title": "Created At",
+            "type": "number"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "report_refs": {
+            "items": {
+              "$ref": "#/components/schemas/PinnedReportRef"
+            },
+            "maxItems": 20,
+            "title": "Report Refs",
+            "type": "array"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "updated_at": {
+            "minimum": 0.0,
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "case_id",
+          "label",
+          "revision",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SavedStudentCase",
         "type": "object"
       },
       "ServerPayload": {
@@ -13159,6 +13668,152 @@
           }
         },
         "title": "StatusColors",
+        "type": "object"
+      },
+      "StudentCaseSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "title": "Archived",
+            "type": "boolean"
+          },
+          "case_id": {
+            "format": "uuid",
+            "title": "Case Id",
+            "type": "string"
+          },
+          "created_at": {
+            "minimum": 0.0,
+            "title": "Created At",
+            "type": "number"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "report_count": {
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Report Count",
+            "type": "integer"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "updated_at": {
+            "minimum": 0.0,
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "case_id",
+          "revision",
+          "label",
+          "subject",
+          "archived",
+          "report_count",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "StudentCaseSummary",
+        "type": "object"
+      },
+      "StudentCaseTimeline": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "title": "Archived",
+            "type": "boolean"
+          },
+          "case_id": {
+            "format": "uuid",
+            "title": "Case Id",
+            "type": "string"
+          },
+          "case_label": {
+            "title": "Case Label",
+            "type": "string"
+          },
+          "case_revision": {
+            "minimum": 1.0,
+            "title": "Case Revision",
+            "type": "integer"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/CaseTimelineCounts"
+          },
+          "events": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "attempt": "#/components/schemas/CaseAttemptEvent",
+                  "report": "#/components/schemas/CaseReportEvent"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CaseReportEvent"
+                },
+                {
+                  "$ref": "#/components/schemas/CaseAttemptEvent"
+                }
+              ]
+            },
+            "maxItems": 100,
+            "title": "Events",
+            "type": "array"
+          },
+          "generated_at": {
+            "minimum": 0.0,
+            "title": "Generated At",
+            "type": "number"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "source_states": {
+            "items": {
+              "$ref": "#/components/schemas/CaseSourceState"
+            },
+            "title": "Source States",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id",
+          "case_revision",
+          "case_label",
+          "archived",
+          "source_states",
+          "counts",
+          "events",
+          "next_cursor",
+          "generated_at"
+        ],
+        "title": "StudentCaseTimeline",
         "type": "object"
       },
       "SubagentMessageRequest": {
@@ -68654,6 +69309,91 @@
         ]
       }
     },
+    "/api/teaching-analysis/reports/{report_id}/revisions/{revision}": {
+      "get": {
+        "operationId": "get_teaching_report_revision_api_teaching_analysis_reports__report_id__revisions__revision__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Report Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Report Revision",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
     "/api/teaching-analysis/rubrics": {
       "get": {
         "operationId": "list_teaching_rubrics_api_teaching_analysis_rubrics_get",
@@ -68945,6 +69685,452 @@
           }
         },
         "summary": "Teaching Rubric Revisions",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-cases": {
+      "get": {
+        "operationId": "list_teaching_student_cases_api_teaching_analysis_student_cases_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Archived",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StudentCaseSummary"
+                  },
+                  "title": "Response List Teaching Student Cases Api Teaching Analysis Student Cases Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Student Cases",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "save_teaching_student_case_api_teaching_analysis_student_cases_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveStudentCaseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedStudentCase"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Teaching Student Case",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-cases/{case_id}": {
+      "get": {
+        "operationId": "get_teaching_student_case_api_teaching_analysis_student_cases__case_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedStudentCase"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Student Case",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-cases/{case_id}/revisions": {
+      "get": {
+        "operationId": "list_teaching_student_case_revisions_api_teaching_analysis_student_cases__case_id__revisions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedStudentCase"
+                  },
+                  "title": "Response List Teaching Student Case Revisions Api Teaching Analysis Student Cases  Case Id  Revisions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Student Case Revisions",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-cases/{case_id}/timeline": {
+      "get": {
+        "operationId": "get_teaching_student_case_timeline_api_teaching_analysis_student_cases__case_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentCaseTimeline"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Student Case Timeline",
         "tags": [
           "teaching-analysis"
         ]

@@ -11180,6 +11180,23 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/teaching-analysis/reports/{report_id}/revisions/{revision}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Report Revision */
+    readonly get: operations["get_teaching_report_revision_api_teaching_analysis_reports__report_id__revisions__revision__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/teaching-analysis/rubrics": {
     readonly parameters: {
       readonly query?: never;
@@ -11224,6 +11241,75 @@ export interface paths {
     };
     /** Teaching Rubric Revisions */
     readonly get: operations["teaching_rubric_revisions_api_teaching_analysis_rubrics__template_id__revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-cases": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Student Cases */
+    readonly get: operations["list_teaching_student_cases_api_teaching_analysis_student_cases_get"];
+    readonly put?: never;
+    /** Save Teaching Student Case */
+    readonly post: operations["save_teaching_student_case_api_teaching_analysis_student_cases_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-cases/{case_id}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Student Case */
+    readonly get: operations["get_teaching_student_case_api_teaching_analysis_student_cases__case_id__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-cases/{case_id}/revisions": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Student Case Revisions */
+    readonly get: operations["list_teaching_student_case_revisions_api_teaching_analysis_student_cases__case_id__revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-cases/{case_id}/timeline": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Student Case Timeline */
+    readonly get: operations["get_teaching_student_case_timeline_api_teaching_analysis_student_cases__case_id__timeline_get"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
@@ -13079,6 +13165,159 @@ export interface components {
     readonly CalendarSearchResponse: {
       /** Events */
       readonly events: readonly components["schemas"]["CalendarSearchHit"][];
+    };
+    /** CaseAssistanceCounts */
+    readonly CaseAssistanceCounts: {
+      /**
+       * Assisted
+       * @default 0
+       */
+      readonly assisted: number;
+      /**
+       * Independent
+       * @default 0
+       */
+      readonly independent: number;
+      /**
+       * Unknown
+       * @default 0
+       */
+      readonly unknown: number;
+    };
+    /** CaseAttemptEvent */
+    readonly CaseAttemptEvent: {
+      readonly attempt: components["schemas"]["SavedFollowupAttempt"];
+      /** Event Id */
+      readonly event_id: string;
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      readonly kind: "attempt";
+      /** Recorded At */
+      readonly recorded_at: number;
+    };
+    /** CaseAttemptOutcome */
+    readonly CaseAttemptOutcome: {
+      /**
+       * Assistance
+       * @enum {string}
+       */
+      readonly assistance: "independent" | "assisted" | "unknown";
+      /** Count */
+      readonly count: number;
+      /**
+       * Teacher Result
+       * @enum {string}
+       */
+      readonly teacher_result: "correct" | "partial" | "incorrect" | "ungraded";
+    };
+    /** CaseReportEvent */
+    readonly CaseReportEvent: {
+      /** Event Id */
+      readonly event_id: string;
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      readonly kind: "report";
+      /** Recorded At */
+      readonly recorded_at: number;
+      readonly report_snapshot: components["schemas"]["CaseReportSnapshot"];
+    };
+    /** CaseReportSnapshot */
+    readonly CaseReportSnapshot: {
+      /** Assignment Ref */
+      readonly assignment_ref: string;
+      /** Items */
+      readonly items: readonly components["schemas"]["ItemReview"][];
+      /** Priorities */
+      readonly priorities: readonly components["schemas"]["TeachingPriority"][];
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+      /** Student Ref */
+      readonly student_ref: string;
+      /** Subject */
+      readonly subject: string;
+      /** Summary */
+      readonly summary: string;
+    };
+    /** CaseResultCounts */
+    readonly CaseResultCounts: {
+      /**
+       * Correct
+       * @default 0
+       */
+      readonly correct: number;
+      /**
+       * Incorrect
+       * @default 0
+       */
+      readonly incorrect: number;
+      /**
+       * Partial
+       * @default 0
+       */
+      readonly partial: number;
+      /**
+       * Ungraded
+       * @default 0
+       */
+      readonly ungraded: number;
+    };
+    /** CaseSourceState */
+    readonly CaseSourceState: {
+      /** Assignment Ref */
+      readonly assignment_ref?: string | null;
+      /** Latest Revision */
+      readonly latest_revision?: number | null;
+      /** Message */
+      readonly message?: string | null;
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "current" | "stale" | "unavailable";
+      /** Student Ref */
+      readonly student_ref?: string | null;
+    };
+    /** CaseTimelineCounts */
+    readonly CaseTimelineCounts: {
+      readonly attempt_assistance: components["schemas"]["CaseAssistanceCounts"];
+      /** Attempt Outcomes */
+      readonly attempt_outcomes: readonly components["schemas"]["CaseAttemptOutcome"][];
+      readonly attempt_results: components["schemas"]["CaseResultCounts"];
+      /** Attempts */
+      readonly attempts: number;
+      /** Available Reports */
+      readonly available_reports: number;
+      /** Confirmed Report Count */
+      readonly confirmed_report_count: number;
+      /** Linked Reports */
+      readonly linked_reports: number;
+      /** Report Items */
+      readonly report_items: number;
+      readonly report_results: components["schemas"]["CaseResultCounts"];
+      /** Stale Source Count */
+      readonly stale_source_count: number;
+      /** Total Events */
+      readonly total_events: number;
+      /** Unavailable Reports */
+      readonly unavailable_reports: number;
+      /** Voided Attempts */
+      readonly voided_attempts: number;
     };
     /** CatalogPayload */
     readonly CatalogPayload: {
@@ -16485,6 +16724,16 @@ export interface components {
       /** Expected Revision */
       readonly expected_revision?: number | null;
     };
+    /** PinnedReportRef */
+    readonly PinnedReportRef: {
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+    };
     /** PositionInfo */
     readonly PositionInfo: {
       /** Locator */
@@ -17586,6 +17835,31 @@ export interface components {
       /** Updated At */
       readonly updated_at: number;
     };
+    /** SavedStudentCase */
+    readonly SavedStudentCase: {
+      /**
+       * Archived
+       * @default false
+       */
+      readonly archived: boolean;
+      /**
+       * Case Id
+       * Format: uuid
+       */
+      readonly case_id: string;
+      /** Created At */
+      readonly created_at: number;
+      /** Label */
+      readonly label: string;
+      /** Report Refs */
+      readonly report_refs?: readonly components["schemas"]["PinnedReportRef"][];
+      /** Revision */
+      readonly revision: number;
+      /** Subject */
+      readonly subject?: string | null;
+      /** Updated At */
+      readonly updated_at: number;
+    };
     /** SaveFollowupAttemptRequest */
     readonly SaveFollowupAttemptRequest: {
       /**
@@ -17702,6 +17976,30 @@ export interface components {
        * Format: uuid
        */
       readonly template_id: string;
+    };
+    /** SaveStudentCaseRequest */
+    readonly SaveStudentCaseRequest: {
+      /**
+       * Archived
+       * @default false
+       */
+      readonly archived: boolean;
+      /**
+       * Case Id
+       * Format: uuid
+       */
+      readonly case_id: string;
+      /**
+       * Expected Revision
+       * @default 0
+       */
+      readonly expected_revision: number;
+      /** Label */
+      readonly label: string;
+      /** Report Refs */
+      readonly report_refs?: readonly components["schemas"]["PinnedReportRef"][];
+      /** Subject */
+      readonly subject?: string | null;
     };
     /**
      * ServerPayload
@@ -18017,6 +18315,54 @@ export interface components {
        * @default #2563eb
        */
       readonly todo: string;
+    };
+    /** StudentCaseSummary */
+    readonly StudentCaseSummary: {
+      /** Archived */
+      readonly archived: boolean;
+      /**
+       * Case Id
+       * Format: uuid
+       */
+      readonly case_id: string;
+      /** Created At */
+      readonly created_at: number;
+      /** Label */
+      readonly label: string;
+      /** Report Count */
+      readonly report_count: number;
+      /** Revision */
+      readonly revision: number;
+      /** Subject */
+      readonly subject: string | null;
+      /** Updated At */
+      readonly updated_at: number;
+    };
+    /** StudentCaseTimeline */
+    readonly StudentCaseTimeline: {
+      /** Archived */
+      readonly archived: boolean;
+      /**
+       * Case Id
+       * Format: uuid
+       */
+      readonly case_id: string;
+      /** Case Label */
+      readonly case_label: string;
+      /** Case Revision */
+      readonly case_revision: number;
+      readonly counts: components["schemas"]["CaseTimelineCounts"];
+      /** Events */
+      readonly events: readonly (
+        | components["schemas"]["CaseReportEvent"]
+        | components["schemas"]["CaseAttemptEvent"]
+      )[];
+      /** Generated At */
+      readonly generated_at: number;
+      /** Next Cursor */
+      readonly next_cursor: string | null;
+      /** Source States */
+      readonly source_states: readonly components["schemas"]["CaseSourceState"][];
     };
     /** SubagentMessageRequest */
     readonly SubagentMessageRequest: {
@@ -19729,6 +20075,18 @@ export type SchemaCalendarSearchHit =
   components["schemas"]["CalendarSearchHit"];
 export type SchemaCalendarSearchResponse =
   components["schemas"]["CalendarSearchResponse"];
+export type SchemaCaseAssistanceCounts =
+  components["schemas"]["CaseAssistanceCounts"];
+export type SchemaCaseAttemptEvent = components["schemas"]["CaseAttemptEvent"];
+export type SchemaCaseAttemptOutcome =
+  components["schemas"]["CaseAttemptOutcome"];
+export type SchemaCaseReportEvent = components["schemas"]["CaseReportEvent"];
+export type SchemaCaseReportSnapshot =
+  components["schemas"]["CaseReportSnapshot"];
+export type SchemaCaseResultCounts = components["schemas"]["CaseResultCounts"];
+export type SchemaCaseSourceState = components["schemas"]["CaseSourceState"];
+export type SchemaCaseTimelineCounts =
+  components["schemas"]["CaseTimelineCounts"];
 export type SchemaCatalogPayload = components["schemas"]["CatalogPayload"];
 export type SchemaCatalogServicePayload =
   components["schemas"]["CatalogServicePayload"];
@@ -20060,6 +20418,7 @@ export type SchemaPartnerSeatRetryRequest =
 export type SchemaPathReviewStrategyRequest =
   components["schemas"]["PathReviewStrategyRequest"];
 export type SchemaPauseBookRequest = components["schemas"]["PauseBookRequest"];
+export type SchemaPinnedReportRef = components["schemas"]["PinnedReportRef"];
 export type SchemaPositionInfo = components["schemas"]["PositionInfo"];
 export type SchemaPositionPayload = components["schemas"]["PositionPayload"];
 export type SchemaPracticeAnalytics =
@@ -20153,6 +20512,7 @@ export type SchemaSavedFollowup = components["schemas"]["SavedFollowup"];
 export type SchemaSavedFollowupAttempt =
   components["schemas"]["SavedFollowupAttempt"];
 export type SchemaSavedReport = components["schemas"]["SavedReport"];
+export type SchemaSavedStudentCase = components["schemas"]["SavedStudentCase"];
 export type SchemaSaveFollowupAttemptRequest =
   components["schemas"]["SaveFollowupAttemptRequest"];
 export type SchemaSaveFollowupRequest =
@@ -20161,6 +20521,8 @@ export type SchemaSaveReportRequest =
   components["schemas"]["SaveReportRequest"];
 export type SchemaSaveRubricRequest =
   components["schemas"]["SaveRubricRequest"];
+export type SchemaSaveStudentCaseRequest =
+  components["schemas"]["SaveStudentCaseRequest"];
 export type SchemaServerPayload = components["schemas"]["ServerPayload"];
 export type SchemaServicePreviewPayload =
   components["schemas"]["ServicePreviewPayload"];
@@ -20208,6 +20570,10 @@ export type SchemaSoulTemplateUpdateRequest =
 export type SchemaSoulUpdateBody = components["schemas"]["SoulUpdateBody"];
 export type SchemaStarterPrompt = components["schemas"]["StarterPrompt"];
 export type SchemaStatusColors = components["schemas"]["StatusColors"];
+export type SchemaStudentCaseSummary =
+  components["schemas"]["StudentCaseSummary"];
+export type SchemaStudentCaseTimeline =
+  components["schemas"]["StudentCaseTimeline"];
 export type SchemaSubagentMessageRequest =
   components["schemas"]["SubagentMessageRequest"];
 export type SchemaSubagentSettingsPayload =
@@ -45200,6 +45566,42 @@ export interface operations {
       };
     };
   };
+  readonly get_teaching_report_revision_api_teaching_analysis_reports__report_id__revisions__revision__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly report_id: string;
+        readonly revision: number;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedReport"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   readonly list_teaching_rubrics_api_teaching_analysis_rubrics_get: {
     readonly parameters: {
       readonly query?: never;
@@ -45327,6 +45729,190 @@ export interface operations {
         };
         content: {
           readonly "application/json": readonly components["schemas"]["RubricTemplate"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_student_cases_api_teaching_analysis_student_cases_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly archived?: boolean;
+        readonly limit?: number;
+        readonly offset?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["StudentCaseSummary"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_teaching_student_case_api_teaching_analysis_student_cases_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveStudentCaseRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedStudentCase"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_student_case_api_teaching_analysis_student_cases__case_id__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly case_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedStudentCase"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_student_case_revisions_api_teaching_analysis_student_cases__case_id__revisions_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly case_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedStudentCase"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_student_case_timeline_api_teaching_analysis_student_cases__case_id__timeline_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly cursor?: string | null;
+        readonly limit?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly case_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["StudentCaseTimeline"];
         };
       };
       /** @description Validation Error */
