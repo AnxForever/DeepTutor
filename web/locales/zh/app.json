@@ -7063,5 +7063,13 @@
   "teaching.cases.sourceConflict": "所选报告版本暂时无法关联，档案编辑仍保留。请移除或重新选择该报告，再次保存。",
   "teaching.cases.retryCleanup": "重试清理本机草稿",
   "teaching.cases.openCreated": "在新标签中查看已保存档案",
-  "teaching.cases.browseReports": "添加或更换关联报告"
+  "teaching.cases.browseReports": "添加或更换关联报告",
+  "studentTasks.accessLabel": "教师布置的任务",
+  "studentTasks.policyDescription": "教师引导、已选学习页面和布置的任务",
+  "taskResources.loading": "正在准备学习页面…",
+  "taskResources.failed": "学习页面暂时没有打开，请再试一次。",
+  "taskResources.retry": "再试一次",
+  "studentTasks.title": "今天的学习",
+  "teacherTasks.title": "发布练习给学生",
+  "Could not reach the server": "暂时无法连接服务，请重试。"
 }

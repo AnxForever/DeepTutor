@@ -6821,7 +6821,7 @@
   "teaching.worksheets.hint": "Uses saved version {{n}}. The student edition has no reference answers. Check the title and question text before sharing; use your browser's Print command after opening.",
   "teaching.worksheets.studentPrint": "Open student print edition",
   "teaching.worksheets.studentDownload": "Download student handout (Markdown)",
-  "teaching.worksheets.teacherEdition": "Teacher reference edition — includes answers",
+  "teaching.worksheets.teacherEdition": "Teacher reference edition (includes answers)",
   "teaching.worksheets.teacherWarning": "This edition includes reference answers and marking guidance. Keep it separate from the student handout.",
   "teaching.worksheets.teacherPrint": "Open teacher reference edition",
   "teaching.worksheets.teacherDownload": "Download teacher reference edition",
@@ -7063,5 +7063,13 @@
   "teaching.cases.sourceConflict": "A selected report version is no longer linkable. Your case edits are kept. Remove or reselect that report, then save again.",
   "teaching.cases.retryCleanup": "Retry local draft cleanup",
   "teaching.cases.openCreated": "Open saved case in a new tab",
-  "teaching.cases.browseReports": "Add or change a report"
+  "teaching.cases.browseReports": "Add or change a report",
+  "studentTasks.accessLabel": "Teacher-assigned tasks",
+  "studentTasks.policyDescription": "Teacher persona, selected learning pages and assigned tasks",
+  "taskResources.loading": "Preparing the learning page…",
+  "taskResources.failed": "The learning page could not load. Try again.",
+  "taskResources.retry": "Try again",
+  "studentTasks.title": "Today's learning",
+  "teacherTasks.title": "Send practice to a student",
+  "Could not reach the server": "Could not reach the server"
 }

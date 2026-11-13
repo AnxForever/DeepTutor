@@ -370,6 +370,20 @@ export default function GuardianSettingsPage() {
                   {t("Allow learner uploads")}
                 </label>
               </div>
+              <label className="mt-3 flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={restrictions.allowed_surfaces.includes("tasks")}
+                  disabled={busy !== null}
+                  onChange={() => setRestrictions(current => current ? {
+                    ...current,
+                    allowed_surfaces: current.allowed_surfaces.includes("tasks")
+                      ? current.allowed_surfaces.filter(surface => surface !== "tasks")
+                      : [...current.allowed_surfaces, "tasks"],
+                  } : current)}
+                />
+                {t("studentTasks.accessLabel")}
+              </label>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {extensions.map((extension) => (
                   <label

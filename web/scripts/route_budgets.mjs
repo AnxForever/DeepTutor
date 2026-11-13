@@ -81,6 +81,9 @@ async function startBuildServer() {
       env: {
         ...process.env,
         NEXT_TELEMETRY_DISABLED: "1",
+        // Measure route bundles rather than the login redirect of an
+        // authenticated deployment. This affects only this isolated server.
+        DEEPTUTOR_AUTH_ENABLED: "false",
         DEEPTUTOR_API_BASE_URL: "http://127.0.0.1:9",
       },
       stdio: ["ignore", "pipe", "pipe"],
@@ -117,16 +120,12 @@ async function loadRouteChunks(baseUrl, requestPath) {
   return scriptChunks(await response.text(), baseUrl);
 }
 
-async function assertRootRedirect(baseUrl) {
+async function assertLandingPage(baseUrl) {
   const response = await fetch(`${baseUrl}/`, { redirect: "manual" });
-  const location = response.headers.get("location");
-  const destination = location ? new URL(location, baseUrl) : null;
-  if (
-    ![307, 308].includes(response.status) ||
-    destination?.origin !== baseUrl ||
-    destination.pathname !== "/chat"
-  ) {
-    throw new Error(`/ must redirect to /chat, got HTTP ${response.status} to ${location || "(none)"}`);
+  // The landing page now selects Today or Chat from the signed-in account.
+  // Its routing behavior is covered by account and browser tests.
+  if (response.status !== 200) {
+    throw new Error(`/ landing returned HTTP ${response.status} during route measurement`);
   }
 }
 
@@ -177,7 +176,7 @@ async function main() {
   const server = await startBuildServer();
 
   try {
-    await assertRootRedirect(server.baseUrl);
+    await assertLandingPage(server.baseUrl);
     const rows = [];
     for (const target of ROUTE_TARGETS) {
       rows.push({ ...target, chunks: await loadRouteChunks(server.baseUrl, target.requestPath) });

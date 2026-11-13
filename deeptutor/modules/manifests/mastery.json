@@ -17,6 +17,8 @@
     "deeptutor/api/routers/mastery_path.py",
     "deeptutor/api/routers/teaching_analysis.py",
     "deeptutor/api/routers/teaching_cases.py",
+    "deeptutor/api/routers/teaching_student_tasks.py",
+    "deeptutor/api/routers/student_tasks.py",
     "deeptutor/api/routers/teaching_rubrics.py",
     "deeptutor/api/routers/teaching_followups.py",
     "deeptutor/api/routers/teaching_documents.py",
@@ -175,6 +177,17 @@
       "order": 603
     },
     {
+      "reference": "deeptutor.api.routers.student_tasks:router",
+      "options": {
+        "prefix": "/api/student-tasks",
+        "tags": [
+          "student-tasks"
+        ]
+      },
+      "auth": "authenticated",
+      "order": 604
+    },
+    {
       "reference": "deeptutor.api.routers.mastery_path:ws_router",
       "options": {
         "prefix": "/ws",
@@ -190,7 +203,8 @@
   "navigation": [
     "/mastery",
     "/learning/mastery",
-    "/learning/teaching-analysis"
+    "/learning/teaching-analysis",
+    "/learning/tasks"
   ],
   "services": [],
   "requirements": [],

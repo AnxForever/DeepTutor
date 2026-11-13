@@ -27,6 +27,8 @@ import {
 import { parseAvatarMarker } from "@/lib/avatar";
 import { formatDate, type Language } from "@/lib/datetime";
 import { accountRoleLabelKey } from "@/lib/account-role";
+import { defaultAccountHome } from '@/lib/student-task-access';
+import { normalizeInternalReturnPath } from '@/shared/auth/return-url';
 
 const AVATAR_OUTPUT_SIZE = 256;
 // Decoding a huge photo just to throw away most pixels wastes memory; the
@@ -211,6 +213,11 @@ export default function ProfilePage() {
       setNewPassword("");
       setConfirmPassword("");
       setPasswordNotice(t("Password updated"));
+      const search = new URLSearchParams(window.location.search);
+      if (search.get('change') === '1') {
+        const destination = normalizeInternalReturnPath(search.get('next'), defaultAccountHome(await fetchAuthStatus()));
+        router.replace(destination);
+      }
       setProfile((previous) => previous ? { ...previous, must_change_password: false } : previous);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -224,7 +231,7 @@ export default function ProfilePage() {
     } finally {
       setPasswordBusy(false);
     }
-  }, [confirmPassword, currentPassword, newPassword, t]);
+  }, [confirmPassword, currentPassword, newPassword, router, t]);
 
   const descriptor = parseAvatarMarker(profile?.avatar);
   const hasImage = descriptor.kind === "image";

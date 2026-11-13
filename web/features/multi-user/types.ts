@@ -22,7 +22,7 @@ export type LearningPolicy = {
   locked_persona: "teacher";
   allowed_capabilities: Array<"chat" | "immersive_reading">;
   default_capability: "chat" | "immersive_reading";
-  allowed_surfaces: Array<"chat" | "reading">;
+  allowed_surfaces: Array<"books" | "chat" | "reading" | "tasks">;
   reading: {
     allow_upload: boolean;
     material_ids: string[];

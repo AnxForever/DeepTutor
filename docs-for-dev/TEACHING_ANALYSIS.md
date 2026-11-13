@@ -118,6 +118,8 @@ The API adds `/student-cases`, `/student-cases/{case_id}`, `/student-cases/{case
 
 ## Verification
 
+The next student-facing slice is documented in [Student tasks](STUDENT_TASKS.md). It keeps authenticated task delivery and submissions separate from anonymous student cases and teacher-assessed follow-up attempts.
+
 Run focused Python domain/API tests and the web workflow tests, then typecheck, generated contracts and relevant lint/module checks. Use an isolated `DEEPTUTOR_HOME` for tests and development; do not use the teacher's only copy of student data.
 
 The focused suites are `tests/learning/test_teaching_analysis.py`, `tests/api/test_teaching_analysis.py`, and `web/tests/teaching-analysis-workflow.spec.tsx`. Router-index, module-ownership and generated-contract checks cover registration. Browser acceptance should additionally cover source links, source changes invalidating results, draft/confirmation/history, failed imports retaining edits, download, and narrow/light/dark layouts. English and Chinese are the initial authored languages.

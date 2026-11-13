@@ -5,12 +5,14 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 
 import type { Capability } from "@/lib/capability-routes";
-import { apiFetch, apiUrl } from "@/lib/api";
+import { fetchAuthStatus } from '@/lib/auth';
+import { RECOVERY_PRINCIPAL_CHANGED } from '@/lib/recovery-principal';
 import { listLLMOptions } from "@/lib/llm-options";
 
 type CapabilityAccessValue = {
@@ -54,32 +56,36 @@ export function CapabilityAccessProvider({
   const [isAdmin, setIsAdmin] = useState(true);
   const [hasLlm, setHasLlm] = useState(true);
   const [loading, setLoading] = useState(true);
+  const probe = useRef(0);
 
   const refresh = useCallback(async () => {
+    const current = ++probe.current;
     try {
-      // The settings payload only exposes the catalog to admins, so its
-      // presence is our admin signal — admins are never gated.
-      const res = await apiFetch(apiUrl("/api/settings"));
-      if (!res.ok) return;
-      const payload = (await res.json()) as { catalog?: unknown };
-      if (payload.catalog) {
-        setIsAdmin(true);
+      // Auth status is the identity authority. Restricted learners cannot
+      // read the runtime settings catalog just to discover their own role.
+      const auth = await fetchAuthStatus();
+      if (current !== probe.current) return;
+      const admin = Boolean(auth && (!auth.enabled || auth.role === 'admin'));
+      setIsAdmin(admin);
+      if (admin) {
         setHasLlm(true);
         return;
       }
-      setIsAdmin(false);
+      setHasLlm(false);
+      if (!auth?.authenticated || (auth.learning_policy && !(auth.learning_policy.allowed_surfaces ?? ['chat', 'reading']).includes('chat'))) return;
       // Non-admins: their grant-filtered LLM options decide access.
       const { options } = await listLLMOptions();
-      setHasLlm(options.length > 0);
+      if (current === probe.current) setHasLlm(options.length > 0);
     } catch {
-      // Keep last known state; the backend still enforces access on every call.
+      if (current === probe.current) { setIsAdmin(false); setHasLlm(false); }
     } finally {
-      setLoading(false);
+      if (current === probe.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     void refresh();
+    return () => { probe.current += 1; };
   }, [refresh]);
 
   // Re-check when the user returns to the tab. This is what surfaces a
@@ -91,9 +97,11 @@ export function CapabilityAccessProvider({
       if (document.visibilityState === "visible") void refresh();
     };
     window.addEventListener("focus", onFocus);
+    window.addEventListener(RECOVERY_PRINCIPAL_CHANGED, onFocus);
     document.addEventListener("visibilitychange", onVisible);
     return () => {
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener(RECOVERY_PRINCIPAL_CHANGED, onFocus);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [refresh]);

@@ -146,7 +146,20 @@ function reportUntranslatedKeys() {
       process.exitCode = 1;
       continue;
     }
-    known.set(locale, JSON.parse(fs.readFileSync(file, "utf8")));
+    const entries = Object.create(null);
+    // Feature catalogs join the app namespace when their feature is opened.
+    // Audit them alongside the eager app labels without forcing eager imports.
+    for (const name of ["app.json", "tasks.json"].filter(name => fs.existsSync(path.join(path.dirname(file), name)))) {
+      const catalog = JSON.parse(fs.readFileSync(path.join(path.dirname(file), name), "utf8"));
+      for (const [key, value] of Object.entries(catalog)) {
+        if (Object.hasOwn(entries, key) && entries[key] !== value) {
+          console.error(`[i18n:audit] Conflicting catalog key ${locale}: ${key}`);
+          process.exitCode = 1;
+        }
+        entries[key] = value;
+      }
+    }
+    known.set(locale, entries);
   }
   const english = known.get("en");
   if (!english) return;

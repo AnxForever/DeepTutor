@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchAuthStatus } from "@/lib/auth";
+import { RECOVERY_PRINCIPAL_CHANGED } from '@/lib/recovery-principal';
 
 export interface LearningPolicyState {
   /** Surfaces this account may open. Everything else is hidden, not a 403. */
@@ -17,6 +18,8 @@ export interface AuthStatusState {
   isAdmin: boolean;
   /** Stable account id for account-scoped browser state. */
   userId: string | null;
+  /** Effective server-resolved learner preset, never inferred from a display name. */
+  preset: 'standard' | 'learner' | 'custom' | null;
   /** False when the runtime status endpoint could not be reached. */
   statusAvailable: boolean;
   /** True until the first status fetch resolves. */
@@ -34,6 +37,7 @@ const INITIAL: AuthStatusState = {
   authenticated: false,
   isAdmin: false,
   userId: null,
+  preset: null,
   statusAvailable: false,
   loading: true,
   learningPolicy: null,
@@ -69,6 +73,7 @@ function loadAuthStatus(): Promise<AuthStatusState> {
       typeof status?.user_id === "string" && status.user_id.trim()
         ? status.user_id
         : null,
+    preset: status?.preset ?? null,
     statusAvailable: status !== null,
     loading: false,
     learningPolicy: learningPolicyFromStatus(status),
@@ -80,11 +85,17 @@ export function useAuthStatus(): AuthStatusState {
 
   useEffect(() => {
     let alive = true;
-    loadAuthStatus().then((next) => {
-      if (alive) setState(next);
-    });
+    let sequence = 0;
+    const refresh = () => {
+      const current = ++sequence;
+      void loadAuthStatus().then(next => { if (alive && current === sequence) setState(next); });
+    };
+    const boundary = () => { setState(INITIAL); refresh(); };
+    window.addEventListener(RECOVERY_PRINCIPAL_CHANGED, boundary);
+    refresh();
     return () => {
       alive = false;
+      window.removeEventListener(RECOVERY_PRINCIPAL_CHANGED, boundary);
     };
   }, []);
 

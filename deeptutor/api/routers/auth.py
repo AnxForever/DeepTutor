@@ -511,12 +511,13 @@ def _install_request_workspace(request) -> None:
 
     headers = getattr(request, "headers", {})
     params = getattr(request, "query_params", {})
+    path = getattr(getattr(request, "url", None), "path", "")
+    student_tasks = path == "/api/student-tasks" or path.startswith("/api/student-tasks/")
     header = headers.get("x-deeptutor-workspace")
     query = params.get("dt_workspace")
-    if header is not None and query is not None and header != query:
+    if not student_tasks and header is not None and query is not None and header != query:
         raise HTTPException(status_code=400, detail="Conflicting workspace scopes.")
     try:
-        path = getattr(getattr(request, "url", None), "path", "")
         from deeptutor.services.workspace.context import resolve_workspace_scope
         from deeptutor.services.workspace.knowledge import library_request, library_viewer
 
@@ -542,7 +543,11 @@ def _install_request_workspace(request) -> None:
             ("/api/settings", "/api/auth", "/api/multi-user", "/api/task-board", "/api/calendar")
         )
         selected = install_workspace_scope(
-            None if management or catalog_management else header if header is not None else query
+            None
+            if management or catalog_management or student_tasks
+            else header
+            if header is not None
+            else query
         )
         if skill_workspace:
             from deeptutor.services.workspace import get_content_workspace_service
@@ -697,6 +702,7 @@ def _learning_surface_for_path(
 ) -> str:
     normalized = "/" + str(path or "").lstrip("/")
     for root, surface in (
+        ("/api/student-tasks", "tasks"),
         ("/api/reading", "reading"),
         ("/api/courses", "reading"),
         ("/api/dashboard/learning-library/materials", "reading"),
@@ -1772,7 +1778,7 @@ def _create_admin_user(
         from deeptutor.multi_user.grants import learner_grant, save_grant
 
         try:
-            save_grant(user_id, learner_grant(user_id))
+            save_grant(user_id, learner_grant(user_id, include_tasks=True))
         except Exception as exc:
             rolled_back = False
             try:

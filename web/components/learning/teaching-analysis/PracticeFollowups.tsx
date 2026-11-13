@@ -15,6 +15,8 @@ import {
 import { controlClass } from './AssignmentEditor'
 import { FollowupQuestionSnapshot, FollowupResponseForm, FollowupResponseHistory } from './FollowupResponses'
 import { WorksheetActions } from './WorksheetActions'
+import { TeacherStudentTasks } from './TeacherStudentTasks'
+import { studentTaskPublishSlot } from '@/lib/teacher-student-tasks-api'
 import { useTeachingDraftControls, useTeachingDraftSlot } from './TeachingDrafts'
 import { followupResponseSlot, followupWorkspaceSlot, isFollowupWorkspaceDraft, sameSavedFollowup, type FollowupWorkspaceDraft } from '@/lib/teaching-followup-drafts'
 
@@ -44,6 +46,8 @@ function FollowupWorkspace({ report, workspaceId, canCreate, onDirtyChange, onRe
   const [draft, setDraft] = useState<SaveFollowupRequest | null>(null)
   const [draftDirty, setDraftDirty] = useState(false)
   const [attemptDirty, setAttemptDirty] = useState<Record<string, boolean>>({})
+  const [taskDirty, setTaskDirty] = useState(false)
+  const [taskEpoch, setTaskEpoch] = useState(0)
   const [attempts, setAttempts] = useState<SavedFollowupAttempt[]>([])
   const [attemptsLoading, setAttemptsLoading] = useState(false)
   const [attemptsError, setAttemptsError] = useState(false)
@@ -68,7 +72,7 @@ function FollowupWorkspace({ report, workspaceId, canCreate, onDirtyChange, onRe
   const selectedId = selected?.followup_id
   const selectedRevision = selected?.revision
   const allowed = canCreate && report.status === 'confirmed'
-  const dirty = draftDirty || Object.values(attemptDirty).some(Boolean) || Boolean(voidTarget && voidReason.trim())
+  const dirty = draftDirty || taskDirty || Object.values(attemptDirty).some(Boolean) || Boolean(voidTarget && voidReason.trim())
   const disabled = busy !== null || checkingSelection
   const sourceChanged = Boolean((draft || selected) && (draft || selected)!.report_revision !== report.revision)
   const anchorsMatch = selected && selected.student_ref === report.assignment.student_ref && selected.assignment_ref === report.assignment.assignment_ref && selected.subject === report.assignment.subject && selected.knowledge_point === report.analysis.priorities[selected.priority_index]?.knowledge_point
@@ -204,6 +208,8 @@ function FollowupWorkspace({ report, workspaceId, canCreate, onDirtyChange, onRe
     setDraft(null)
     setDraftDirty(false)
     setAttemptDirty({})
+    setTaskDirty(false)
+    setTaskEpoch(value => value + 1)
     setAttempts([])
     setAttemptsVersion(value => value + 1)
     setVersions(null)
@@ -218,7 +224,7 @@ function FollowupWorkspace({ report, workspaceId, canCreate, onDirtyChange, onRe
   }
 
   async function clearPendingLocalDrafts() {
-    const slots = [workspaceSlot, ...(selected?.questions.map(question => followupResponseSlot(selected.followup_id, selected.revision, question.question_id)) ?? [])]
+    const slots = [workspaceSlot, ...(selected ? [studentTaskPublishSlot(selected.followup_id), ...selected.questions.map(question => followupResponseSlot(selected.followup_id, selected.revision, question.question_id))] : [])]
     await Promise.all(slots.map(slot => clearSlot(slot)))
   }
 
@@ -396,6 +402,7 @@ function FollowupWorkspace({ report, workspaceId, canCreate, onDirtyChange, onRe
         <div className="mt-5 flex flex-wrap gap-2"><Button loading={busy === 'save'} disabled={disabled || !allowed || sourceChanged || Boolean(conflict) || Boolean(selected && !selectionVerified)} onClick={() => void saveQuestions()}>{t('teaching.followups.save')}</Button><Button variant="ghost" disabled={disabled} onClick={() => request({ kind: 'discard' })}>{t('teaching.followups.cancelEdit')}</Button></div>
       </div>}
       {selected && !draft && <div className="mt-6">
+        <TeacherStudentTasks key={`student-tasks:${selected.followup_id}:${taskEpoch}`} followup={selected} workspaceId={workspaceId} disabled={busy !== null} canPublish={allowed && !sourceChanged && !draftDirty && !conflict && selectionVerified && !checkingSelection} onDirtyChange={setTaskDirty} onReloadReport={onReloadReport} onReloadFollowup={() => request({ kind: 'load', id: selected.followup_id })} />
         <WorksheetActions key={`${workspaceId}:${selected.followup_id}:${selected.revision}`} followup={selected} workspaceId={workspaceId} disabled={disabled || !selectionVerified} />
         <div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="text-base font-semibold">{selected.title}</h3><p className="mt-1 text-xs text-muted-foreground">{t('teaching.followups.source', { student: selected.student_ref, assignment: selected.assignment_ref, n: selected.report_revision })} · {t('teaching.revision', { n: selected.revision })}</p></div><div className="flex flex-wrap gap-2"><Button variant="secondary" size="sm" icon={<Pencil size={14} />} disabled={disabled || !allowed || !anchorsMatch || !selectionVerified} onClick={() => request({ kind: 'edit' })}>{t('teaching.followups.editSet')}</Button><Button variant="ghost" size="sm" icon={<History size={14} />} disabled={disabled} onClick={() => void showVersions()}>{t(versions ? 'teaching.followups.hideRevisions' : 'teaching.followups.revisions')}</Button></div></div>
         {versions && <section className="mt-4 rounded-xl border border-border p-4" aria-label={t('teaching.followups.revisions')}>{versions.map(version => <details key={version.revision} className="border-b border-border/60 py-3 last:border-b-0"><summary className="cursor-pointer text-sm font-medium">{t('teaching.revision', { n: version.revision })} · {version.title}</summary><div className="mt-3 grid gap-4">{version.questions.map(question => <FollowupQuestionSnapshot key={question.question_id} question={question} />)}</div></details>)}</section>}

@@ -7,6 +7,7 @@ vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => k
 vi.mock('@/components/learning/LearningCreateMenu', () => ({ LearningCreateMenu: () => <button>Create learning</button> }))
 vi.mock('@/components/layout/AppShell', () => ({ useSidebarDrawer: () => null }))
 vi.mock('@/components/learning/teaching-analysis/TeachingAnalysisEntry', () => ({ TeachingAnalysisEntry: () => null }))
+vi.mock('@/hooks/useAuthStatus', () => ({ useAuthStatus: () => ({ loading: false, statusAvailable: true, enabled: false, isAdmin: true, learningPolicy: null }) }))
 const mastery = vi.hoisted(() => ({ topics: [] as unknown[] }))
 vi.mock('@/hooks/useLearningIndex', () => ({ useLearningIndex: () => ({
   loading: false, failed: [], retry: vi.fn(), sources: {

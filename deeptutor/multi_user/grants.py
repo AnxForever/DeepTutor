@@ -22,7 +22,7 @@ GRANTS_DIR = SYSTEM_ROOT / "grants"
 LEARNING_CAPABILITIES = {"chat", "immersive_reading"}
 LEARNING_AGE_BANDS = {"6-8", "9-12", "13-15"}
 LEARNING_PERSONAS = {"teacher"}
-LEARNING_SURFACES = {"books", "chat", "reading"}
+LEARNING_SURFACES = {"books", "chat", "reading", "tasks"}
 _EXTENSION_ID_RE = re.compile(r"^[a-z][a-z0-9_-]{0,63}$")
 _GRANT_THREAD_LOCKS: dict[Path, threading.Lock] = {}
 _GRANT_THREAD_LOCKS_GUARD = threading.Lock()
@@ -189,7 +189,7 @@ def normalize_grant(user_id: str, payload: dict[str, Any] | None) -> dict[str, A
     return base
 
 
-def learner_grant(user_id: str) -> dict[str, Any]:
+def learner_grant(user_id: str, *, include_tasks: bool = False) -> dict[str, Any]:
     """Return the conservative server-enforced expansion of the learner preset."""
     return normalize_grant(
         user_id,
@@ -203,7 +203,9 @@ def learner_grant(user_id: str) -> dict[str, Any]:
                 "locked_persona": "teacher",
                 "allowed_capabilities": ["chat", "immersive_reading"],
                 "default_capability": "immersive_reading",
-                "allowed_surfaces": ["chat", "reading"],
+                "allowed_surfaces": ["chat", "reading", "tasks"]
+                if include_tasks
+                else ["chat", "reading"],
                 "reading": {
                     "allow_upload": False,
                     "material_ids": [],

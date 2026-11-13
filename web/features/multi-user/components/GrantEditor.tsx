@@ -479,10 +479,10 @@ export function GrantEditor({
                 <CheckRow
                   label={t("Enable learning policy")}
                   description={t(
-                    "Teacher persona; Chat and Immersive Reading only",
+                    "studentTasks.policyDescription",
                   )}
                   checked={Boolean(grant.learning_policy)}
-                  disabled={controlsDisabled || lockLearningPolicy}
+                  disabled={controlsDisabled || (lockLearningPolicy && Boolean(grant.learning_policy))}
                   onToggle={() =>
                     grant.learning_policy
                       ? disableLearningPolicy()
@@ -491,6 +491,26 @@ export function GrantEditor({
                 />
                 {grant.learning_policy && (
                   <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    <div className="sm:col-span-3">
+                      <CheckRow
+                        label={t("studentTasks.accessLabel")}
+                        checked={grant.learning_policy.allowed_surfaces?.includes("tasks") ?? false}
+                        disabled={controlsDisabled}
+                        onToggle={() => setGrant(current => {
+                          if (!current.learning_policy) return current;
+                          const surfaces = current.learning_policy.allowed_surfaces ?? ["chat", "reading"];
+                          return {
+                            ...current,
+                            learning_policy: {
+                              ...current.learning_policy,
+                              allowed_surfaces: surfaces.includes("tasks")
+                                ? surfaces.filter(surface => surface !== "tasks")
+                                : [...surfaces, "tasks"],
+                            },
+                          };
+                        })}
+                      />
+                    </div>
                     <label className="text-xs text-[var(--foreground)]">
                       <span className="mb-1 block text-[11px] text-[var(--muted-foreground)]">
                         {t("Age band")}

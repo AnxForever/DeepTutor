@@ -94,7 +94,7 @@ def test_learner_preset_expands_to_a_conservative_grant(preset_client):
         "locked_persona": "teacher",
         "allowed_capabilities": ["chat", "immersive_reading"],
         "default_capability": "immersive_reading",
-        "allowed_surfaces": ["chat", "reading"],
+        "allowed_surfaces": ["chat", "reading", "tasks"],
         "reading": {
             "allow_upload": False,
             "material_ids": [],

@@ -32,6 +32,8 @@ export const ROUTE_CAPABILITIES: ReadonlyArray<{
  * sibling route like "/booket" can never be swallowed by the BOOKS_HOME prefix.
  */
 export function capabilityForPath(pathname: string): Capability | null {
+  // Fixed teacher tasks never call a model; other learning pages stay gated.
+  if (pathname === '/learning/tasks' || pathname.startsWith('/learning/tasks/')) return null;
   const match = ROUTE_CAPABILITIES.find(
     (r) => pathname === r.prefix || pathname.startsWith(`${r.prefix}/`),
   );

@@ -6810,6 +6810,53 @@
         "title": "InvidiousSettings",
         "type": "object"
       },
+      "IssueTaskRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "followup_revision": {
+            "minimum": 1.0,
+            "title": "Followup Revision",
+            "type": "integer"
+          },
+          "instructions": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Instructions",
+            "type": "string"
+          },
+          "recipient_user_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Recipient User Id",
+            "type": "string"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "followup_id",
+          "followup_revision",
+          "recipient_user_id",
+          "title"
+        ],
+        "title": "IssueTaskRequest",
+        "type": "object"
+      },
       "ItemReview": {
         "additionalProperties": false,
         "properties": {
@@ -11905,6 +11952,28 @@
         "title": "ReviewSuggestionRequest",
         "type": "object"
       },
+      "RevokeTaskRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "reason"
+        ],
+        "title": "RevokeTaskRequest",
+        "type": "object"
+      },
       "RoundSummaryRequest": {
         "properties": {
           "partner_id": {
@@ -12509,6 +12578,44 @@
           "label"
         ],
         "title": "SaveStudentCaseRequest",
+        "type": "object"
+      },
+      "SaveTaskProgressRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "current_question_index": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Current Question Index",
+            "type": "integer"
+          },
+          "expected_revision": {
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "responses": {
+            "items": {
+              "$ref": "#/components/schemas/TaskResponse"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Responses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "responses",
+          "request_id",
+          "expected_revision",
+          "current_question_index"
+        ],
+        "title": "SaveTaskProgressRequest",
         "type": "object"
       },
       "SavedFollowup": {
@@ -13816,6 +13923,241 @@
         "title": "StudentCaseTimeline",
         "type": "object"
       },
+      "StudentSubmission": {
+        "additionalProperties": false,
+        "properties": {
+          "responses": {
+            "items": {
+              "$ref": "#/components/schemas/TaskResponse"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Responses",
+            "type": "array"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "submitted_at": {
+            "minimum": 0.0,
+            "title": "Submitted At",
+            "type": "number"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "responses",
+          "task_id",
+          "submission_id",
+          "submitted_at"
+        ],
+        "title": "StudentSubmission",
+        "type": "object"
+      },
+      "StudentTaskProgress": {
+        "additionalProperties": false,
+        "properties": {
+          "current_question_index": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Current Question Index",
+            "type": "integer"
+          },
+          "responses": {
+            "items": {
+              "$ref": "#/components/schemas/TaskResponse"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Responses",
+            "type": "array"
+          },
+          "revision": {
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "saved_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Saved At"
+          }
+        },
+        "required": [
+          "responses",
+          "revision",
+          "current_question_index"
+        ],
+        "title": "StudentTaskProgress",
+        "type": "object"
+      },
+      "StudentTaskQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "title": "Question",
+            "type": "string"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "question"
+        ],
+        "title": "StudentTaskQuestion",
+        "type": "object"
+      },
+      "StudentTaskSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "issued_at": {
+            "minimum": 0.0,
+            "title": "Issued At",
+            "type": "number"
+          },
+          "question_count": {
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "in_progress",
+              "submitted",
+              "revoked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "minimum": 0.0,
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "task_id",
+          "title",
+          "question_count",
+          "status",
+          "issued_at",
+          "updated_at"
+        ],
+        "title": "StudentTaskSummary",
+        "type": "object"
+      },
+      "StudentTaskView": {
+        "additionalProperties": false,
+        "properties": {
+          "instructions": {
+            "title": "Instructions",
+            "type": "string"
+          },
+          "issued_at": {
+            "minimum": 0.0,
+            "title": "Issued At",
+            "type": "number"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/StudentTaskProgress"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/StudentTaskQuestion"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Questions",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "in_progress",
+              "submitted",
+              "revoked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StudentSubmission"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_revision": {
+            "minimum": 1.0,
+            "title": "Task Revision",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "title",
+          "instructions",
+          "task_revision",
+          "issued_at",
+          "status",
+          "questions",
+          "progress",
+          "submission"
+        ],
+        "title": "StudentTaskView",
+        "type": "object"
+      },
       "SubagentMessageRequest": {
         "properties": {
           "chat_session_id": {
@@ -13913,6 +14255,37 @@
           "turn"
         ],
         "title": "SubmissionReplacementResponse",
+        "type": "object"
+      },
+      "SubmitTaskRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "responses": {
+            "items": {
+              "$ref": "#/components/schemas/TaskResponse"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Responses",
+            "type": "array"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "responses",
+          "submission_id",
+          "expected_revision"
+        ],
+        "title": "SubmitTaskRequest",
         "type": "object"
       },
       "SupplementRequest": {
@@ -14379,6 +14752,387 @@
           "updated_at"
         ],
         "title": "TaskCard",
+        "type": "object"
+      },
+      "TaskRecipient": {
+        "additionalProperties": false,
+        "properties": {
+          "can_receive": {
+            "title": "Can Receive",
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "user_id": {
+            "title": "User Id",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "username",
+          "can_receive",
+          "reason"
+        ],
+        "title": "TaskRecipient",
+        "type": "object"
+      },
+      "TaskRecipientSetup": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "authentication_disabled",
+                  "unsupported_identity_backend"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "recipients": {
+            "items": {
+              "$ref": "#/components/schemas/TaskRecipient"
+            },
+            "title": "Recipients",
+            "type": "array"
+          }
+        },
+        "required": [
+          "enabled",
+          "reason",
+          "recipients"
+        ],
+        "title": "TaskRecipientSetup",
+        "type": "object"
+      },
+      "TaskResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "answer": {
+            "anyOf": [
+              {
+                "maxLength": 6000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "assistance": {
+            "default": "unknown",
+            "enum": [
+              "independent",
+              "assisted",
+              "unknown"
+            ],
+            "title": "Assistance",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "response_status": {
+            "enum": [
+              "unanswered",
+              "answered",
+              "needs_help"
+            ],
+            "title": "Response Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "response_status"
+        ],
+        "title": "TaskResponse",
+        "type": "object"
+      },
+      "TeacherTaskProgress": {
+        "additionalProperties": false,
+        "properties": {
+          "current_question_index": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Current Question Index",
+            "type": "integer"
+          },
+          "revision": {
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "saved_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Saved At"
+          }
+        },
+        "required": [
+          "revision",
+          "current_question_index"
+        ],
+        "title": "TeacherTaskProgress",
+        "type": "object"
+      },
+      "TeacherTaskSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "followup_revision": {
+            "minimum": 1.0,
+            "title": "Followup Revision",
+            "type": "integer"
+          },
+          "issued_at": {
+            "minimum": 0.0,
+            "title": "Issued At",
+            "type": "number"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/TeacherTaskProgress"
+          },
+          "recipient_user_id": {
+            "title": "Recipient User Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "in_progress",
+              "submitted",
+              "revoked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_revision": {
+            "minimum": 1.0,
+            "title": "Task Revision",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "minimum": 0.0,
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "task_id",
+          "task_revision",
+          "title",
+          "recipient_user_id",
+          "followup_id",
+          "followup_revision",
+          "status",
+          "issued_at",
+          "updated_at",
+          "progress"
+        ],
+        "title": "TeacherTaskSummary",
+        "type": "object"
+      },
+      "TeacherTaskView": {
+        "additionalProperties": false,
+        "properties": {
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "followup_revision": {
+            "minimum": 1.0,
+            "title": "Followup Revision",
+            "type": "integer"
+          },
+          "instructions": {
+            "title": "Instructions",
+            "type": "string"
+          },
+          "issued_at": {
+            "minimum": 0.0,
+            "title": "Issued At",
+            "type": "number"
+          },
+          "issued_by_user_id": {
+            "title": "Issued By User Id",
+            "type": "string"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/TeacherTaskProgress"
+          },
+          "recipient_user_id": {
+            "title": "Recipient User Id",
+            "type": "string"
+          },
+          "revoke_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoke Reason"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "source_snapshot": {
+            "$ref": "#/components/schemas/SavedFollowup"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "in_progress",
+              "submitted",
+              "revoked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "submission": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StudentSubmission"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_revision": {
+            "minimum": 1.0,
+            "title": "Task Revision",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "minimum": 0.0,
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "task_id",
+          "task_revision",
+          "title",
+          "recipient_user_id",
+          "followup_id",
+          "followup_revision",
+          "status",
+          "issued_at",
+          "updated_at",
+          "progress",
+          "instructions",
+          "source_snapshot",
+          "submission",
+          "revoke_reason",
+          "issued_by_user_id"
+        ],
+        "title": "TeacherTaskView",
         "type": "object"
       },
       "TeachingPriority": {
@@ -66006,6 +66760,357 @@
         ]
       }
     },
+    "/api/student-tasks": {
+      "get": {
+        "operationId": "list_student_tasks_api_student_tasks_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "default": "active",
+              "enum": [
+                "active",
+                "history"
+              ],
+              "title": "State",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StudentTaskSummary"
+                  },
+                  "title": "Response List Student Tasks Api Student Tasks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Student Tasks",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}": {
+      "get": {
+        "operationId": "get_student_task_api_student_tasks__task_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentTaskView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Student Task",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}/progress": {
+      "put": {
+        "operationId": "save_student_task_progress_api_student_tasks__task_id__progress_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveTaskProgressRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentTaskView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Student Task Progress",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}/submit": {
+      "post": {
+        "operationId": "submit_student_task_api_student_tasks__task_id__submit_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentTaskView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Submit Student Task",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
     "/api/subagents/backends/options": {
       "get": {
         "description": "Synced model + reasoning-effort options per backend (settings page sync).",
@@ -70131,6 +71236,413 @@
           }
         },
         "summary": "Get Teaching Student Case Timeline",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks": {
+      "get": {
+        "operationId": "list_teaching_student_tasks_api_teaching_analysis_student_tasks_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "followup_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Followup Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TeacherTaskSummary"
+                  },
+                  "title": "Response List Teaching Student Tasks Api Teaching Analysis Student Tasks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Student Tasks",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "issue_teaching_student_task_api_teaching_analysis_student_tasks_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherTaskView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Issue Teaching Student Task",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/recipients": {
+      "get": {
+        "operationId": "teaching_task_recipients_api_teaching_analysis_student_tasks_recipients_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRecipientSetup"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Teaching Task Recipients",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/{task_id}": {
+      "get": {
+        "operationId": "get_teaching_student_task_api_teaching_analysis_student_tasks__task_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherTaskView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Student Task",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/{task_id}/revoke": {
+      "post": {
+        "operationId": "revoke_teaching_student_task_api_teaching_analysis_student_tasks__task_id__revoke_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherTaskView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Revoke Teaching Student Task",
         "tags": [
           "teaching-analysis"
         ]

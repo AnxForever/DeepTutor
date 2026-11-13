@@ -1,6 +1,7 @@
 import { apiFetch, apiUrl } from '@/lib/api'
 import { invalidateClientCache, withClientCache } from '@/lib/client-cache'
 import { notifySessionsChanged } from '@/lib/session-events'
+import { fetchAuthStatus } from '@/lib/auth'
 
 export interface WorkspaceResources {
   skills: string[] | null
@@ -69,7 +70,9 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   return payload as T
 }
 
-export function listWorkspaces(force = false): Promise<ChatWorkspaceRegistration[]> {
+export async function listWorkspaces(force = false): Promise<ChatWorkspaceRegistration[]> {
+  const auth = await fetchAuthStatus()
+  if (!auth || (auth.enabled && (!auth.authenticated || auth.learning_policy))) return []
   return withClientCache(
     'workspaces:list',
     async () => {

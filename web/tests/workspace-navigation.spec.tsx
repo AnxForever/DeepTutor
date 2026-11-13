@@ -15,6 +15,7 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/lib/workspaces-api', () => ({
   listWorkspaces: () => Promise.resolve(['first', 'second'].map(workspace_id => ({ workspace_id, kind: 'workspace' }))),
 }))
+vi.mock('@/lib/auth', async original => ({ ...(await original<typeof import('@/lib/auth')>()), fetchAuthStatus: async () => ({ enabled: false, authenticated: true, role: 'admin', user_id: 'local-admin' }) }))
 
 it('waits for draft persistence and uses client navigation for cross-workspace links', async () => {
   window.history.replaceState(null, '', '/chat?dt_workspace=first')

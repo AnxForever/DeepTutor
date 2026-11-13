@@ -9,16 +9,18 @@ import {
   inheritLoginHash,
   normalizeInternalReturnPath,
 } from "@/shared/auth/return-url";
+import { defaultAccountHome } from '@/lib/student-task-access';
+import type { AuthStatus } from '@/lib/auth';
 
 function LoginPageContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = normalizeInternalReturnPath(searchParams.get("next"));
+  const next = searchParams.get('next') === null ? null : normalizeInternalReturnPath(searchParams.get("next"));
   const resolvedNext = useCallback(
-    () =>
+    (status?: AuthStatus | null) =>
       inheritLoginHash(
-        next,
+        next ?? (status ? defaultAccountHome(status) : '/'),
         typeof window === "undefined" ? "" : window.location.hash,
       ),
     [next],
@@ -35,7 +37,7 @@ function LoginPageContent() {
     // If already authenticated, skip login
     fetchAuthStatus().then((status) => {
       if (status?.authenticated) {
-        router.replace(resolvedNext());
+        router.replace(resolvedNext(status));
         return;
       }
       // No users registered yet — send straight to the registration page
@@ -53,10 +55,11 @@ function LoginPageContent() {
     const result = await login(username, password);
 
     if (result.ok) {
+      const destination = resolvedNext(await fetchAuthStatus());
       // A password an admin assigned is temporary by definition — send the
       // owner straight to the form rather than letting them settle in with it.
       router.replace(
-        result.mustChangePassword ? "/profile?change=1" : resolvedNext(),
+        result.mustChangePassword ? `/profile?change=1&next=${encodeURIComponent(destination)}` : destination,
       );
     } else {
       setError(result.error ?? t("Login failed"));

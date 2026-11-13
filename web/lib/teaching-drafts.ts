@@ -19,10 +19,10 @@ export class TeachingDraftConflict extends Error {
 }
 type StoredDraft = TeachingDraftRecord & { deleted?: boolean }
 
-async function database(): Promise<IDBDatabase> {
+async function database(databaseName: string): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === 'undefined') { reject(new Error('Draft storage unavailable')); return }
-    const request = indexedDB.open('deeptutor-teaching-drafts', 1)
+    const request = indexedDB.open(databaseName, 1)
     request.onupgradeneeded = () => {
       const store = request.result.createObjectStore('drafts')
       store.createIndex('scope', ['accountId', 'workspaceId'])
@@ -33,8 +33,8 @@ async function database(): Promise<IDBDatabase> {
   })
 }
 
-async function mutate(scope: TeachingDraftScope, slot: string, expected: { revision: number; exists: boolean }, value?: unknown): Promise<number> {
-  const db = await database()
+async function mutate(databaseName: string, scope: TeachingDraftScope, slot: string, expected: { revision: number; exists: boolean }, value?: unknown): Promise<number> {
+  const db = await database(databaseName)
   try {
     return await new Promise<number>((resolve, reject) => {
       const tx = db.transaction('drafts', 'readwrite')
@@ -58,7 +58,7 @@ async function mutate(scope: TeachingDraftScope, slot: string, expected: { revis
 }
 
 /** Each browser window tracks the versions it has actually read or committed. */
-export function createTeachingDraftRepository(): TeachingDraftRepository {
+export function createTeachingDraftRepository(databaseName = 'deeptutor-teaching-drafts'): TeachingDraftRepository {
   const queues = new Map<string, Promise<void>>()
   const epochs = new Map<string, number>()
   const seen = new Map<string, { revision: number; exists: boolean }>()
@@ -72,7 +72,7 @@ export function createTeachingDraftRepository(): TeachingDraftRepository {
   async read(scope) {
     const captured = { ...scope }
     await Promise.allSettled(Array.from(queues).filter(([key]) => { const parts = JSON.parse(key) as DraftKey; return parts[0] === captured.accountId && parts[1] === captured.workspaceId }).map(([, operation]) => operation))
-    const db = await database()
+    const db = await database(databaseName)
     try {
       return await new Promise((resolve, reject) => {
         const tx = db.transaction('drafts', 'readonly')
@@ -95,7 +95,7 @@ export function createTeachingDraftRepository(): TeachingDraftRepository {
     const snapshot: unknown = JSON.parse(JSON.stringify(value))
     return enqueue(key, async () => {
       if ((epochs.get(key) ?? 0) !== epoch) return
-      const revision = await mutate(captured, slot, seen.get(key) ?? { revision: 0, exists: false }, snapshot)
+      const revision = await mutate(databaseName, captured, slot, seen.get(key) ?? { revision: 0, exists: false }, snapshot)
       seen.set(key, { revision, exists: true })
     })
   },
@@ -103,7 +103,7 @@ export function createTeachingDraftRepository(): TeachingDraftRepository {
     const captured = { ...scope }
     const key = JSON.stringify(keyOf(scope, slot))
     epochs.set(key, (epochs.get(key) ?? 0) + 1)
-    return enqueue(key, async () => { seen.set(key, { revision: await mutate(captured, slot, seen.get(key) ?? { revision: 0, exists: false }), exists: true }) })
+    return enqueue(key, async () => { seen.set(key, { revision: await mutate(databaseName, captured, slot, seen.get(key) ?? { revision: 0, exists: false }), exists: true }) })
   },
   }
 }

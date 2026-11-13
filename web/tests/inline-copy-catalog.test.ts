@@ -23,6 +23,9 @@ const LITERAL_EXCEPTIONS = new Set([
   'components/settings/VoicePreviewPanel.tsx',
   // Default name stored with a new model entry.
   'features/settings/store/SettingsStore.tsx',
+  // Authored synthetic worksheet content and supported import headers,
+  // not interface labels or a translation of an actual student's answer.
+  'components/learning/teaching-analysis/sample.ts',
 ])
 // Translator helpers that take a Chinese and an English argument.
 const PAIR_HELPERS = new Set(['tr', 'text'])

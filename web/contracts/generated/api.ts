@@ -10468,6 +10468,74 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/student-tasks": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Student Tasks */
+    readonly get: operations["list_student_tasks_api_student_tasks_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/student-tasks/{task_id}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Student Task */
+    readonly get: operations["get_student_task_api_student_tasks__task_id__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/student-tasks/{task_id}/progress": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    /** Save Student Task Progress */
+    readonly put: operations["save_student_task_progress_api_student_tasks__task_id__progress_put"];
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/student-tasks/{task_id}/submit": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Submit Student Task */
+    readonly post: operations["submit_student_task_api_student_tasks__task_id__submit_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/subagents/backends/{kind}/sync": {
     readonly parameters: {
       readonly query?: never;
@@ -11310,6 +11378,75 @@ export interface paths {
     };
     /** Get Teaching Student Case Timeline */
     readonly get: operations["get_teaching_student_case_timeline_api_teaching_analysis_student_cases__case_id__timeline_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Student Tasks */
+    readonly get: operations["list_teaching_student_tasks_api_teaching_analysis_student_tasks_get"];
+    readonly put?: never;
+    /** Issue Teaching Student Task */
+    readonly post: operations["issue_teaching_student_task_api_teaching_analysis_student_tasks_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/{task_id}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Student Task */
+    readonly get: operations["get_teaching_student_task_api_teaching_analysis_student_tasks__task_id__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/{task_id}/revoke": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Revoke Teaching Student Task */
+    readonly post: operations["revoke_teaching_student_task_api_teaching_analysis_student_tasks__task_id__revoke_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/recipients": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Teaching Task Recipients */
+    readonly get: operations["teaching_task_recipients_api_teaching_analysis_student_tasks_recipients_get"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
@@ -15151,6 +15288,30 @@ export interface components {
        */
       readonly public_base_url: string;
     };
+    /** IssueTaskRequest */
+    readonly IssueTaskRequest: {
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Followup Revision */
+      readonly followup_revision: number;
+      /**
+       * Instructions
+       * @default
+       */
+      readonly instructions: string;
+      /** Recipient User Id */
+      readonly recipient_user_id: string;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Title */
+      readonly title: string;
+    };
     /** ItemReview */
     readonly ItemReview: {
       /** Evidence */
@@ -17555,6 +17716,13 @@ export interface components {
           }[]
         | null;
     };
+    /** RevokeTaskRequest */
+    readonly RevokeTaskRequest: {
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /** Reason */
+      readonly reason: string;
+    };
     /** RoundSummaryRequest */
     readonly RoundSummaryRequest: {
       /** Partner Id */
@@ -18001,6 +18169,20 @@ export interface components {
       /** Subject */
       readonly subject?: string | null;
     };
+    /** SaveTaskProgressRequest */
+    readonly SaveTaskProgressRequest: {
+      /** Current Question Index */
+      readonly current_question_index: number;
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+      /** Responses */
+      readonly responses: readonly components["schemas"]["TaskResponse"][];
+    };
     /**
      * ServerPayload
      * @description A server definition plus the credential values to store beside it.
@@ -18364,6 +18546,89 @@ export interface components {
       /** Source States */
       readonly source_states: readonly components["schemas"]["CaseSourceState"][];
     };
+    /** StudentSubmission */
+    readonly StudentSubmission: {
+      /** Responses */
+      readonly responses: readonly components["schemas"]["TaskResponse"][];
+      /**
+       * Submission Id
+       * Format: uuid
+       */
+      readonly submission_id: string;
+      /** Submitted At */
+      readonly submitted_at: number;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+    };
+    /** StudentTaskProgress */
+    readonly StudentTaskProgress: {
+      /** Current Question Index */
+      readonly current_question_index: number;
+      /** Responses */
+      readonly responses: readonly components["schemas"]["TaskResponse"][];
+      /** Revision */
+      readonly revision: number;
+      /** Saved At */
+      readonly saved_at?: number | null;
+    };
+    /** StudentTaskQuestion */
+    readonly StudentTaskQuestion: {
+      /** Question */
+      readonly question: string;
+      /** Question Id */
+      readonly question_id: string;
+    };
+    /** StudentTaskSummary */
+    readonly StudentTaskSummary: {
+      /** Issued At */
+      readonly issued_at: number;
+      /** Question Count */
+      readonly question_count: number;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "pending" | "in_progress" | "submitted" | "revoked";
+      /** Submitted At */
+      readonly submitted_at?: number | null;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Title */
+      readonly title: string;
+      /** Updated At */
+      readonly updated_at: number;
+    };
+    /** StudentTaskView */
+    readonly StudentTaskView: {
+      /** Instructions */
+      readonly instructions: string;
+      /** Issued At */
+      readonly issued_at: number;
+      readonly progress: components["schemas"]["StudentTaskProgress"];
+      /** Questions */
+      readonly questions: readonly components["schemas"]["StudentTaskQuestion"][];
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "pending" | "in_progress" | "submitted" | "revoked";
+      readonly submission: components["schemas"]["StudentSubmission"] | null;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Task Revision */
+      readonly task_revision: number;
+      /** Title */
+      readonly title: string;
+    };
     /** SubagentMessageRequest */
     readonly SubagentMessageRequest: {
       /**
@@ -18406,6 +18671,18 @@ export interface components {
       readonly turn: {
         readonly [key: string]: unknown;
       };
+    };
+    /** SubmitTaskRequest */
+    readonly SubmitTaskRequest: {
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /** Responses */
+      readonly responses: readonly components["schemas"]["TaskResponse"][];
+      /**
+       * Submission Id
+       * Format: uuid
+       */
+      readonly submission_id: string;
     };
     /** SupplementRequest */
     readonly SupplementRequest: {
@@ -18571,6 +18848,132 @@ export interface components {
       readonly updated_at: string;
       /** Workspace Id */
       readonly workspace_id?: string | null;
+    };
+    /** TaskRecipient */
+    readonly TaskRecipient: {
+      /** Can Receive */
+      readonly can_receive: boolean;
+      /** Reason */
+      readonly reason: string | null;
+      /** User Id */
+      readonly user_id: string;
+      /** Username */
+      readonly username: string;
+    };
+    /** TaskRecipientSetup */
+    readonly TaskRecipientSetup: {
+      /** Enabled */
+      readonly enabled: boolean;
+      /** Reason */
+      readonly reason:
+        ("authentication_disabled" | "unsupported_identity_backend") | null;
+      /** Recipients */
+      readonly recipients: readonly components["schemas"]["TaskRecipient"][];
+    };
+    /** TaskResponse */
+    readonly TaskResponse: {
+      /** Answer */
+      readonly answer?: string | null;
+      /**
+       * Assistance
+       * @default unknown
+       * @enum {string}
+       */
+      readonly assistance: "independent" | "assisted" | "unknown";
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Response Status
+       * @enum {string}
+       */
+      readonly response_status: "unanswered" | "answered" | "needs_help";
+    };
+    /** TeacherTaskProgress */
+    readonly TeacherTaskProgress: {
+      /** Current Question Index */
+      readonly current_question_index: number;
+      /** Revision */
+      readonly revision: number;
+      /** Saved At */
+      readonly saved_at?: number | null;
+    };
+    /** TeacherTaskSummary */
+    readonly TeacherTaskSummary: {
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Followup Revision */
+      readonly followup_revision: number;
+      /** Issued At */
+      readonly issued_at: number;
+      readonly progress: components["schemas"]["TeacherTaskProgress"];
+      /** Recipient User Id */
+      readonly recipient_user_id: string;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "pending" | "in_progress" | "submitted" | "revoked";
+      /** Submitted At */
+      readonly submitted_at?: number | null;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Task Revision */
+      readonly task_revision: number;
+      /** Title */
+      readonly title: string;
+      /** Updated At */
+      readonly updated_at: number;
+    };
+    /** TeacherTaskView */
+    readonly TeacherTaskView: {
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Followup Revision */
+      readonly followup_revision: number;
+      /** Instructions */
+      readonly instructions: string;
+      /** Issued At */
+      readonly issued_at: number;
+      /** Issued By User Id */
+      readonly issued_by_user_id: string;
+      readonly progress: components["schemas"]["TeacherTaskProgress"];
+      /** Recipient User Id */
+      readonly recipient_user_id: string;
+      /** Revoke Reason */
+      readonly revoke_reason: string | null;
+      /** Revoked At */
+      readonly revoked_at?: number | null;
+      readonly source_snapshot: components["schemas"]["SavedFollowup"];
+      /** Started At */
+      readonly started_at?: number | null;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "pending" | "in_progress" | "submitted" | "revoked";
+      readonly submission: components["schemas"]["StudentSubmission"] | null;
+      /** Submitted At */
+      readonly submitted_at?: number | null;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Task Revision */
+      readonly task_revision: number;
+      /** Title */
+      readonly title: string;
+      /** Updated At */
+      readonly updated_at: number;
     };
     /** TeachingPriority */
     readonly TeachingPriority: {
@@ -20303,6 +20706,7 @@ export type SchemaInstallSkillRequest =
   components["schemas"]["InstallSkillRequest"];
 export type SchemaInvidiousSettings =
   components["schemas"]["InvidiousSettings"];
+export type SchemaIssueTaskRequest = components["schemas"]["IssueTaskRequest"];
 export type SchemaItemReview = components["schemas"]["ItemReview"];
 export type SchemaKiwixConnectionRequest =
   components["schemas"]["KiwixConnectionRequest"];
@@ -20502,6 +20906,8 @@ export type SchemaReviewStrategyRequest =
   components["schemas"]["ReviewStrategyRequest"];
 export type SchemaReviewSuggestionRequest =
   components["schemas"]["ReviewSuggestionRequest"];
+export type SchemaRevokeTaskRequest =
+  components["schemas"]["RevokeTaskRequest"];
 export type SchemaRoundSummaryRequest =
   components["schemas"]["RoundSummaryRequest"];
 export type SchemaRubricSnapshot = components["schemas"]["RubricSnapshot"];
@@ -20523,6 +20929,8 @@ export type SchemaSaveRubricRequest =
   components["schemas"]["SaveRubricRequest"];
 export type SchemaSaveStudentCaseRequest =
   components["schemas"]["SaveStudentCaseRequest"];
+export type SchemaSaveTaskProgressRequest =
+  components["schemas"]["SaveTaskProgressRequest"];
 export type SchemaServerPayload = components["schemas"]["ServerPayload"];
 export type SchemaServicePreviewPayload =
   components["schemas"]["ServicePreviewPayload"];
@@ -20574,6 +20982,15 @@ export type SchemaStudentCaseSummary =
   components["schemas"]["StudentCaseSummary"];
 export type SchemaStudentCaseTimeline =
   components["schemas"]["StudentCaseTimeline"];
+export type SchemaStudentSubmission =
+  components["schemas"]["StudentSubmission"];
+export type SchemaStudentTaskProgress =
+  components["schemas"]["StudentTaskProgress"];
+export type SchemaStudentTaskQuestion =
+  components["schemas"]["StudentTaskQuestion"];
+export type SchemaStudentTaskSummary =
+  components["schemas"]["StudentTaskSummary"];
+export type SchemaStudentTaskView = components["schemas"]["StudentTaskView"];
 export type SchemaSubagentMessageRequest =
   components["schemas"]["SubagentMessageRequest"];
 export type SchemaSubagentSettingsPayload =
@@ -20582,6 +20999,8 @@ export type SchemaSubmissionReplacementRequest =
   components["schemas"]["SubmissionReplacementRequest"];
 export type SchemaSubmissionReplacementResponse =
   components["schemas"]["SubmissionReplacementResponse"];
+export type SchemaSubmitTaskRequest =
+  components["schemas"]["SubmitTaskRequest"];
 export type SchemaSupplementRequest =
   components["schemas"]["SupplementRequest"];
 export type SchemaSupportedFileTypesInfo =
@@ -20594,6 +21013,15 @@ export type SchemaSyncRequest = components["schemas"]["SyncRequest"];
 export type SchemaSyncResponse = components["schemas"]["SyncResponse"];
 export type SchemaTaskBoard = components["schemas"]["TaskBoard"];
 export type SchemaTaskCard = components["schemas"]["TaskCard"];
+export type SchemaTaskRecipient = components["schemas"]["TaskRecipient"];
+export type SchemaTaskRecipientSetup =
+  components["schemas"]["TaskRecipientSetup"];
+export type SchemaTaskResponse = components["schemas"]["TaskResponse"];
+export type SchemaTeacherTaskProgress =
+  components["schemas"]["TeacherTaskProgress"];
+export type SchemaTeacherTaskSummary =
+  components["schemas"]["TeacherTaskSummary"];
+export type SchemaTeacherTaskView = components["schemas"]["TeacherTaskView"];
 export type SchemaTeachingPriority = components["schemas"]["TeachingPriority"];
 export type SchemaTestResponse = components["schemas"]["TestResponse"];
 export type SchemaTextPositionSelectorPayload =
@@ -44016,6 +44444,156 @@ export interface operations {
       };
     };
   };
+  readonly list_student_tasks_api_student_tasks_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+        readonly offset?: number;
+        readonly state?: "active" | "history";
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["StudentTaskSummary"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_student_task_api_student_tasks__task_id__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["StudentTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_student_task_progress_api_student_tasks__task_id__progress_put: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveTaskProgressRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["StudentTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly submit_student_task_api_student_tasks__task_id__submit_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SubmitTaskRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["StudentTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   readonly sync_backend_api_subagents_backends__kind__sync_post: {
     readonly parameters: {
       readonly query?: never;
@@ -45913,6 +46491,187 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["StudentCaseTimeline"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_student_tasks_api_teaching_analysis_student_tasks_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly followup_id?: string | null;
+        readonly limit?: number;
+        readonly offset?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["TeacherTaskSummary"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly issue_teaching_student_task_api_teaching_analysis_student_tasks_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["IssueTaskRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TeacherTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_student_task_api_teaching_analysis_student_tasks__task_id__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TeacherTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly revoke_teaching_student_task_api_teaching_analysis_student_tasks__task_id__revoke_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["RevokeTaskRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TeacherTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly teaching_task_recipients_api_teaching_analysis_student_tasks_recipients_get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskRecipientSetup"];
         };
       };
       /** @description Validation Error */

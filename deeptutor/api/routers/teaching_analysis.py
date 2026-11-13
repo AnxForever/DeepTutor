@@ -17,6 +17,7 @@ from deeptutor.api.routers.teaching_cases import router as cases_router
 from deeptutor.api.routers.teaching_documents import router as documents_router
 from deeptutor.api.routers.teaching_followups import router as followups_router
 from deeptutor.api.routers.teaching_rubrics import router as rubrics_router
+from deeptutor.api.routers.teaching_student_tasks import router as student_tasks_router
 from deeptutor.api.routers.teaching_validation import TeachingAPIRoute
 from deeptutor.api.routers.teaching_worksheets import router as worksheets_router
 from deeptutor.learning.teaching_analysis.document_proofs import (
@@ -53,6 +54,7 @@ router.include_router(followups_router)
 router.include_router(documents_router)
 router.include_router(worksheets_router)
 router.include_router(cases_router)
+router.include_router(student_tasks_router)
 
 
 class _ReportData(BaseModel):

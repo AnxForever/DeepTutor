@@ -23,6 +23,7 @@ import { navigateTask } from '@/lib/workspace-scope'
 import { NavigationRow, OverviewRow, Section } from './NavigationPrimitives'
 import { SHORTCUTS } from '@/lib/shortcuts'
 import type { LearningSessions } from './LearningNavigation'
+import { studentTasksRoute } from '@/lib/student-tasks-api'
 
 // Feature libraries load when their category opens, not in every workspace.
 const LearningNavigation = dynamic(() =>
@@ -62,7 +63,7 @@ export function useCategoryNavigation() {
   const { learningPolicy } = useAuthStatus()
   const categories = CATEGORIES.filter(item =>
     navVisibleUnderPolicy(item.href, learningPolicy?.allowedSurfaces ?? null)
-  )
+  ).map(item => ({ ...item, href: item.id === 'learning' && learningPolicy?.allowedSurfaces.includes('tasks') && learningPolicy.allowedSurfaces.every(surface => surface === 'tasks') ? studentTasksRoute() : item.href }))
   const [visited, setVisited] = useState<NavigationCategory[]>([])
   const [selection, setSelection] = useState<{
     pathname: string
@@ -100,7 +101,7 @@ export function CategoryTabs({
   const id = useId()
   const reduced = useReducedMotion()
   const [peek, setPeek] = useState(false)
-  const select = (category: (typeof CATEGORIES)[number]) => {
+  const select = (category: Navigation['categories'][number]) => {
     nav.select(category.id)
     if (collapsed) navigateTask(category.href, router.push)
   }
@@ -109,7 +110,7 @@ export function CategoryTabs({
   // The account's shelves fold into a small pair while the workspace is in
   // use, and open under the pointer, under focus, or once one is selected.
   const tucked = !collapsed && !peek && !account.some(item => item.id === nav.category)
-  const tab = (item: (typeof CATEGORIES)[number]) => {
+  const tab = (item: Navigation['categories'][number]) => {
     const index = nav.categories.indexOf(item)
     const active = nav.category === item.id
     return (

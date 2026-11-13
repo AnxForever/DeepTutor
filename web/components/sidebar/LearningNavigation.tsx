@@ -5,7 +5,7 @@ import { RecordGroups, RecordHeader, RecordTime, useRecordView } from './RecordL
 import { useLayoutEffect, useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { ChevronRight, LayoutGrid, MessageCircle, Plus } from 'lucide-react'
+import { BookOpenCheck, ChevronRight, LayoutGrid, MessageCircle, Plus } from 'lucide-react'
 import { learningSurface } from '@/components/learning/surfaces'
 import { allLearningActivity, fileLearningSessions, type LearningActivity } from '@/lib/learning-dashboard'
 import { isNavigationTargetActive } from '@/lib/navigation'
@@ -15,6 +15,9 @@ import { browserStorage } from '@/shared/storage'
 import { displaySessionTitle } from '@/lib/session-title'
 import type { SessionSummary } from '@/lib/session-api'
 import { TeachingAnalysisEntry } from '@/components/learning/teaching-analysis/TeachingAnalysisEntry'
+import { useAuthStatus } from '@/hooks/useAuthStatus'
+import { studentTaskAccess } from '@/lib/student-task-access'
+import { studentTasksRoute } from '@/lib/student-tasks-api'
 
 const OPEN_KEY = 'deeptutor.navigation.learning.open'
 
@@ -50,6 +53,13 @@ export function LearningNavigation({
   sessions?: LearningSessions
   active?: boolean
 }) {
+  const auth = useAuthStatus()
+  const { t } = useTranslation()
+  const tasks = studentTaskAccess(auth)
+  if (tasks && auth.learningPolicy?.allowedSurfaces.every(surface => surface === 'tasks')) return <OverviewRow href={studentTasksRoute()} label={t('studentTasks.title')} icon={BookOpenCheck} />
+  return <LearningRecordsNavigation sessions={sessions} active={active && !auth.loading && auth.statusAvailable} tasks={tasks} />
+}
+function LearningRecordsNavigation({ sessions, active, tasks }: { sessions?: LearningSessions; active: boolean; tasks: boolean }) {
   const { t } = useTranslation()
   const { sources, loading, failed, retry } = useLearningIndex(active)
   const view = useRecordView('deeptutor.navigation.learning.sort')
@@ -89,6 +99,7 @@ export function LearningNavigation({
     })
   return (
     <div className="dt-learning-navigation">
+      {tasks && <OverviewRow href={studentTasksRoute()} label={t('studentTasks.title')} icon={BookOpenCheck} />}
       <OverviewRow href="/learning/new" label={t('navigation.createLearning')} icon={Plus} />
       <OverviewRow
         href="/learning"

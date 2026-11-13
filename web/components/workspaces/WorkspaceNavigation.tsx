@@ -3,6 +3,7 @@
 import { Suspense, useEffect } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { listWorkspaces } from '@/lib/workspaces-api'
+import { fetchAuthStatus } from '@/lib/auth'
 import {
   activeWorkspaceId,
   registerWorkspaceNavigator,
@@ -33,9 +34,14 @@ function ScopeCanonicalizer() {
     const remembered = activeWorkspaceId()
     if (!remembered) return
     let alive = true
-    listWorkspaces()
+    void fetchAuthStatus().then(auth => {
+      // An absent private registry is not proof that a learner's workspace
+      // disappeared. Keep the current scope instead of inventing a fallback.
+      if (!alive || !auth || (auth.enabled && (!auth.authenticated || auth.learning_policy))) return null
+      return listWorkspaces()
+    })
       .then(rows => {
-        if (!alive || rows.some(row => row.workspace_id === remembered && row.kind === 'workspace')) return
+        if (!alive || !rows || rows.some(row => row.workspace_id === remembered && row.kind === 'workspace')) return
         rememberWorkspaceId('')
         void selectWorkspace('', `/${window.location.pathname.split('/')[1] || 'chat'}`)
       })

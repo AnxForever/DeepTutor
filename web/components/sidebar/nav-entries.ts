@@ -59,8 +59,9 @@ export const PRIMARY_NAV: NavEntry[] = [
     label: 'Personalized Learning',
     icon: GraduationCap,
     tooltipKey: 'One tutor, your own way to learn.',
-    surfaces: ['reading', 'chat', 'books'],
+    surfaces: ['reading', 'chat', 'books', 'tasks'],
   },
+  { href: '/learning/tasks', label: 'studentTasks.title', icon: ListTodo, surfaces: ['tasks'] },
   { href: '/space', label: 'Learning Space', icon: LayoutGrid, tooltipKey: 'Space tooltip' },
   {
     href: '/calendar', label: 'Calendar', icon: CalendarDays, surfaces: ['chat'],
