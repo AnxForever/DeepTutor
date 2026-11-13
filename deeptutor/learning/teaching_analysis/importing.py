@@ -10,7 +10,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from .models import MAX_ITEMS, AssignmentInput
+from .models import MAX_ITEMS, AssignmentInput, AssignmentItem
 
 MAX_IMPORT_BYTES = 1_048_576
 
@@ -85,7 +85,7 @@ def _parse_json(text: str) -> AssignmentInput:
     if isinstance(payload, list):
         # A bare question array has no assignment metadata. The teacher fills
         # it in during preview, before invoking analysis.
-        items = []
+        items: list[dict[str, Any]] = []
         for index, item in enumerate(payload, start=1):
             if not isinstance(item, dict):
                 raise ValueError(f"JSON question {index} must be an object")
@@ -129,7 +129,7 @@ def _parse_table(text: str, *, delimiter: str) -> AssignmentInput:
         if "question" not in headers:
             raise ValueError("Row 1: question column is required")
         metadata = dict.fromkeys(_METADATA, "")
-        items = []
+        items: list[AssignmentItem] = []
         for cells in rows:
             row_number = rows.line_num
             if not cells or all(not cell.strip() for cell in cells):

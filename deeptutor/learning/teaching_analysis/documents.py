@@ -285,7 +285,7 @@ async def extract_assignment(document: LocatedDocument, language: str = "zh") ->
         items, provenance = [], []
         for index, item in enumerate(proposal.items, 1):
             question_id = f"Q{index}"
-            fields = {}
+            fields: dict[str, str] = {}
             locator_ids: set[str] = set()
             for field in item.fields:
                 fields[field.field] = _field_value(field.citations, blocks, order)
