@@ -51,6 +51,9 @@ installation before deciding to reinstall it.
 
 ### Storage, deployment and feature contracts
 
+- [Teacher assignment analysis](TEACHING_ANALYSIS.md) (fork feature): reviewed
+  input, evidence-linked reports, teacher confirmation and revision storage.
+  [Research and follow-up scope](TEACHING_ANALYSIS_RESEARCH.md) records its design sources.
 - [Data storage](DATA_STORAGE.md) and [workspaces](workspaces.md): runtime
   home, account/workspace scope, backups, resource assignment and migration.
 - [Server workspace picker](SERVER_WORKSPACE_PICKER.md): browsing allowed

@@ -14,6 +14,7 @@ import { useSidebarDrawer } from '@/components/layout/AppShell'
 import { browserStorage } from '@/shared/storage'
 import { displaySessionTitle } from '@/lib/session-title'
 import type { SessionSummary } from '@/lib/session-api'
+import { TeachingAnalysisEntry } from '@/components/learning/teaching-analysis/TeachingAnalysisEntry'
 
 const OPEN_KEY = 'deeptutor.navigation.learning.open'
 
@@ -94,6 +95,7 @@ export function LearningNavigation({
         label={t('navigation.allLearning')}
         icon={LayoutGrid}
       />
+      <TeachingAnalysisEntry compact />
       <RecordHeader
         title={t('navigation.learningRecords')}
         count={rows.length}

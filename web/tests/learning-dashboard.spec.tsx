@@ -6,6 +6,7 @@ import { LearningDashboard } from '@/components/learning/LearningDashboard'
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/learning', useRouter: () => ({ push: vi.fn() }), useSearchParams: () => new URLSearchParams() }))
 vi.mock('@/hooks/useAuthStatus', () => ({ useAuthStatus: () => ({ learningPolicy: null }) }))
+vi.mock('@/components/learning/teaching-analysis/TeachingAnalysisEntry', () => ({ TeachingAnalysisEntry: () => null }))
 
 const mock = vi.hoisted(() => ({
   books: vi.fn(),

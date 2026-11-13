@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const NEXT_OUTPUT_DIR = path.join(WEB_ROOT, ".next");
+const NEXT_OUTPUT_DIR = path.resolve(WEB_ROOT, process.env.DEEPTUTOR_NEXT_DIST_DIR || ".next");
 const BUILD_MANIFEST_PATH = path.join(NEXT_OUTPUT_DIR, "build-manifest.json");
 const NEXT_BIN = path.join(WEB_ROOT, "node_modules", "next", "dist", "bin", "next");
 

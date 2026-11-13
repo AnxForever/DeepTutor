@@ -15,6 +15,12 @@
     "deeptutor/capabilities/mastery",
     "deeptutor/learning",
     "deeptutor/api/routers/mastery_path.py",
+    "deeptutor/api/routers/teaching_analysis.py",
+    "deeptutor/api/routers/teaching_rubrics.py",
+    "deeptutor/api/routers/teaching_followups.py",
+    "deeptutor/api/routers/teaching_documents.py",
+    "deeptutor/api/routers/teaching_worksheets.py",
+    "deeptutor/api/routers/teaching_validation.py",
     "deeptutor/tools/mastery_nav.py",
     "deeptutor/tools/mastery_tool.py",
     "deeptutor/services/mastery_hints.py"
@@ -157,6 +163,17 @@
       "order": 602
     },
     {
+      "reference": "deeptutor.api.routers.teaching_analysis:router",
+      "options": {
+        "prefix": "/api/teaching-analysis",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "auth": "admin",
+      "order": 603
+    },
+    {
       "reference": "deeptutor.api.routers.mastery_path:ws_router",
       "options": {
         "prefix": "/ws",
@@ -171,7 +188,8 @@
   "commands": [],
   "navigation": [
     "/mastery",
-    "/learning/mastery"
+    "/learning/mastery",
+    "/learning/teaching-analysis"
   ],
   "services": [],
   "requirements": [],

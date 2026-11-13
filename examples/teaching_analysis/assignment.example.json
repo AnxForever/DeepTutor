@@ -1,0 +1,59 @@
+{
+  "student_ref": "synthetic-student-001",
+  "assignment_ref": "synthetic-assignment-001",
+  "subject": "数学",
+  "grade": "小学五年级",
+  "teacher_context": "请为下次个别辅导分析这份分数加法作业。",
+  "items": [
+    {
+      "question_id": "Q1",
+      "question": "计算 1/5 + 2/5，并写出过程。",
+      "student_answer": "3/5",
+      "answer_status": "present",
+      "student_work": "分母相同，分母不变，分子相加：(1+2)/5=3/5。",
+      "reference_answer": "3/5；同分母分数相加，分母不变，分子相加。",
+      "rubric": "考查计算过程和结果。",
+      "knowledge_points": [
+        "分数加法",
+        "同分母分数相加"
+      ],
+      "source_locator": "作业第1页第1题",
+      "transcription_status": "confirmed",
+      "assistance": "independent"
+    },
+    {
+      "question_id": "Q2",
+      "question": "计算 1/2 + 1/3，并写出过程。",
+      "student_answer": "2/5",
+      "answer_status": "present",
+      "student_work": "(1+1)/(2+3)=2/5。",
+      "reference_answer": "5/6；1/2=3/6，1/3=2/6，所以 3/6+2/6=5/6。",
+      "rubric": "考查计算过程和结果。",
+      "knowledge_points": [
+        "分数加法",
+        "异分母分数相加",
+        "通分"
+      ],
+      "source_locator": "作业第1页第2题",
+      "transcription_status": "confirmed",
+      "assistance": "independent"
+    },
+    {
+      "question_id": "Q3",
+      "question": "计算 2/3 + 1/4，并写出过程。",
+      "student_answer": "3/7",
+      "answer_status": "present",
+      "student_work": "(2+1)/(3+4)=3/7。",
+      "reference_answer": "11/12；2/3=8/12，1/4=3/12，所以 8/12+3/12=11/12。",
+      "rubric": "考查计算过程和结果。",
+      "knowledge_points": [
+        "分数加法",
+        "异分母分数相加",
+        "通分"
+      ],
+      "source_locator": "作业第1页第3题",
+      "transcription_status": "confirmed",
+      "assistance": "independent"
+    }
+  ]
+}

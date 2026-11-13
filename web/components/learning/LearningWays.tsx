@@ -12,6 +12,7 @@ import { ArrowUpRight, ArrowRight, Check, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 type LearningKind = LearningSurface['kind']
 import { LEARNING_SURFACES, type LearningSurface } from './surfaces'
+import { TeachingAnalysisEntry } from './teaching-analysis/TeachingAnalysisEntry'
 
 const FOCUSABLE = 'a[href], input:not([disabled]), select:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])'
 const tileClass = (accent: string) =>
@@ -107,6 +108,7 @@ export function LearningWays() {
             )
           })}
         </div>
+        <TeachingAnalysisEntry />
       </section>
       <AnimatePresence>
         {open && (

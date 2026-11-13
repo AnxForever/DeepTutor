@@ -6,6 +6,7 @@ vi.mock('next/navigation', () => ({ usePathname: () => '/learning', useSearchPar
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }) }))
 vi.mock('@/components/learning/LearningCreateMenu', () => ({ LearningCreateMenu: () => <button>Create learning</button> }))
 vi.mock('@/components/layout/AppShell', () => ({ useSidebarDrawer: () => null }))
+vi.mock('@/components/learning/teaching-analysis/TeachingAnalysisEntry', () => ({ TeachingAnalysisEntry: () => null }))
 const mastery = vi.hoisted(() => ({ topics: [] as unknown[] }))
 vi.mock('@/hooks/useLearningIndex', () => ({ useLearningIndex: () => ({
   loading: false, failed: [], retry: vi.fn(), sources: {

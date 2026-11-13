@@ -1,4 +1,4 @@
-import { CalendarDays } from 'lucide-react'
+import { CalendarDays, ClipboardCheck } from 'lucide-react'
 import { Columns3, LayoutGrid, MessageCircle, PenLine, Plus, type LucideIcon } from 'lucide-react'
 import {
   HomeShelfIcon,
@@ -16,6 +16,7 @@ import {
 import { LEARNING_SURFACES } from '@/components/learning/surfaces'
 import { categoryForPath } from '@/lib/navigation'
 import { navVisibleUnderPolicy } from './nav-entries'
+import { TEACHING_ANALYSIS_HOME } from '@/lib/teaching-analysis-api'
 
 export interface PageEntry {
   href: string
@@ -47,11 +48,13 @@ export function pageSections({
   zh,
   allowedSurfaces,
   isAvailable,
+  teachingAnalysisAvailable = false,
 }: {
   t: (key: string) => string
   zh: boolean
   allowedSurfaces: readonly string[] | null
   isAvailable: ((name: string) => boolean) | null
+  teachingAnalysisAvailable?: boolean
 }): PageSection[] {
   const surfaceAllowed = (kind: string) =>
     !allowedSurfaces || allowedSurfaces.includes(kind === 'mastery' || kind === 'practice' ? 'chat' : kind)
@@ -78,6 +81,7 @@ export function pageSections({
       pages: [
         { href: '/learning/new', label: t('navigation.createLearning'), icon: Plus },
         { href: '/learning', label: t('navigation.allLearning'), icon: LayoutGrid },
+        ...(teachingAnalysisAvailable ? [{ href: TEACHING_ANALYSIS_HOME, label: t('teaching.title'), icon: ClipboardCheck }] : []),
         ...LEARNING_SURFACES.filter(surface => surfaceAllowed(surface.kind)).map(surface => ({
           href: surface.href,
           label: t(surface.title),
@@ -152,7 +156,7 @@ function ownerOf(pathname: string, sections: PageSection[], workspaceOnly = fals
   return owner
 }
 
-const EVERY_PAGE = pageSections({ t: key => key, zh: false, allowedSurfaces: null, isAvailable: () => true })
+const EVERY_PAGE = pageSections({ t: key => key, zh: false, allowedSurfaces: null, isAvailable: () => true, teachingAnalysisAvailable: true })
 
 /**
  * Where a workspace switch lands: the same page, or the index page the

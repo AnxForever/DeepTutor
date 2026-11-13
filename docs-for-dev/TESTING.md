@@ -58,6 +58,10 @@ npm run i18n:check
 npm run contracts:check
 ```
 
+When checking an isolated production build, set `DEEPTUTOR_NEXT_DIST_DIR` to
+the same output directory for both `build` and `perf:check`. This avoids replacing
+the build used by a running development instance.
+
 `npm run check:fast` runs the deterministic checks above; `npm run check`
 adds the production build and route budgets. Use `npm run contracts:generate`
 after changing backend schemas, then inspect and commit the generated diff.

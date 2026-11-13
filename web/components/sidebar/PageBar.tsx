@@ -3,6 +3,8 @@
 import { usePathname } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useAuthStatus } from '@/hooks/useAuthStatus'
+import { useModules } from '@/hooks/useModules'
+import { TEACHING_ANALYSIS_HOME } from '@/lib/teaching-analysis-api'
 import { useDevice } from '@/hooks/useDevice'
 import { useCapabilityFilter } from '@/features/capabilities/useCapabilityCatalog'
 import { usePageSlotRef } from '@/components/layout/PageChrome'
@@ -11,13 +13,16 @@ import { locatePage, pageSections } from './page-sections'
 
 function useShelves() {
   const { t, i18n } = useTranslation()
-  const { learningPolicy } = useAuthStatus()
+  const auth = useAuthStatus()
+  const { learningPolicy } = auth
+  const inventory = useModules()
   const isAvailable = useCapabilityFilter()
   return pageSections({
     t,
     zh: (i18n?.language ?? '').startsWith('zh'),
     allowedSurfaces: learningPolicy?.allowedSurfaces ?? null,
     isAvailable,
+    teachingAnalysisAvailable: !auth.loading && auth.statusAvailable && (!auth.enabled || auth.isAdmin) && inventory.available(TEACHING_ANALYSIS_HOME),
   })
 }
 

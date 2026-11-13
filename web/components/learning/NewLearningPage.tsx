@@ -10,6 +10,7 @@ import { usePageCustomization } from '@/context/PageCustomizationContext'
 import { PageCustomizeButton } from '@/components/customization/PageCustomizeButton'
 import { navigateTask } from '@/lib/workspace-scope'
 import { LEARNING_SURFACES } from './surfaces'
+import { TeachingAnalysisEntry } from './teaching-analysis/TeachingAnalysisEntry'
 import {
   LearningShell,
   LearningSkeleton,
@@ -101,6 +102,7 @@ export default function NewLearningPage() {
           />
         )
       )}
+      {!loading && <TeachingAnalysisEntry />}
       {!loading && (
         <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
           {t('customize.learningFooter')}

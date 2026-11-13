@@ -646,6 +646,188 @@
         "title": "AssetSpec",
         "type": "object"
       },
+      "AssignmentInput": {
+        "additionalProperties": false,
+        "properties": {
+          "assignment_ref": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Assignment Ref",
+            "type": "string"
+          },
+          "document_provenance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DocumentProvenance"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grade": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Grade",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AssignmentItem"
+            },
+            "maxItems": 40,
+            "title": "Items",
+            "type": "array"
+          },
+          "rubric_template": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RubricSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "student_ref": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Student Ref",
+            "type": "string"
+          },
+          "subject": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Subject",
+            "type": "string"
+          },
+          "teacher_context": {
+            "default": "",
+            "maxLength": 6000,
+            "title": "Teacher Context",
+            "type": "string"
+          }
+        },
+        "title": "AssignmentInput",
+        "type": "object"
+      },
+      "AssignmentItem": {
+        "additionalProperties": false,
+        "properties": {
+          "answer_status": {
+            "default": "unknown",
+            "enum": [
+              "present",
+              "confirmed_blank",
+              "unknown"
+            ],
+            "title": "Answer Status",
+            "type": "string"
+          },
+          "assistance": {
+            "default": "unknown",
+            "enum": [
+              "independent",
+              "assisted",
+              "unknown"
+            ],
+            "title": "Assistance",
+            "type": "string"
+          },
+          "knowledge_points": {
+            "items": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Knowledge Points",
+            "type": "array"
+          },
+          "question": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "reference_answer": {
+            "anyOf": [
+              {
+                "maxLength": 6000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Answer"
+          },
+          "rubric": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rubric"
+          },
+          "source_locator": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Source Locator",
+            "type": "string"
+          },
+          "student_answer": {
+            "anyOf": [
+              {
+                "maxLength": 6000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Answer"
+          },
+          "student_work": {
+            "anyOf": [
+              {
+                "maxLength": 8000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Work"
+          },
+          "transcription_status": {
+            "default": "not_applicable",
+            "enum": [
+              "confirmed",
+              "uncertain",
+              "not_applicable"
+            ],
+            "title": "Transcription Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "question"
+        ],
+        "title": "AssignmentItem",
+        "type": "object"
+      },
       "AuditRequest": {
         "properties": {
           "budget": {
@@ -1112,6 +1294,34 @@
           "file"
         ],
         "title": "Body_preview_office_upload_api_file_preview_pdf_post",
+        "type": "object"
+      },
+      "Body_preview_teaching_assignment_api_teaching_analysis_preview_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_preview_teaching_assignment_api_teaching_analysis_preview_post",
+        "type": "object"
+      },
+      "Body_preview_teaching_document_api_teaching_analysis_documents_preview_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_preview_teaching_document_api_teaching_analysis_documents_preview_post",
         "type": "object"
       },
       "Body_reindex_knowledge_base_api_knowledge_bases__kb_name__reindex_post": {
@@ -4164,6 +4374,129 @@
         "title": "DoclingRemoteTest",
         "type": "object"
       },
+      "DocumentCitation": {
+        "additionalProperties": false,
+        "properties": {
+          "block_id": {
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "title": "Block Id",
+            "type": "string"
+          },
+          "quote": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Quote",
+            "type": "string"
+          }
+        },
+        "required": [
+          "block_id",
+          "quote"
+        ],
+        "title": "DocumentCitation",
+        "type": "object"
+      },
+      "DocumentExtractRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/LocatedDocument"
+          },
+          "document_token": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Document Token",
+            "type": "string"
+          },
+          "language": {
+            "default": "zh",
+            "enum": [
+              "en",
+              "zh"
+            ],
+            "title": "Language",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document",
+          "document_token"
+        ],
+        "title": "DocumentExtractRequest",
+        "type": "object"
+      },
+      "DocumentExtraction": {
+        "additionalProperties": false,
+        "properties": {
+          "assignment": {
+            "$ref": "#/components/schemas/AssignmentInput"
+          },
+          "document": {
+            "$ref": "#/components/schemas/LocatedDocument"
+          },
+          "provenance": {
+            "items": {
+              "$ref": "#/components/schemas/ExtractedField"
+            },
+            "maxItems": 200,
+            "title": "Provenance",
+            "type": "array"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 25,
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "assignment",
+          "document",
+          "provenance",
+          "warnings"
+        ],
+        "title": "DocumentExtraction",
+        "type": "object"
+      },
+      "DocumentFieldSource": {
+        "additionalProperties": false,
+        "properties": {
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentSourceCitation"
+            },
+            "maxItems": 6,
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          },
+          "field": {
+            "enum": [
+              "question",
+              "student_answer",
+              "student_work",
+              "reference_answer",
+              "rubric"
+            ],
+            "title": "Field",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "field",
+          "citations"
+        ],
+        "title": "DocumentFieldSource",
+        "type": "object"
+      },
       "DocumentParsingInstall": {
         "description": "One-click pip install of an optional parser engine's package(s).",
         "properties": {
@@ -4248,6 +4581,69 @@
           }
         },
         "title": "DocumentParsingUpdate",
+        "type": "object"
+      },
+      "DocumentPreview": {
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/LocatedDocument"
+          },
+          "document_token": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Document Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document",
+          "document_token"
+        ],
+        "title": "DocumentPreview",
+        "type": "object"
+      },
+      "DocumentProvenance": {
+        "additionalProperties": false,
+        "properties": {
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentFieldSource"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Fields",
+            "type": "array"
+          },
+          "filename": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Filename",
+            "type": "string"
+          },
+          "parser_version": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Parser Version",
+            "type": "string"
+          },
+          "signature": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Signature",
+            "type": "string"
+          },
+          "source_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "filename",
+          "source_hash",
+          "parser_version",
+          "fields",
+          "signature"
+        ],
+        "title": "DocumentProvenance",
         "type": "object"
       },
       "DocumentResponse": {
@@ -4337,6 +4733,36 @@
           "id"
         ],
         "title": "DocumentResponse",
+        "type": "object"
+      },
+      "DocumentSourceCitation": {
+        "additionalProperties": false,
+        "properties": {
+          "block_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Block Id",
+            "type": "string"
+          },
+          "locator": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Locator",
+            "type": "string"
+          },
+          "quote": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Quote",
+            "type": "string"
+          }
+        },
+        "required": [
+          "block_id",
+          "locator",
+          "quote"
+        ],
+        "title": "DocumentSourceCitation",
         "type": "object"
       },
       "DocumentSummaryResponse": {
@@ -5027,6 +5453,38 @@
         "title": "EventPatchRequest",
         "type": "object"
       },
+      "Evidence": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "enum": [
+              "student_answer",
+              "student_work"
+            ],
+            "title": "Field",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "quote": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Quote",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "field",
+          "quote"
+        ],
+        "title": "Evidence",
+        "type": "object"
+      },
       "ExportDocxRequest": {
         "properties": {
           "content": {
@@ -5042,6 +5500,44 @@
           }
         },
         "title": "ExportDocxRequest",
+        "type": "object"
+      },
+      "ExtractedField": {
+        "additionalProperties": false,
+        "properties": {
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentCitation"
+            },
+            "maxItems": 6,
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          },
+          "field": {
+            "enum": [
+              "question",
+              "student_answer",
+              "student_work",
+              "reference_answer",
+              "rubric"
+            ],
+            "title": "Field",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "field",
+          "citations"
+        ],
+        "title": "ExtractedField",
         "type": "object"
       },
       "FetchModelsPayload": {
@@ -5100,6 +5596,53 @@
           }
         },
         "title": "FetchModelsPayload",
+        "type": "object"
+      },
+      "FollowupQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "reference_answer": {
+            "anyOf": [
+              {
+                "maxLength": 6000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Answer"
+          },
+          "rubric": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rubric"
+          }
+        },
+        "required": [
+          "question_id",
+          "question"
+        ],
+        "title": "FollowupQuestion",
         "type": "object"
       },
       "FootprintDay": {
@@ -5233,6 +5776,25 @@
           "goal"
         ],
         "title": "GenerateTopicDraftRequest",
+        "type": "object"
+      },
+      "GeneratedAnalysis": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis": {
+            "$ref": "#/components/schemas/ReportContent"
+          },
+          "source_fingerprint": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Fingerprint",
+            "type": "string"
+          }
+        },
+        "required": [
+          "analysis",
+          "source_fingerprint"
+        ],
+        "title": "GeneratedAnalysis",
         "type": "object"
       },
       "GeneratedOutputCleanupPayload": {
@@ -5876,6 +6438,49 @@
           }
         },
         "title": "InvidiousSettings",
+        "type": "object"
+      },
+      "ItemReview": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "maxItems": 10,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "observation": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Observation",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "correct",
+              "partial",
+              "incorrect",
+              "ungraded"
+            ],
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "result",
+          "observation",
+          "evidence"
+        ],
+        "title": "ItemReview",
         "type": "object"
       },
       "KiwixConnectionRequest": {
@@ -7073,6 +7678,82 @@
           }
         },
         "title": "LlamaIndexConfigUpdate",
+        "type": "object"
+      },
+      "LocatedBlock": {
+        "additionalProperties": false,
+        "properties": {
+          "block_id": {
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "title": "Block Id",
+            "type": "string"
+          },
+          "locator": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Locator",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "block_id",
+          "locator",
+          "text"
+        ],
+        "title": "LocatedBlock",
+        "type": "object"
+      },
+      "LocatedDocument": {
+        "additionalProperties": false,
+        "properties": {
+          "blocks": {
+            "items": {
+              "$ref": "#/components/schemas/LocatedBlock"
+            },
+            "maxItems": 300,
+            "minItems": 1,
+            "title": "Blocks",
+            "type": "array"
+          },
+          "filename": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Filename",
+            "type": "string"
+          },
+          "parser_version": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Parser Version",
+            "type": "string"
+          },
+          "source_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Hash",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "filename",
+          "source_hash",
+          "parser_version",
+          "blocks"
+        ],
+        "title": "LocatedDocument",
         "type": "object"
       },
       "LoginRequest": {
@@ -10472,6 +11153,99 @@
         "title": "RenderCleanupPayload",
         "type": "object"
       },
+      "ReportContent": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemReview"
+            },
+            "maxItems": 40,
+            "title": "Items",
+            "type": "array"
+          },
+          "limitations": {
+            "items": {
+              "maxLength": 1000,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Limitations",
+            "type": "array"
+          },
+          "priorities": {
+            "items": {
+              "$ref": "#/components/schemas/TeachingPriority"
+            },
+            "maxItems": 3,
+            "title": "Priorities",
+            "type": "array"
+          },
+          "summary": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary",
+          "items",
+          "priorities",
+          "limitations"
+        ],
+        "title": "ReportContent",
+        "type": "object"
+      },
+      "ReportSummary": {
+        "properties": {
+          "assignment_ref": {
+            "title": "Assignment Ref",
+            "type": "string"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "confirmed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "student_ref": {
+            "title": "Student Ref",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "report_id",
+          "revision",
+          "status",
+          "student_ref",
+          "assignment_ref",
+          "subject",
+          "updated_at"
+        ],
+        "title": "ReportSummary",
+        "type": "object"
+      },
       "ResolveRequest": {
         "properties": {
           "language": {
@@ -10762,6 +11536,116 @@
         "title": "RoundSummaryRequest",
         "type": "object"
       },
+      "RubricSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Criteria",
+            "type": "string"
+          },
+          "grade": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Grade",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "subject": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Subject",
+            "type": "string"
+          },
+          "template_id": {
+            "format": "uuid",
+            "maxLength": 36,
+            "minLength": 36,
+            "title": "Template Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "name",
+          "criteria",
+          "revision"
+        ],
+        "title": "RubricSnapshot",
+        "type": "object"
+      },
+      "RubricTemplate": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "minimum": 0.0,
+            "title": "Created At",
+            "type": "number"
+          },
+          "criteria": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Criteria",
+            "type": "string"
+          },
+          "grade": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Grade",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "subject": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Subject",
+            "type": "string"
+          },
+          "template_id": {
+            "format": "uuid",
+            "maxLength": 36,
+            "minLength": 36,
+            "title": "Template Id",
+            "type": "string"
+          },
+          "updated_at": {
+            "minimum": 0.0,
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "template_id",
+          "name",
+          "criteria",
+          "revision",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RubricTemplate",
+        "type": "object"
+      },
       "RunStartRequest": {
         "properties": {
           "budget": {
@@ -10936,6 +11820,585 @@
           "recovery_interval_seconds"
         ],
         "title": "RuntimeStatus",
+        "type": "object"
+      },
+      "SaveFollowupAttemptRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "answer_status": {
+            "default": "unknown",
+            "enum": [
+              "present",
+              "confirmed_blank",
+              "unknown"
+            ],
+            "title": "Answer Status",
+            "type": "string"
+          },
+          "assistance": {
+            "default": "unknown",
+            "enum": [
+              "independent",
+              "assisted",
+              "unknown"
+            ],
+            "title": "Assistance",
+            "type": "string"
+          },
+          "attempt_id": {
+            "format": "uuid",
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "followup_revision": {
+            "minimum": 1.0,
+            "title": "Followup Revision",
+            "type": "integer"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "student_answer": {
+            "anyOf": [
+              {
+                "maxLength": 6000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Answer"
+          },
+          "student_work": {
+            "anyOf": [
+              {
+                "maxLength": 8000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Work"
+          },
+          "teacher_feedback": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Teacher Feedback",
+            "type": "string"
+          },
+          "teacher_result": {
+            "default": "ungraded",
+            "enum": [
+              "correct",
+              "partial",
+              "incorrect",
+              "ungraded"
+            ],
+            "title": "Teacher Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "followup_revision",
+          "question_id"
+        ],
+        "title": "SaveFollowupAttemptRequest",
+        "type": "object"
+      },
+      "SaveFollowupRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "priority_index": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Priority Index",
+            "type": "integer"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/FollowupQuestion"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Questions",
+            "type": "array"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          },
+          "title": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id",
+          "report_revision",
+          "priority_index",
+          "title",
+          "questions",
+          "followup_id"
+        ],
+        "title": "SaveFollowupRequest",
+        "type": "object"
+      },
+      "SaveReportRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis": {
+            "$ref": "#/components/schemas/ReportContent"
+          },
+          "assignment": {
+            "$ref": "#/components/schemas/AssignmentInput"
+          },
+          "expected_revision": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "source_fingerprint": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Fingerprint",
+            "type": "string"
+          },
+          "status": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "confirmed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "teacher_notes": {
+            "default": "",
+            "maxLength": 6000,
+            "title": "Teacher Notes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assignment",
+          "analysis",
+          "source_fingerprint",
+          "report_id"
+        ],
+        "title": "SaveReportRequest",
+        "type": "object"
+      },
+      "SaveRubricRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Criteria",
+            "type": "string"
+          },
+          "expected_revision": {
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "grade": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Grade",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "subject": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Subject",
+            "type": "string"
+          },
+          "template_id": {
+            "format": "uuid",
+            "maxLength": 36,
+            "minLength": 36,
+            "title": "Template Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "name",
+          "criteria",
+          "expected_revision"
+        ],
+        "title": "SaveRubricRequest",
+        "type": "object"
+      },
+      "SavedFollowup": {
+        "additionalProperties": false,
+        "properties": {
+          "assignment_ref": {
+            "title": "Assignment Ref",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "number"
+          },
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "grade": {
+            "title": "Grade",
+            "type": "string"
+          },
+          "knowledge_point": {
+            "title": "Knowledge Point",
+            "type": "string"
+          },
+          "priority_index": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Priority Index",
+            "type": "integer"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/FollowupQuestion"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Questions",
+            "type": "array"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "source_fingerprint": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Fingerprint",
+            "type": "string"
+          },
+          "student_ref": {
+            "title": "Student Ref",
+            "type": "string"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "student_ref",
+          "assignment_ref",
+          "subject",
+          "grade",
+          "source_fingerprint",
+          "knowledge_point",
+          "report_id",
+          "report_revision",
+          "priority_index",
+          "title",
+          "questions",
+          "followup_id",
+          "revision",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SavedFollowup",
+        "type": "object"
+      },
+      "SavedFollowupAttempt": {
+        "additionalProperties": false,
+        "properties": {
+          "answer_status": {
+            "default": "unknown",
+            "enum": [
+              "present",
+              "confirmed_blank",
+              "unknown"
+            ],
+            "title": "Answer Status",
+            "type": "string"
+          },
+          "assignment_ref": {
+            "title": "Assignment Ref",
+            "type": "string"
+          },
+          "assistance": {
+            "default": "unknown",
+            "enum": [
+              "independent",
+              "assisted",
+              "unknown"
+            ],
+            "title": "Assistance",
+            "type": "string"
+          },
+          "attempt_id": {
+            "format": "uuid",
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "number"
+          },
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "followup_revision": {
+            "minimum": 1.0,
+            "title": "Followup Revision",
+            "type": "integer"
+          },
+          "grade": {
+            "title": "Grade",
+            "type": "string"
+          },
+          "knowledge_point": {
+            "title": "Knowledge Point",
+            "type": "string"
+          },
+          "priority_index": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Priority Index",
+            "type": "integer"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "question_snapshot": {
+            "$ref": "#/components/schemas/FollowupQuestion"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          },
+          "source_fingerprint": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Fingerprint",
+            "type": "string"
+          },
+          "student_answer": {
+            "anyOf": [
+              {
+                "maxLength": 6000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Answer"
+          },
+          "student_ref": {
+            "title": "Student Ref",
+            "type": "string"
+          },
+          "student_work": {
+            "anyOf": [
+              {
+                "maxLength": 8000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Work"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "teacher_feedback": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Teacher Feedback",
+            "type": "string"
+          },
+          "teacher_result": {
+            "default": "ungraded",
+            "enum": [
+              "correct",
+              "partial",
+              "incorrect",
+              "ungraded"
+            ],
+            "title": "Teacher Result",
+            "type": "string"
+          },
+          "void_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Void Reason"
+          },
+          "voided_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voided At"
+          }
+        },
+        "required": [
+          "student_ref",
+          "assignment_ref",
+          "subject",
+          "grade",
+          "source_fingerprint",
+          "knowledge_point",
+          "attempt_id",
+          "followup_revision",
+          "question_id",
+          "followup_id",
+          "report_id",
+          "report_revision",
+          "priority_index",
+          "question_snapshot",
+          "created_at"
+        ],
+        "title": "SavedFollowupAttempt",
+        "type": "object"
+      },
+      "SavedReport": {
+        "additionalProperties": false,
+        "properties": {
+          "analysis": {
+            "$ref": "#/components/schemas/ReportContent"
+          },
+          "assignment": {
+            "$ref": "#/components/schemas/AssignmentInput"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "number"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "source_fingerprint": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source Fingerprint",
+            "type": "string"
+          },
+          "status": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "confirmed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "teacher_notes": {
+            "default": "",
+            "maxLength": 6000,
+            "title": "Teacher Notes",
+            "type": "string"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "assignment",
+          "analysis",
+          "source_fingerprint",
+          "report_id",
+          "revision",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SavedReport",
         "type": "object"
       },
       "ServerPayload": {
@@ -12261,6 +13724,79 @@
           "updated_at"
         ],
         "title": "TaskCard",
+        "type": "object"
+      },
+      "TeachingPriority": {
+        "additionalProperties": false,
+        "properties": {
+          "alternative_explanation": {
+            "maxLength": 2000,
+            "title": "Alternative Explanation",
+            "type": "string"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "maxItems": 10,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "evidence_status": {
+            "enum": [
+              "supported",
+              "needs_check"
+            ],
+            "title": "Evidence Status",
+            "type": "string"
+          },
+          "follow_up_question": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Follow Up Question",
+            "type": "string"
+          },
+          "hypothesis": {
+            "maxLength": 2000,
+            "title": "Hypothesis",
+            "type": "string"
+          },
+          "knowledge_point": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Knowledge Point",
+            "type": "string"
+          },
+          "observation": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Observation",
+            "type": "string"
+          },
+          "reference_guidance": {
+            "maxLength": 2000,
+            "title": "Reference Guidance",
+            "type": "string"
+          },
+          "teaching_action": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Teaching Action",
+            "type": "string"
+          }
+        },
+        "required": [
+          "knowledge_point",
+          "observation",
+          "hypothesis",
+          "alternative_explanation",
+          "teaching_action",
+          "follow_up_question",
+          "reference_guidance",
+          "evidence_status",
+          "evidence"
+        ],
+        "title": "TeachingPriority",
         "type": "object"
       },
       "TestResponse": {
@@ -14964,6 +16500,22 @@
           "text"
         ],
         "title": "VoicePreviewPayload",
+        "type": "object"
+      },
+      "VoidFollowupAttemptRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "VoidFollowupAttemptRequest",
         "type": "object"
       },
       "WebContinuityBody": {
@@ -65709,6 +67261,1692 @@
         "summary": "Link Status",
         "tags": [
           "task-board"
+        ]
+      }
+    },
+    "/api/teaching-analysis/analyze": {
+      "post": {
+        "operationId": "analyze_teaching_assignment_api_teaching_analysis_analyze_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "language",
+            "required": false,
+            "schema": {
+              "default": "zh",
+              "enum": [
+                "en",
+                "zh"
+              ],
+              "title": "Language",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignmentInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratedAnalysis"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analyze Teaching Assignment",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/documents/extract": {
+      "post": {
+        "operationId": "extract_teaching_document_api_teaching_analysis_documents_extract_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentExtractRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentExtraction"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Extract Teaching Document",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/documents/preview": {
+      "post": {
+        "operationId": "preview_teaching_document_api_teaching_analysis_documents_preview_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_preview_teaching_document_api_teaching_analysis_documents_preview_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentPreview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preview Teaching Document",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/followups": {
+      "get": {
+        "operationId": "list_teaching_followups_api_teaching_analysis_followups_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "report_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Report Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedFollowup"
+                  },
+                  "title": "Response List Teaching Followups Api Teaching Analysis Followups Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Followups",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "save_teaching_followup_api_teaching_analysis_followups_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveFollowupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedFollowup"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Teaching Followup",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/followups/{followup_id}": {
+      "get": {
+        "operationId": "get_teaching_followup_api_teaching_analysis_followups__followup_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followup_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Followup Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedFollowup"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Followup",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/followups/{followup_id}/attempts": {
+      "get": {
+        "operationId": "list_teaching_followup_attempts_api_teaching_analysis_followups__followup_id__attempts_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followup_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Followup Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedFollowupAttempt"
+                  },
+                  "title": "Response List Teaching Followup Attempts Api Teaching Analysis Followups  Followup Id  Attempts Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Followup Attempts",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "record_teaching_followup_attempt_api_teaching_analysis_followups__followup_id__attempts_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followup_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Followup Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveFollowupAttemptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedFollowupAttempt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Record Teaching Followup Attempt",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/followups/{followup_id}/attempts/{attempt_id}/void": {
+      "post": {
+        "operationId": "void_teaching_followup_attempt_api_teaching_analysis_followups__followup_id__attempts__attempt_id__void_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followup_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Followup Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoidFollowupAttemptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedFollowupAttempt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Void Teaching Followup Attempt",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/followups/{followup_id}/revisions": {
+      "get": {
+        "operationId": "list_teaching_followup_revisions_api_teaching_analysis_followups__followup_id__revisions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followup_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Followup Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedFollowup"
+                  },
+                  "title": "Response List Teaching Followup Revisions Api Teaching Analysis Followups  Followup Id  Revisions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Followup Revisions",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/followups/{followup_id}/worksheet": {
+      "get": {
+        "operationId": "export_teaching_worksheet_api_teaching_analysis_followups__followup_id__worksheet_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followup_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Followup Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Revision"
+            }
+          },
+          {
+            "in": "query",
+            "name": "audience",
+            "required": false,
+            "schema": {
+              "default": "student",
+              "enum": [
+                "student",
+                "teacher"
+              ],
+              "title": "Audience",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "html",
+              "enum": [
+                "html",
+                "markdown"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "required": false,
+            "schema": {
+              "default": "zh",
+              "enum": [
+                "en",
+                "zh"
+              ],
+              "title": "Language",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "The requested saved worksheet edition as an attachment."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Teaching Worksheet",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/preview": {
+      "post": {
+        "operationId": "preview_teaching_assignment_api_teaching_analysis_preview_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_preview_teaching_assignment_api_teaching_analysis_preview_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentInput"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preview Teaching Assignment",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/reports": {
+      "get": {
+        "operationId": "list_teaching_reports_api_teaching_analysis_reports_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ReportSummary"
+                  },
+                  "title": "Response List Teaching Reports Api Teaching Analysis Reports Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Reports",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "save_teaching_report_api_teaching_analysis_reports_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Teaching Report",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/reports/{report_id}": {
+      "get": {
+        "operationId": "get_teaching_report_api_teaching_analysis_reports__report_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Report Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedReport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Report",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/reports/{report_id}/revisions": {
+      "get": {
+        "operationId": "list_teaching_report_revisions_api_teaching_analysis_reports__report_id__revisions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "report_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Report Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedReport"
+                  },
+                  "title": "Response List Teaching Report Revisions Api Teaching Analysis Reports  Report Id  Revisions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Report Revisions",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/rubrics": {
+      "get": {
+        "operationId": "list_teaching_rubrics_api_teaching_analysis_rubrics_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RubricTemplate"
+                  },
+                  "title": "Response List Teaching Rubrics Api Teaching Analysis Rubrics Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Rubrics",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "save_teaching_rubric_api_teaching_analysis_rubrics_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveRubricRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RubricTemplate"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Teaching Rubric",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/rubrics/{template_id}": {
+      "get": {
+        "operationId": "get_teaching_rubric_api_teaching_analysis_rubrics__template_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RubricTemplate"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Rubric",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/rubrics/{template_id}/revisions": {
+      "get": {
+        "operationId": "teaching_rubric_revisions_api_teaching_analysis_rubrics__template_id__revisions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RubricTemplate"
+                  },
+                  "title": "Response Teaching Rubric Revisions Api Teaching Analysis Rubrics  Template Id  Revisions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Teaching Rubric Revisions",
+        "tags": [
+          "teaching-analysis"
         ]
       }
     },

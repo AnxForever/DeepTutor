@@ -10956,6 +10956,282 @@ export interface paths {
     readonly patch: operations["link_status_api_task_board_sessions__session_id__status_patch"];
     readonly trace?: never;
   };
+  readonly "/api/teaching-analysis/analyze": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Analyze Teaching Assignment */
+    readonly post: operations["analyze_teaching_assignment_api_teaching_analysis_analyze_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/documents/extract": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Extract Teaching Document */
+    readonly post: operations["extract_teaching_document_api_teaching_analysis_documents_extract_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/documents/preview": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Preview Teaching Document */
+    readonly post: operations["preview_teaching_document_api_teaching_analysis_documents_preview_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/followups": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Followups */
+    readonly get: operations["list_teaching_followups_api_teaching_analysis_followups_get"];
+    readonly put?: never;
+    /** Save Teaching Followup */
+    readonly post: operations["save_teaching_followup_api_teaching_analysis_followups_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/followups/{followup_id}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Followup */
+    readonly get: operations["get_teaching_followup_api_teaching_analysis_followups__followup_id__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/followups/{followup_id}/attempts": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Followup Attempts */
+    readonly get: operations["list_teaching_followup_attempts_api_teaching_analysis_followups__followup_id__attempts_get"];
+    readonly put?: never;
+    /** Record Teaching Followup Attempt */
+    readonly post: operations["record_teaching_followup_attempt_api_teaching_analysis_followups__followup_id__attempts_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/followups/{followup_id}/attempts/{attempt_id}/void": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Void Teaching Followup Attempt */
+    readonly post: operations["void_teaching_followup_attempt_api_teaching_analysis_followups__followup_id__attempts__attempt_id__void_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/followups/{followup_id}/revisions": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Followup Revisions */
+    readonly get: operations["list_teaching_followup_revisions_api_teaching_analysis_followups__followup_id__revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/followups/{followup_id}/worksheet": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Export Teaching Worksheet */
+    readonly get: operations["export_teaching_worksheet_api_teaching_analysis_followups__followup_id__worksheet_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/preview": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Preview Teaching Assignment */
+    readonly post: operations["preview_teaching_assignment_api_teaching_analysis_preview_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/reports": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Reports */
+    readonly get: operations["list_teaching_reports_api_teaching_analysis_reports_get"];
+    readonly put?: never;
+    /** Save Teaching Report */
+    readonly post: operations["save_teaching_report_api_teaching_analysis_reports_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/reports/{report_id}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Report */
+    readonly get: operations["get_teaching_report_api_teaching_analysis_reports__report_id__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/reports/{report_id}/revisions": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Report Revisions */
+    readonly get: operations["list_teaching_report_revisions_api_teaching_analysis_reports__report_id__revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/rubrics": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Rubrics */
+    readonly get: operations["list_teaching_rubrics_api_teaching_analysis_rubrics_get"];
+    readonly put?: never;
+    /** Save Teaching Rubric */
+    readonly post: operations["save_teaching_rubric_api_teaching_analysis_rubrics_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/rubrics/{template_id}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Rubric */
+    readonly get: operations["get_teaching_rubric_api_teaching_analysis_rubrics__template_id__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/rubrics/{template_id}/revisions": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Teaching Rubric Revisions */
+    readonly get: operations["teaching_rubric_revisions_api_teaching_analysis_rubrics__template_id__revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/tools": {
     readonly parameters: {
       readonly query?: never;
@@ -12135,6 +12411,80 @@ export interface components {
       /** Skills */
       readonly skills?: readonly string[];
     };
+    /** AssignmentInput */
+    readonly AssignmentInput: {
+      /**
+       * Assignment Ref
+       * @default
+       */
+      readonly assignment_ref: string;
+      readonly document_provenance?:
+        components["schemas"]["DocumentProvenance"] | null;
+      /**
+       * Grade
+       * @default
+       */
+      readonly grade: string;
+      /** Items */
+      readonly items?: readonly components["schemas"]["AssignmentItem"][];
+      readonly rubric_template?: components["schemas"]["RubricSnapshot"] | null;
+      /**
+       * Student Ref
+       * @default
+       */
+      readonly student_ref: string;
+      /**
+       * Subject
+       * @default
+       */
+      readonly subject: string;
+      /**
+       * Teacher Context
+       * @default
+       */
+      readonly teacher_context: string;
+    };
+    /** AssignmentItem */
+    readonly AssignmentItem: {
+      /**
+       * Answer Status
+       * @default unknown
+       * @enum {string}
+       */
+      readonly answer_status: "present" | "confirmed_blank" | "unknown";
+      /**
+       * Assistance
+       * @default unknown
+       * @enum {string}
+       */
+      readonly assistance: "independent" | "assisted" | "unknown";
+      /** Knowledge Points */
+      readonly knowledge_points?: readonly string[];
+      /** Question */
+      readonly question: string;
+      /** Question Id */
+      readonly question_id: string;
+      /** Reference Answer */
+      readonly reference_answer?: string | null;
+      /** Rubric */
+      readonly rubric?: string | null;
+      /**
+       * Source Locator
+       * @default
+       */
+      readonly source_locator: string;
+      /** Student Answer */
+      readonly student_answer?: string | null;
+      /** Student Work */
+      readonly student_work?: string | null;
+      /**
+       * Transcription Status
+       * @default not_applicable
+       * @enum {string}
+       */
+      readonly transcription_status:
+        "confirmed" | "uncertain" | "not_applicable";
+    };
     /** AuditRequest */
     readonly AuditRequest: {
       /** Budget */
@@ -12348,6 +12698,16 @@ export interface components {
     };
     /** Body_preview_office_upload_api_file_preview_pdf_post */
     readonly Body_preview_office_upload_api_file_preview_pdf_post: {
+      /** File */
+      readonly file: string;
+    };
+    /** Body_preview_teaching_assignment_api_teaching_analysis_preview_post */
+    readonly Body_preview_teaching_assignment_api_teaching_analysis_preview_post: {
+      /** File */
+      readonly file: string;
+    };
+    /** Body_preview_teaching_document_api_teaching_analysis_documents_preview_post */
+    readonly Body_preview_teaching_document_api_teaching_analysis_documents_preview_post: {
       /** File */
       readonly file: string;
     };
@@ -13707,6 +14067,51 @@ export interface components {
       /** Api Token */
       readonly api_token?: string | null;
     };
+    /** DocumentCitation */
+    readonly DocumentCitation: {
+      /** Block Id */
+      readonly block_id: string;
+      /** Quote */
+      readonly quote: string;
+    };
+    /** DocumentExtraction */
+    readonly DocumentExtraction: {
+      readonly assignment: components["schemas"]["AssignmentInput"];
+      readonly document: components["schemas"]["LocatedDocument"];
+      /** Provenance */
+      readonly provenance: readonly components["schemas"]["ExtractedField"][];
+      /** Warnings */
+      readonly warnings: readonly string[];
+    };
+    /** DocumentExtractRequest */
+    readonly DocumentExtractRequest: {
+      readonly document: components["schemas"]["LocatedDocument"];
+      /** Document Token */
+      readonly document_token: string;
+      /**
+       * Language
+       * @default zh
+       * @enum {string}
+       */
+      readonly language: "en" | "zh";
+    };
+    /** DocumentFieldSource */
+    readonly DocumentFieldSource: {
+      /** Citations */
+      readonly citations: readonly components["schemas"]["DocumentSourceCitation"][];
+      /**
+       * Field
+       * @enum {string}
+       */
+      readonly field:
+        | "question"
+        | "student_answer"
+        | "student_work"
+        | "reference_answer"
+        | "rubric";
+      /** Question Id */
+      readonly question_id: string;
+    };
     /**
      * DocumentParsingInstall
      * @description One-click pip install of an optional parser engine's package(s).
@@ -13747,6 +14152,25 @@ export interface components {
       readonly image_caption?: boolean | null;
       readonly image_description_model?:
         components["schemas"]["ImageDescriptionModelSelection"] | null;
+    };
+    /** DocumentPreview */
+    readonly DocumentPreview: {
+      readonly document: components["schemas"]["LocatedDocument"];
+      /** Document Token */
+      readonly document_token: string;
+    };
+    /** DocumentProvenance */
+    readonly DocumentProvenance: {
+      /** Fields */
+      readonly fields: readonly components["schemas"]["DocumentFieldSource"][];
+      /** Filename */
+      readonly filename: string;
+      /** Parser Version */
+      readonly parser_version: string;
+      /** Signature */
+      readonly signature: string;
+      /** Source Hash */
+      readonly source_hash: string;
     };
     /** DocumentResponse */
     readonly DocumentResponse: {
@@ -13801,6 +14225,15 @@ export interface components {
       readonly title: string;
       /** Updated At */
       readonly updated_at?: number;
+    };
+    /** DocumentSourceCitation */
+    readonly DocumentSourceCitation: {
+      /** Block Id */
+      readonly block_id: string;
+      /** Locator */
+      readonly locator: string;
+      /** Quote */
+      readonly quote: string;
     };
     /** DocumentSummaryResponse */
     readonly DocumentSummaryResponse: {
@@ -14051,6 +14484,18 @@ export interface components {
        */
       readonly scope: "this" | "following" | "all";
     };
+    /** Evidence */
+    readonly Evidence: {
+      /**
+       * Field
+       * @enum {string}
+       */
+      readonly field: "student_answer" | "student_work";
+      /** Question Id */
+      readonly question_id: string;
+      /** Quote */
+      readonly quote: string;
+    };
     /** ExportDocxRequest */
     readonly ExportDocxRequest: {
       /**
@@ -14063,6 +14508,23 @@ export interface components {
        * @default
        */
       readonly title: string;
+    };
+    /** ExtractedField */
+    readonly ExtractedField: {
+      /** Citations */
+      readonly citations: readonly components["schemas"]["DocumentCitation"][];
+      /**
+       * Field
+       * @enum {string}
+       */
+      readonly field:
+        | "question"
+        | "student_answer"
+        | "student_work"
+        | "reference_answer"
+        | "rubric";
+      /** Question Id */
+      readonly question_id: string;
     };
     /** FetchModelsPayload */
     readonly FetchModelsPayload: {
@@ -14088,6 +14550,17 @@ export interface components {
        * @enum {string}
        */
       readonly service: "llm" | "task";
+    };
+    /** FollowupQuestion */
+    readonly FollowupQuestion: {
+      /** Question */
+      readonly question: string;
+      /** Question Id */
+      readonly question_id: string;
+      /** Reference Answer */
+      readonly reference_answer?: string | null;
+      /** Rubric */
+      readonly rubric?: string | null;
     };
     /** FootprintDay */
     readonly FootprintDay: {
@@ -14117,6 +14590,12 @@ export interface components {
       readonly id: string;
       /** Title */
       readonly title: string;
+    };
+    /** GeneratedAnalysis */
+    readonly GeneratedAnalysis: {
+      readonly analysis: components["schemas"]["ReportContent"];
+      /** Source Fingerprint */
+      readonly source_fingerprint: string;
     };
     /**
      * GeneratedOutputCleanupPayload
@@ -14432,6 +14911,20 @@ export interface components {
        * @default
        */
       readonly public_base_url: string;
+    };
+    /** ItemReview */
+    readonly ItemReview: {
+      /** Evidence */
+      readonly evidence: readonly components["schemas"]["Evidence"][];
+      /** Observation */
+      readonly observation: string;
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Result
+       * @enum {string}
+       */
+      readonly result: "correct" | "partial" | "incorrect" | "ungraded";
     };
     /** KiwixConnectionRequest */
     readonly KiwixConnectionRequest: {
@@ -14901,6 +15394,28 @@ export interface components {
       readonly model_id: string;
       /** Profile Id */
       readonly profile_id: string;
+    };
+    /** LocatedBlock */
+    readonly LocatedBlock: {
+      /** Block Id */
+      readonly block_id: string;
+      /** Locator */
+      readonly locator: string;
+      /** Text */
+      readonly text: string;
+    };
+    /** LocatedDocument */
+    readonly LocatedDocument: {
+      /** Blocks */
+      readonly blocks: readonly components["schemas"]["LocatedBlock"][];
+      /** Filename */
+      readonly filename: string;
+      /** Parser Version */
+      readonly parser_version: string;
+      /** Source Hash */
+      readonly source_hash: string;
+      /** Warnings */
+      readonly warnings?: readonly string[];
     };
     /**
      * LoginRequest
@@ -16645,6 +17160,40 @@ export interface components {
       /** Fingerprint */
       readonly fingerprint: string;
     };
+    /** ReportContent */
+    readonly ReportContent: {
+      /** Items */
+      readonly items: readonly components["schemas"]["ItemReview"][];
+      /** Limitations */
+      readonly limitations: readonly string[];
+      /** Priorities */
+      readonly priorities: readonly components["schemas"]["TeachingPriority"][];
+      /** Summary */
+      readonly summary: string;
+    };
+    /** ReportSummary */
+    readonly ReportSummary: {
+      /** Assignment Ref */
+      readonly assignment_ref: string;
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Revision */
+      readonly revision: number;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "draft" | "confirmed";
+      /** Student Ref */
+      readonly student_ref: string;
+      /** Subject */
+      readonly subject: string;
+      /** Updated At */
+      readonly updated_at: number;
+    };
     /** ResolveRequest */
     readonly ResolveRequest: {
       /**
@@ -16764,6 +17313,58 @@ export interface components {
       /** Session Key */
       readonly session_key: string;
     };
+    /** RubricSnapshot */
+    readonly RubricSnapshot: {
+      /** Criteria */
+      readonly criteria: string;
+      /**
+       * Grade
+       * @default
+       */
+      readonly grade: string;
+      /** Name */
+      readonly name: string;
+      /** Revision */
+      readonly revision: number;
+      /**
+       * Subject
+       * @default
+       */
+      readonly subject: string;
+      /**
+       * Template Id
+       * Format: uuid
+       */
+      readonly template_id: string;
+    };
+    /** RubricTemplate */
+    readonly RubricTemplate: {
+      /** Created At */
+      readonly created_at: number;
+      /** Criteria */
+      readonly criteria: string;
+      /**
+       * Grade
+       * @default
+       */
+      readonly grade: string;
+      /** Name */
+      readonly name: string;
+      /** Revision */
+      readonly revision: number;
+      /**
+       * Subject
+       * @default
+       */
+      readonly subject: string;
+      /**
+       * Template Id
+       * Format: uuid
+       */
+      readonly template_id: string;
+      /** Updated At */
+      readonly updated_at: number;
+    };
     /** RunStartRequest */
     readonly RunStartRequest: {
       /** Budget */
@@ -16844,6 +17445,263 @@ export interface components {
       readonly worker_count: number;
       /** Worker Id */
       readonly worker_id: string;
+    };
+    /** SavedFollowup */
+    readonly SavedFollowup: {
+      /** Assignment Ref */
+      readonly assignment_ref: string;
+      /** Created At */
+      readonly created_at: number;
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Grade */
+      readonly grade: string;
+      /** Knowledge Point */
+      readonly knowledge_point: string;
+      /** Priority Index */
+      readonly priority_index: number;
+      /** Questions */
+      readonly questions: readonly components["schemas"]["FollowupQuestion"][];
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+      /** Revision */
+      readonly revision: number;
+      /** Source Fingerprint */
+      readonly source_fingerprint: string;
+      /** Student Ref */
+      readonly student_ref: string;
+      /** Subject */
+      readonly subject: string;
+      /** Title */
+      readonly title: string;
+      /** Updated At */
+      readonly updated_at: number;
+    };
+    /** SavedFollowupAttempt */
+    readonly SavedFollowupAttempt: {
+      /**
+       * Answer Status
+       * @default unknown
+       * @enum {string}
+       */
+      readonly answer_status: "present" | "confirmed_blank" | "unknown";
+      /** Assignment Ref */
+      readonly assignment_ref: string;
+      /**
+       * Assistance
+       * @default unknown
+       * @enum {string}
+       */
+      readonly assistance: "independent" | "assisted" | "unknown";
+      /**
+       * Attempt Id
+       * Format: uuid
+       */
+      readonly attempt_id: string;
+      /** Created At */
+      readonly created_at: number;
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Followup Revision */
+      readonly followup_revision: number;
+      /** Grade */
+      readonly grade: string;
+      /** Knowledge Point */
+      readonly knowledge_point: string;
+      /** Priority Index */
+      readonly priority_index: number;
+      /** Question Id */
+      readonly question_id: string;
+      readonly question_snapshot: components["schemas"]["FollowupQuestion"];
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+      /** Source Fingerprint */
+      readonly source_fingerprint: string;
+      /** Student Answer */
+      readonly student_answer?: string | null;
+      /** Student Ref */
+      readonly student_ref: string;
+      /** Student Work */
+      readonly student_work?: string | null;
+      /** Subject */
+      readonly subject: string;
+      /**
+       * Teacher Feedback
+       * @default
+       */
+      readonly teacher_feedback: string;
+      /**
+       * Teacher Result
+       * @default ungraded
+       * @enum {string}
+       */
+      readonly teacher_result: "correct" | "partial" | "incorrect" | "ungraded";
+      /** Void Reason */
+      readonly void_reason?: string | null;
+      /** Voided At */
+      readonly voided_at?: number | null;
+    };
+    /** SavedReport */
+    readonly SavedReport: {
+      readonly analysis: components["schemas"]["ReportContent"];
+      readonly assignment: components["schemas"]["AssignmentInput"];
+      /** Created At */
+      readonly created_at: number;
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Revision */
+      readonly revision: number;
+      /** Source Fingerprint */
+      readonly source_fingerprint: string;
+      /**
+       * Status
+       * @default draft
+       * @enum {string}
+       */
+      readonly status: "draft" | "confirmed";
+      /**
+       * Teacher Notes
+       * @default
+       */
+      readonly teacher_notes: string;
+      /** Updated At */
+      readonly updated_at: number;
+    };
+    /** SaveFollowupAttemptRequest */
+    readonly SaveFollowupAttemptRequest: {
+      /**
+       * Answer Status
+       * @default unknown
+       * @enum {string}
+       */
+      readonly answer_status: "present" | "confirmed_blank" | "unknown";
+      /**
+       * Assistance
+       * @default unknown
+       * @enum {string}
+       */
+      readonly assistance: "independent" | "assisted" | "unknown";
+      /**
+       * Attempt Id
+       * Format: uuid
+       */
+      readonly attempt_id: string;
+      /** Followup Revision */
+      readonly followup_revision: number;
+      /** Question Id */
+      readonly question_id: string;
+      /** Student Answer */
+      readonly student_answer?: string | null;
+      /** Student Work */
+      readonly student_work?: string | null;
+      /**
+       * Teacher Feedback
+       * @default
+       */
+      readonly teacher_feedback: string;
+      /**
+       * Teacher Result
+       * @default ungraded
+       * @enum {string}
+       */
+      readonly teacher_result: "correct" | "partial" | "incorrect" | "ungraded";
+    };
+    /** SaveFollowupRequest */
+    readonly SaveFollowupRequest: {
+      /**
+       * Expected Revision
+       * @default 0
+       */
+      readonly expected_revision: number;
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Priority Index */
+      readonly priority_index: number;
+      /** Questions */
+      readonly questions: readonly components["schemas"]["FollowupQuestion"][];
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+      /** Title */
+      readonly title: string;
+    };
+    /** SaveReportRequest */
+    readonly SaveReportRequest: {
+      readonly analysis: components["schemas"]["ReportContent"];
+      readonly assignment: components["schemas"]["AssignmentInput"];
+      /**
+       * Expected Revision
+       * @default 0
+       */
+      readonly expected_revision: number;
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Source Fingerprint */
+      readonly source_fingerprint: string;
+      /**
+       * Status
+       * @default draft
+       * @enum {string}
+       */
+      readonly status: "draft" | "confirmed";
+      /**
+       * Teacher Notes
+       * @default
+       */
+      readonly teacher_notes: string;
+    };
+    /** SaveRubricRequest */
+    readonly SaveRubricRequest: {
+      /** Criteria */
+      readonly criteria: string;
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /**
+       * Grade
+       * @default
+       */
+      readonly grade: string;
+      /** Name */
+      readonly name: string;
+      /**
+       * Subject
+       * @default
+       */
+      readonly subject: string;
+      /**
+       * Template Id
+       * Format: uuid
+       */
+      readonly template_id: string;
     };
     /**
      * ServerPayload
@@ -17367,6 +18225,30 @@ export interface components {
       readonly updated_at: string;
       /** Workspace Id */
       readonly workspace_id?: string | null;
+    };
+    /** TeachingPriority */
+    readonly TeachingPriority: {
+      /** Alternative Explanation */
+      readonly alternative_explanation: string;
+      /** Evidence */
+      readonly evidence: readonly components["schemas"]["Evidence"][];
+      /**
+       * Evidence Status
+       * @enum {string}
+       */
+      readonly evidence_status: "supported" | "needs_check";
+      /** Follow Up Question */
+      readonly follow_up_question: string;
+      /** Hypothesis */
+      readonly hypothesis: string;
+      /** Knowledge Point */
+      readonly knowledge_point: string;
+      /** Observation */
+      readonly observation: string;
+      /** Reference Guidance */
+      readonly reference_guidance: string;
+      /** Teaching Action */
+      readonly teaching_action: string;
     };
     /** TestResponse */
     readonly TestResponse: {
@@ -18543,6 +19425,11 @@ export interface components {
       /** Text */
       readonly text: string;
     };
+    /** VoidFollowupAttemptRequest */
+    readonly VoidFollowupAttemptRequest: {
+      /** Reason */
+      readonly reason: string;
+    };
     /** WebContinuityBody */
     readonly WebContinuityBody: {
       /** Enabled */
@@ -18778,6 +19665,8 @@ export type SchemaApproveCreationRequest =
   components["schemas"]["ApproveCreationRequest"];
 export type SchemaAssetAddRequest = components["schemas"]["AssetAddRequest"];
 export type SchemaAssetSpec = components["schemas"]["AssetSpec"];
+export type SchemaAssignmentInput = components["schemas"]["AssignmentInput"];
+export type SchemaAssignmentItem = components["schemas"]["AssignmentItem"];
 export type SchemaAuditRequest = components["schemas"]["AuditRequest"];
 export type SchemaAuthStatusResponse =
   components["schemas"]["AuthStatusResponse"];
@@ -18799,6 +19688,10 @@ export type SchemaBodyImportVisualizerApiVisualizersImportPost =
 export type SchemaBodyLibraryAdd = components["schemas"]["Body_library_add"];
 export type SchemaBodyPreviewOfficeUploadApiFilePreviewPdfPost =
   components["schemas"]["Body_preview_office_upload_api_file_preview_pdf_post"];
+export type SchemaBodyPreviewTeachingAssignmentApiTeachingAnalysisPreviewPost =
+  components["schemas"]["Body_preview_teaching_assignment_api_teaching_analysis_preview_post"];
+export type SchemaBodyPreviewTeachingDocumentApiTeachingAnalysisDocumentsPreviewPost =
+  components["schemas"]["Body_preview_teaching_document_api_teaching_analysis_documents_preview_post"];
 export type SchemaBodyReindexKnowledgeBaseApiKnowledgeBasesKbNameReindexPost =
   components["schemas"]["Body_reindex_knowledge_base_api_knowledge_bases__kb_name__reindex_post"];
 export type SchemaBodySpeechToTextApiVoiceSttPost =
@@ -18952,13 +19845,25 @@ export type SchemaDeviceLoginRequest =
 export type SchemaDisplaySettings = components["schemas"]["DisplaySettings"];
 export type SchemaDoclingRemoteTest =
   components["schemas"]["DoclingRemoteTest"];
+export type SchemaDocumentCitation = components["schemas"]["DocumentCitation"];
+export type SchemaDocumentExtraction =
+  components["schemas"]["DocumentExtraction"];
+export type SchemaDocumentExtractRequest =
+  components["schemas"]["DocumentExtractRequest"];
+export type SchemaDocumentFieldSource =
+  components["schemas"]["DocumentFieldSource"];
 export type SchemaDocumentParsingInstall =
   components["schemas"]["DocumentParsingInstall"];
 export type SchemaDocumentParsingTest =
   components["schemas"]["DocumentParsingTest"];
 export type SchemaDocumentParsingUpdate =
   components["schemas"]["DocumentParsingUpdate"];
+export type SchemaDocumentPreview = components["schemas"]["DocumentPreview"];
+export type SchemaDocumentProvenance =
+  components["schemas"]["DocumentProvenance"];
 export type SchemaDocumentResponse = components["schemas"]["DocumentResponse"];
+export type SchemaDocumentSourceCitation =
+  components["schemas"]["DocumentSourceCitation"];
 export type SchemaDocumentSummaryResponse =
   components["schemas"]["DocumentSummaryResponse"];
 export type SchemaDocWriteRequest = components["schemas"]["DocWriteRequest"];
@@ -18984,12 +19889,17 @@ export type SchemaEventInput = components["schemas"]["EventInput"];
 export type SchemaEventPatch = components["schemas"]["EventPatch"];
 export type SchemaEventPatchRequest =
   components["schemas"]["EventPatchRequest"];
+export type SchemaEvidence = components["schemas"]["Evidence"];
 export type SchemaExportDocxRequest =
   components["schemas"]["ExportDocxRequest"];
+export type SchemaExtractedField = components["schemas"]["ExtractedField"];
 export type SchemaFetchModelsPayload =
   components["schemas"]["FetchModelsPayload"];
+export type SchemaFollowupQuestion = components["schemas"]["FollowupQuestion"];
 export type SchemaFootprintDay = components["schemas"]["FootprintDay"];
 export type SchemaFootprintSession = components["schemas"]["FootprintSession"];
+export type SchemaGeneratedAnalysis =
+  components["schemas"]["GeneratedAnalysis"];
 export type SchemaGeneratedOutputCleanupPayload =
   components["schemas"]["GeneratedOutputCleanupPayload"];
 export type SchemaGenerateFromNotebookRequest =
@@ -19035,6 +19945,7 @@ export type SchemaInstallSkillRequest =
   components["schemas"]["InstallSkillRequest"];
 export type SchemaInvidiousSettings =
   components["schemas"]["InvidiousSettings"];
+export type SchemaItemReview = components["schemas"]["ItemReview"];
 export type SchemaKiwixConnectionRequest =
   components["schemas"]["KiwixConnectionRequest"];
 export type SchemaKnowledgeBaseInfo =
@@ -19081,6 +19992,8 @@ export type SchemaListImaResponse = components["schemas"]["ListImaResponse"];
 export type SchemaLlamaIndexConfigUpdate =
   components["schemas"]["LlamaIndexConfigUpdate"];
 export type SchemaLlmSelection = components["schemas"]["LLMSelection"];
+export type SchemaLocatedBlock = components["schemas"]["LocatedBlock"];
+export type SchemaLocatedDocument = components["schemas"]["LocatedDocument"];
 export type SchemaLoginRequest = components["schemas"]["LoginRequest"];
 export type SchemaManagedUpdateRequest =
   components["schemas"]["ManagedUpdateRequest"];
@@ -19214,6 +20127,8 @@ export type SchemaRenamePathRequest =
 export type SchemaRenameTagRequest = components["schemas"]["RenameTagRequest"];
 export type SchemaRenderCleanupPayload =
   components["schemas"]["RenderCleanupPayload"];
+export type SchemaReportContent = components["schemas"]["ReportContent"];
+export type SchemaReportSummary = components["schemas"]["ReportSummary"];
 export type SchemaResolveRequest = components["schemas"]["ResolveRequest"];
 export type SchemaResumeBookRequest =
   components["schemas"]["ResumeBookRequest"];
@@ -19230,8 +20145,22 @@ export type SchemaReviewSuggestionRequest =
   components["schemas"]["ReviewSuggestionRequest"];
 export type SchemaRoundSummaryRequest =
   components["schemas"]["RoundSummaryRequest"];
+export type SchemaRubricSnapshot = components["schemas"]["RubricSnapshot"];
+export type SchemaRubricTemplate = components["schemas"]["RubricTemplate"];
 export type SchemaRunStartRequest = components["schemas"]["RunStartRequest"];
 export type SchemaRuntimeStatus = components["schemas"]["RuntimeStatus"];
+export type SchemaSavedFollowup = components["schemas"]["SavedFollowup"];
+export type SchemaSavedFollowupAttempt =
+  components["schemas"]["SavedFollowupAttempt"];
+export type SchemaSavedReport = components["schemas"]["SavedReport"];
+export type SchemaSaveFollowupAttemptRequest =
+  components["schemas"]["SaveFollowupAttemptRequest"];
+export type SchemaSaveFollowupRequest =
+  components["schemas"]["SaveFollowupRequest"];
+export type SchemaSaveReportRequest =
+  components["schemas"]["SaveReportRequest"];
+export type SchemaSaveRubricRequest =
+  components["schemas"]["SaveRubricRequest"];
 export type SchemaServerPayload = components["schemas"]["ServerPayload"];
 export type SchemaServicePreviewPayload =
   components["schemas"]["ServicePreviewPayload"];
@@ -19299,6 +20228,7 @@ export type SchemaSyncRequest = components["schemas"]["SyncRequest"];
 export type SchemaSyncResponse = components["schemas"]["SyncResponse"];
 export type SchemaTaskBoard = components["schemas"]["TaskBoard"];
 export type SchemaTaskCard = components["schemas"]["TaskCard"];
+export type SchemaTeachingPriority = components["schemas"]["TeachingPriority"];
 export type SchemaTestResponse = components["schemas"]["TestResponse"];
 export type SchemaTextPositionSelectorPayload =
   components["schemas"]["TextPositionSelectorPayload"];
@@ -19371,6 +20301,8 @@ export type SchemaVoiceMathSpeakUpdate =
   components["schemas"]["VoiceMathSpeakUpdate"];
 export type SchemaVoicePreviewPayload =
   components["schemas"]["VoicePreviewPayload"];
+export type SchemaVoidFollowupAttemptRequest =
+  components["schemas"]["VoidFollowupAttemptRequest"];
 export type SchemaWebContinuityBody =
   components["schemas"]["WebContinuityBody"];
 export type SchemaWebSourceInfo = components["schemas"]["WebSourceInfo"];
@@ -43658,6 +44590,743 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["TaskBoard"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly analyze_teaching_assignment_api_teaching_analysis_analyze_post: {
+    readonly parameters: {
+      readonly query?: {
+        readonly language?: "en" | "zh";
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["AssignmentInput"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["GeneratedAnalysis"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly extract_teaching_document_api_teaching_analysis_documents_extract_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["DocumentExtractRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["DocumentExtraction"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly preview_teaching_document_api_teaching_analysis_documents_preview_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "multipart/form-data": components["schemas"]["Body_preview_teaching_document_api_teaching_analysis_documents_preview_post"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["DocumentPreview"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_followups_api_teaching_analysis_followups_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+        readonly report_id?: string | null;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedFollowup"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_teaching_followup_api_teaching_analysis_followups_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveFollowupRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedFollowup"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_followup_api_teaching_analysis_followups__followup_id__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly followup_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedFollowup"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_followup_attempts_api_teaching_analysis_followups__followup_id__attempts_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly followup_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedFollowupAttempt"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly record_teaching_followup_attempt_api_teaching_analysis_followups__followup_id__attempts_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly followup_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveFollowupAttemptRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedFollowupAttempt"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly void_teaching_followup_attempt_api_teaching_analysis_followups__followup_id__attempts__attempt_id__void_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly attempt_id: string;
+        readonly followup_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["VoidFollowupAttemptRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedFollowupAttempt"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_followup_revisions_api_teaching_analysis_followups__followup_id__revisions_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly followup_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedFollowup"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly export_teaching_worksheet_api_teaching_analysis_followups__followup_id__worksheet_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly audience?: "student" | "teacher";
+        readonly format?: "html" | "markdown";
+        readonly language?: "en" | "zh";
+        readonly revision?: number | null;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly followup_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description The requested saved worksheet edition as an attachment. */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "text/html": string;
+          readonly "text/markdown": string;
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly preview_teaching_assignment_api_teaching_analysis_preview_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "multipart/form-data": components["schemas"]["Body_preview_teaching_assignment_api_teaching_analysis_preview_post"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AssignmentInput"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_reports_api_teaching_analysis_reports_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+        readonly offset?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["ReportSummary"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_teaching_report_api_teaching_analysis_reports_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveReportRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedReport"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_report_api_teaching_analysis_reports__report_id__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly report_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedReport"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_report_revisions_api_teaching_analysis_reports__report_id__revisions_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly report_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedReport"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_rubrics_api_teaching_analysis_rubrics_get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["RubricTemplate"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_teaching_rubric_api_teaching_analysis_rubrics_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path?: never;
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveRubricRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["RubricTemplate"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_rubric_api_teaching_analysis_rubrics__template_id__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly template_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["RubricTemplate"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly teaching_rubric_revisions_api_teaching_analysis_rubrics__template_id__revisions_get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly template_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["RubricTemplate"][];
         };
       };
       /** @description Validation Error */
