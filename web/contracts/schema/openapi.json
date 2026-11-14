@@ -6834,6 +6834,14 @@
             "title": "Instructions",
             "type": "string"
           },
+          "question_hints": {
+            "items": {
+              "$ref": "#/components/schemas/TaskQuestionHints"
+            },
+            "maxItems": 3,
+            "title": "Question Hints",
+            "type": "array"
+          },
           "recipient_user_id": {
             "maxLength": 64,
             "minLength": 1,
@@ -11747,6 +11755,35 @@
         "title": "ResumeBookRequest",
         "type": "object"
       },
+      "RevealTaskHintRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_hint_revision": {
+            "maximum": 9.0,
+            "minimum": 0.0,
+            "title": "Expected Hint Revision",
+            "type": "integer"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "request_id",
+          "expected_hint_revision"
+        ],
+        "title": "RevealTaskHintRequest",
+        "type": "object"
+      },
       "ReviewCardRequest": {
         "properties": {
           "card_id": {
@@ -13931,6 +13968,21 @@
       "StudentSubmission": {
         "additionalProperties": false,
         "properties": {
+          "hint_usage": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/TaskHintUsage"
+                },
+                "maxItems": 3,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hint Usage"
+          },
           "responses": {
             "items": {
               "$ref": "#/components/schemas/TaskResponse"
@@ -14759,6 +14811,143 @@
         "title": "TaskCard",
         "type": "object"
       },
+      "TaskHintUsage": {
+        "additionalProperties": false,
+        "properties": {
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "revealed": {
+            "items": {
+              "$ref": "#/components/schemas/TaskHintUse"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Revealed",
+            "type": "array"
+          }
+        },
+        "required": [
+          "question_id",
+          "revealed"
+        ],
+        "title": "TaskHintUsage",
+        "type": "object"
+      },
+      "TaskHintUse": {
+        "additionalProperties": false,
+        "properties": {
+          "level": {
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Level",
+            "type": "integer"
+          },
+          "revealed_at": {
+            "minimum": 0.0,
+            "title": "Revealed At",
+            "type": "number"
+          }
+        },
+        "required": [
+          "level",
+          "revealed_at"
+        ],
+        "title": "TaskHintUse",
+        "type": "object"
+      },
+      "TaskHintsQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "revealed": {
+            "items": {
+              "$ref": "#/components/schemas/TaskRevealedHint"
+            },
+            "maxItems": 3,
+            "title": "Revealed",
+            "type": "array"
+          },
+          "total": {
+            "maximum": 3.0,
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "question_id",
+          "total"
+        ],
+        "title": "TaskHintsQuestion",
+        "type": "object"
+      },
+      "TaskHintsState": {
+        "additionalProperties": false,
+        "properties": {
+          "hint_revision": {
+            "maximum": 9.0,
+            "minimum": 0.0,
+            "title": "Hint Revision",
+            "type": "integer"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/TaskHintsQuestion"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Questions",
+            "type": "array"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "hint_revision",
+          "questions"
+        ],
+        "title": "TaskHintsState",
+        "type": "object"
+      },
+      "TaskQuestionHints": {
+        "additionalProperties": false,
+        "properties": {
+          "hints": {
+            "items": {
+              "maxLength": 600,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Hints",
+            "type": "array"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "hints"
+        ],
+        "title": "TaskQuestionHints",
+        "type": "object"
+      },
       "TaskReadAloudAvailability": {
         "additionalProperties": false,
         "properties": {
@@ -14920,6 +15109,35 @@
           "response_status"
         ],
         "title": "TaskResponse",
+        "type": "object"
+      },
+      "TaskRevealedHint": {
+        "additionalProperties": false,
+        "properties": {
+          "level": {
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Level",
+            "type": "integer"
+          },
+          "revealed_at": {
+            "minimum": 0.0,
+            "title": "Revealed At",
+            "type": "number"
+          },
+          "text": {
+            "maxLength": 600,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "level",
+          "revealed_at",
+          "text"
+        ],
+        "title": "TaskRevealedHint",
         "type": "object"
       },
       "TaskSpeechTextResponse": {
@@ -15234,6 +15452,14 @@
             "title": "Followup Revision",
             "type": "integer"
           },
+          "hint_usage": {
+            "items": {
+              "$ref": "#/components/schemas/TaskHintUsage"
+            },
+            "maxItems": 3,
+            "title": "Hint Usage",
+            "type": "array"
+          },
           "instructions": {
             "title": "Instructions",
             "type": "string"
@@ -15249,6 +15475,14 @@
           },
           "progress": {
             "$ref": "#/components/schemas/TeacherTaskProgress"
+          },
+          "question_hints": {
+            "items": {
+              "$ref": "#/components/schemas/TaskQuestionHints"
+            },
+            "maxItems": 3,
+            "title": "Question Hints",
+            "type": "array"
           },
           "recipient_user_id": {
             "title": "Recipient User Id",
@@ -67165,6 +67399,166 @@
           }
         },
         "summary": "Get Student Task",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}/hints": {
+      "get": {
+        "operationId": "get_student_task_hints_api_student_tasks__task_id__hints_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskHintsState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Student Task Hints",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}/hints/reveal": {
+      "post": {
+        "operationId": "reveal_student_task_hint_api_student_tasks__task_id__hints_reveal_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevealTaskHintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskHintsState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reveal Student Task Hint",
         "tags": [
           "student-tasks"
         ]

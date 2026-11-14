@@ -26,8 +26,20 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from deeptutor.utils.secret_files import ensure_private_directory, ensure_private_file
 
 from .followup_models import SavedFollowup
+from .learner_task_hints import (
+    HintConflict,
+    HintLedger,
+    HintUnavailable,
+    create_hint_schema,
+    initialize_hints,
+    normalize_hint_assistance,
+    read_hints,
+    reveal_hint,
+    submission_matches_request,
+)
 from .learner_task_models import (
     IssueTaskRequest,
+    RevealTaskHintRequest,
     RevokeTaskRequest,
     SaveTaskProgressRequest,
     StudentSubmission,
@@ -36,6 +48,7 @@ from .learner_task_models import (
     StudentTaskSummary,
     StudentTaskView,
     SubmitTaskRequest,
+    TaskHintsState,
     TaskResponse,
     TaskStatus,
     TeacherTaskProgress,
@@ -146,6 +159,7 @@ class _Bundle:
     state: _State
     progress: StudentTaskProgress
     submission: StudentSubmission | None
+    hints: HintLedger
 
 
 def _checked_json(row: sqlite3.Row, content: str, digest: str) -> dict[str, Any]:
@@ -161,6 +175,18 @@ def _responses(issue: _Issue, responses: list[TaskResponse]) -> list[TaskRespons
     if len(by_id) != len(responses) or set(by_id) != set(ids):
         raise TaskValidationError("Provide exactly one response state for every assigned question.")
     return [by_id[identifier] for identifier in ids]
+
+
+def canonical_issue_request(request: IssueTaskRequest | dict) -> dict:
+    """Keep old issue digests: omit only the newly introduced empty plan.
+
+    Other defaults were always part of the original issue intent. Historical
+    raw issue JSON, its digest and original submission intents are not changed.
+    """
+    value = IssueTaskRequest.model_validate(request).model_dump(mode="json")
+    if value["question_hints"] == []:
+        value.pop("question_hints")
+    return value
 
 
 class LearnerTaskStore:
@@ -202,6 +228,9 @@ class LearnerTaskStore:
         connection.row_factory = sqlite3.Row
         connection.create_function("task_receipt_valid", 2, _receipt_valid, deterministic=True)
         connection.create_function("task_intent_valid", 4, _intent_valid, deterministic=True)
+        connection.create_function(
+            "task_submission_matches_request", 3, submission_matches_request, deterministic=True
+        )
         try:
             connection.execute("PRAGMA busy_timeout=15000")
             connection.execute("PRAGMA foreign_keys=ON")
@@ -236,6 +265,7 @@ class LearnerTaskStore:
                         submission_json TEXT NOT NULL,progress_revision INTEGER NOT NULL CHECK(progress_revision>0),submitted_at REAL NOT NULL
                     );
                 """)
+                create_hint_schema(connection)
                 ensure_private_file(self.db_path)
             yield connection
         finally:
@@ -243,7 +273,7 @@ class LearnerTaskStore:
 
     @staticmethod
     def _intent(scope: str, request: IssueTaskRequest) -> dict:
-        return {"teacher_scope_key": scope, "request": request.model_dump(mode="json")}
+        return {"teacher_scope_key": scope, "request": canonical_issue_request(request)}
 
     @staticmethod
     def _answer_intent(task_id: str, recipient: str, request: Any) -> dict:
@@ -376,6 +406,17 @@ class LearnerTaskStore:
             progress.saved_at is not None and progress.saved_at < issue.issued_at
         ):
             raise ValueError("Task timestamps precede issuance.")
+        hints = read_hints(
+            connection,
+            task_id,
+            issue.request.recipient_user_id,
+            [question.question_id for question in issue.source_snapshot.questions],
+            issue.request.question_hints,
+            issue.issued_at,
+        )
+        final_time = state.submitted_at or state.revoked_at
+        if final_time is not None and any(event.revealed_at > final_time for event in hints.events):
+            raise ValueError("Hint receipts cannot follow task completion or withdrawal.")
         submission_row = connection.execute(
             "SELECT * FROM student_task_submissions WHERE task_id=?", (task_id,)
         ).fetchone()
@@ -396,7 +437,13 @@ class LearnerTaskStore:
                 or str(submission.submission_id) != submission_row["submission_id"]
                 or submission.submission_id != request.submission_id
                 or submission.submitted_at != submission_row["submitted_at"]
-                or submission.responses != request.responses
+                or submission.responses
+                != normalize_hint_assistance(
+                    request.responses,
+                    submission.hint_usage,
+                    has_hint_plan=bool(issue.request.question_hints),
+                )
+                or (submission.hint_usage is not None and submission.hint_usage != hints.usage)
                 or submission.responses != progress.responses
                 or submission_row["progress_revision"] != progress.revision
                 or progress.revision != request.expected_revision + 1
@@ -407,7 +454,7 @@ class LearnerTaskStore:
                 raise ValueError("Submission, final progress and lifecycle are inconsistent.")
         elif state.submitted_at is not None or state.status == "submitted":
             raise ValueError("Submitted task is missing its immutable receipt.")
-        return _Bundle(issue, state, progress, submission)
+        return _Bundle(issue, state, progress, submission, hints)
 
     @staticmethod
     def _student_view(bundle: _Bundle) -> StudentTaskView:
@@ -455,13 +502,22 @@ class LearnerTaskStore:
             revoked_at=state.revoked_at,
             revoke_reason=state.revoke_request.reason if state.revoke_request else None,
             issued_by_user_id=issue.issued_by_user_id,
+            question_hints=issue.request.question_hints,
+            hint_usage=bundle.hints.usage,
         )
 
     @staticmethod
     def _now(bundle: _Bundle | None = None) -> float:
         now = _time(time.time())
         return (
-            max(now, bundle.state.updated_at, bundle.progress.saved_at or bundle.issue.issued_at)
+            max(
+                now,
+                bundle.state.updated_at,
+                bundle.progress.saved_at or bundle.issue.issued_at,
+                bundle.hints.events[-1].revealed_at
+                if bundle.hints.events
+                else bundle.issue.issued_at,
+            )
             if bundle
             else now
         )
@@ -516,6 +572,9 @@ class LearnerTaskStore:
                     raise TaskValidationError(
                         "A verified saved question-set snapshot is required."
                     ) from None
+                source_ids = {question.question_id for question in source.questions}
+                if any(plan.question_id not in source_ids for plan in request.question_hints):
+                    raise TaskValidationError("Hint plans must refer to actual assigned questions.")
                 now = self._now()
                 issue = _Issue(
                     request=request,
@@ -538,6 +597,7 @@ class LearnerTaskStore:
                         now,
                     ),
                 )
+                initialize_hints(connection, str(request.task_id), request.recipient_user_id)
                 self._put_state(
                     connection,
                     _State(task_id=request.task_id, revision=1, status="pending", updated_at=now),
@@ -576,6 +636,55 @@ class LearnerTaskStore:
             if connection is not None:
                 connection.execute("BEGIN")
             return self._student_view(self._load(connection, identifier, recipient=recipient))
+
+    def get_task_hints(self, recipient_user_id: str, task_id: str | UUID) -> TaskHintsState:
+        recipient, identifier = _actor(recipient_user_id), _id(task_id)
+        with self._connection() as connection:
+            if connection is not None:
+                connection.execute("BEGIN")
+            return self._load(connection, identifier, recipient=recipient).hints.state
+
+    def reveal_task_hint(
+        self, recipient_user_id: str, task_id: str | UUID, payload: RevealTaskHintRequest
+    ) -> TaskHintsState:
+        recipient, identifier = _actor(recipient_user_id), _id(task_id)
+        try:
+            request = RevealTaskHintRequest.model_validate(payload)
+        except ValidationError:
+            raise TaskValidationError("Review the question and current hint revision.") from None
+        with self._connection() as connection:
+            if connection is None:
+                raise TaskNotFound("Task not found.")
+            connection.execute("BEGIN IMMEDIATE")
+            try:
+                bundle = self._load(connection, identifier, recipient=recipient)
+                # A successful old UUID cannot open/replay hints after the task
+                # was completed or withdrawn. GET retains the existing prefix.
+                self._active(bundle.state)
+                try:
+                    result = reveal_hint(
+                        connection,
+                        identifier,
+                        recipient,
+                        [
+                            question.question_id
+                            for question in bundle.issue.source_snapshot.questions
+                        ],
+                        bundle.issue.request.question_hints,
+                        bundle.issue.issued_at,
+                        bundle.hints,
+                        request,
+                        self._now(bundle),
+                    )
+                except HintConflict as exc:
+                    raise TaskConflict(str(exc)) from None
+                except HintUnavailable as exc:
+                    raise TaskValidationError(str(exc)) from None
+                connection.commit()
+                return result
+            except BaseException:
+                connection.rollback()
+                raise
 
     @staticmethod
     def _active(state: _State) -> None:
@@ -707,17 +816,19 @@ class LearnerTaskStore:
                 ):
                     raise TaskConflict("This submission id was already used.")
                 now = self._now(bundle)
+                effective = normalize_hint_assistance(normalized, bundle.hints.usage)
                 final = StudentSubmission(
                     task_id=identifier,
                     submission_id=request.submission_id,
                     submitted_at=now,
-                    responses=normalized,
+                    responses=effective,
+                    hint_usage=bundle.hints.usage,
                 )
                 progress = StudentTaskProgress(
                     revision=bundle.progress.revision + 1,
                     current_question_index=len(normalized) - 1,
                     saved_at=now,
-                    responses=normalized,
+                    responses=effective,
                 )
                 self._put_progress(connection, identifier, progress)
                 self._put_state(
@@ -834,7 +945,7 @@ class LearnerTaskStore:
                     OR json_extract(u.request_json,'$.submission_id') IS NOT u.submission_id
                     OR json_extract(u.request_json,'$.expected_revision')+1 IS NOT p.revision
                     OR json_extract(u.submission_json,'$.responses') IS NOT json_extract(p.progress_json,'$.responses')
-                    OR json_extract(u.submission_json,'$.responses') IS NOT json_extract(u.request_json,'$.responses')
+                    OR task_submission_matches_request(u.submission_json,u.request_json,t.issue_json)=0
                 ))
             )""",
             (int(teacher), actor, int(teacher), actor),
@@ -908,6 +1019,8 @@ class LearnerTaskStore:
                         "revoked_at",
                         "revoke_reason",
                         "issued_by_user_id",
+                        "question_hints",
+                        "hint_usage",
                     }
                 )
             )
@@ -945,6 +1058,7 @@ def get_learner_task_store() -> LearnerTaskStore:
 __all__ = [
     "LearnerTaskStore",
     "get_learner_task_store",
+    "canonical_issue_request",
     "TaskNotFound",
     "TaskConflict",
     "TaskRevoked",

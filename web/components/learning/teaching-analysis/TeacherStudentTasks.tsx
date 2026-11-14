@@ -12,7 +12,8 @@ import { sameSavedFollowup } from '@/lib/teaching-followup-drafts'
 import {
   getStudentTaskRecipients, getTeacherStudentTask, issueStudentTask, listTeacherStudentTasks, revokeStudentTask,
   isStudentTaskPublishDraft, sameStudentTaskIntent, studentTaskPublishSlot, studentVisibleTaskPreview,
-  type IssueStudentTaskRequest, type StudentTaskPublishDraft, type StudentTaskSetup, type TeacherStudentTask, type TeacherStudentTaskSummary,
+  cloneQuestionHints, cloneStudentTaskIssue, sameQuestionHints, validQuestionHintPlan, validTaskHintText,
+  type IssueStudentTaskRequest, type StudentTaskPublishDraft, type StudentTaskSetup, type TeacherStudentTask, type TeacherStudentTaskSummary, type TaskQuestionHints,
 } from '@/lib/teacher-student-tasks-api'
 import { useTeachingDraftSlot } from './TeachingDrafts'
 import { controlClass } from './AssignmentEditor'
@@ -20,6 +21,37 @@ import { TaskTranslations } from '../TaskTranslations'
 
 const SETUP_DOC = 'https://github.com/AnxForever/DeepTutor/blob/teacher-diagnostics/docs-for-dev/STUDENT_TASKS.md'
 const PAGE_SIZE = 20
+
+function HintPlanEditor({ source, plan, disabled, onChange }: { source: SavedFollowup; plan?: TaskQuestionHints[]; disabled: boolean; onChange: (questionId: string, hints: string[]) => void }) {
+  const { t } = useTranslation()
+  return <details className="mt-4 rounded-xl border border-border p-4">
+    <summary className="cursor-pointer text-sm font-medium">{t('teacherTaskHints.editorTitle')}</summary>
+    <p className="mt-3 text-xs leading-5 text-muted-foreground">{t('teacherTaskHints.editorHint')}</p><p className="mt-2 text-xs leading-5 text-muted-foreground">{t('teacherTaskHints.templateHint')}</p>
+    <div className="mt-4 grid gap-4">{source.questions.map(question => {
+      const hints = plan?.find(entry => entry.question_id === question.question_id)?.hints ?? []
+      return <fieldset key={question.question_id} className="min-w-0 rounded-lg border border-border p-3" disabled={disabled}>
+        <legend className="px-1 text-xs font-medium">{question.question_id}</legend><p className="whitespace-pre-wrap break-words text-sm leading-6">{question.question}</p>
+        {hints.map((hint, level) => <div className="mt-3" key={level}><Field label={t('teacherTaskHints.field', { id: question.question_id, n: level + 1 })} error={!hint.trim() ? t('teacherTaskHints.empty') : !validTaskHintText(hint) ? t('teacherTaskHints.invalid') : undefined}><textarea className={controlClass} rows={2} maxLength={600} value={hint} onChange={event => onChange(question.question_id, hints.map((value, index) => index === level ? event.target.value : value))} /></Field><div className="mt-1 flex items-center justify-between gap-2"><p className="text-xs tabular-nums text-muted-foreground">{Array.from(hint).length}/600</p><Button size="sm" variant="ghost" onClick={() => onChange(question.question_id, hints.filter((_, index) => index !== level))}>{t('teacherTaskHints.remove', { id: question.question_id, n: level + 1 })}</Button></div></div>)}
+        <Button className="mt-3" size="sm" variant="secondary" disabled={disabled || hints.length >= 3} onClick={() => onChange(question.question_id, [...hints, ''])}>{t('teacherTaskHints.add', { id: question.question_id })}</Button>
+      </fieldset>
+    })}</div>
+  </details>
+}
+
+function HintHistory({ task, date }: { task: TeacherStudentTask; date: (value: number | null) => string }) {
+  const { t } = useTranslation()
+  const plan = task.question_hints ?? []
+  const usage = task.submission ? task.submission.hint_usage ?? null : task.hint_usage ?? []
+  return <details className="mt-4 rounded-xl border border-border p-3"><summary className="cursor-pointer text-sm font-medium">{t('teacherTaskHints.historyTitle')}</summary>
+    <p className="mt-3 text-xs leading-5 text-muted-foreground">{t('teacherTaskHints.historyHint')}</p>
+    <p className="mt-2 text-xs leading-5 text-muted-foreground">{t(task.submission ? usage === null ? 'teacherTaskHints.legacyUsage' : 'teacherTaskHints.finalUsage' : 'teacherTaskHints.currentUsage')}</p>
+    {!plan.length && <p className="mt-3 text-sm text-muted-foreground">{t('teacherTaskHints.noPlan')}</p>}
+    <div className="mt-3 grid gap-3">{plan.map(entry => <section key={entry.question_id} className="rounded-lg border border-border p-3"><h5 className="text-sm font-medium">{entry.question_id}</h5><ol className="mt-3 grid gap-3">{entry.hints.map((hint, index) => {
+      const revealed = usage?.find(value => value.question_id === entry.question_id)?.revealed.find(value => value.level === index + 1)
+      return <li key={index}><p className="text-xs font-medium">{t('teacherTaskHints.level', { n: index + 1 })}</p><p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">{hint}</p>{usage !== null && <p className="mt-1 text-xs text-muted-foreground">{revealed ? t('teacherTaskHints.unlockedAt', { time: date(revealed.revealed_at) }) : t('teacherTaskHints.notUnlocked')}</p>}</li>
+    })}</ol></section>)}</div>
+  </details>
+}
 
 export interface TeacherStudentTasksProps {
   followup: SavedFollowup
@@ -82,22 +114,23 @@ function ScopedTeacherTasks({ followup, workspaceId, disabled = false, canPublis
   const sourceVersionChanged = !sameSavedFollowup(source, followup)
   const acknowledged = draft.acknowledged_task_id
   const restoreBlocked = restored && (setupLoading || !setup || !sourceValid)
-  const dirty = Boolean(form.recipient_user_id || form.title !== initialTitle.current || form.instructions || draft.reviewed || draft.submitted_payload || acknowledged || draft.revoke?.reason || restoreBlocked)
+  const dirty = Boolean(form.recipient_user_id || form.title !== initialTitle.current || form.instructions || form.question_hints?.length || draft.reviewed || draft.submitted_payload || acknowledged || draft.revoke?.reason || restoreBlocked)
   const slot = useTeachingDraftSlot({
     slot: studentTaskPublishSlot(followup.followup_id), value: draft, dirty,
     validate: (value): value is StudentTaskPublishDraft => isStudentTaskPublishDraft(value) && value.source.followup_id === followup.followup_id,
     onRestore(value) {
-      setDraft({ ...value, reviewed: false })
+      setDraft({ ...value, payload: cloneStudentTaskIssue(value.payload), submitted_payload: value.submitted_payload === null ? null : cloneStudentTaskIssue(value.submitted_payload), reviewed: false })
       setExpanded(true); setRestored(true); setSetup(null); setSetupLoading(true); setSourceValid(false); setSetupError(false); setSourceIssue(null)
       setLoadNonce(value => value + 1); setListLoading(true); setTaskId(value.revoke?.task_id ?? null); setTask(null); setTaskLoading(value.revoke !== null)
       setError(''); setNotice(t('teacherTasks.restored')); setCleanupError(false)
     },
   })
   const clearDraft = slot.clear
-  const preview = useMemo(() => studentVisibleTaskPreview(source, form.title, form.instructions), [source, form.title, form.instructions])
+  const preview = useMemo(() => studentVisibleTaskPreview(source, form.title, form.instructions, form.question_hints), [source, form.title, form.instructions, form.question_hints])
+  const hintsValid = validQuestionHintPlan(form.question_hints ?? [], source)
   const recipient = setup?.recipients.find(value => value.user_id === form.recipient_user_id)
   const locked = disabled || working !== null || Boolean(acknowledged)
-  const publishBlocked = locked || !canPublish || sourceVersionChanged || !sourceValid || setupLoading || !setup?.enabled || !recipient?.can_receive || !draft.reviewed || Boolean(sourceIssue)
+  const publishBlocked = locked || !canPublish || sourceVersionChanged || !sourceValid || setupLoading || !setup?.enabled || !recipient?.can_receive || !draft.reviewed || !hintsValid || Boolean(sourceIssue)
 
   useEffect(() => { alive.current = true; return () => { alive.current = false; action.current?.abort() } }, [])
   useEffect(() => { callbacks.current?.(dirty); return () => callbacks.current?.(false) }, [dirty, onDirtyChange])
@@ -176,12 +209,20 @@ function ScopedTeacherTasks({ followup, workspaceId, disabled = false, canPublis
 
   function refreshSetup() { setupRead.current?.abort(); setSetupLoading(true); setSetupError(false); setSourceValid(false); setSourceIssue(null); setLoadNonce(value => value + 1) }
   function refreshList() { listRead.current?.abort(); setListLoading(true); setListError(false); setListRequest(value => ({ offset: 0, nonce: value.nonce + 1 })) }
-  function update(change: Partial<IssueStudentTaskRequest>) {
+  function update(change: Partial<IssueStudentTaskRequest>, invalidateIdentity = false) {
     if (locked) return
-    const next = { ...form, ...change }
-    const changedIntent = draft.submitted_payload !== null && !sameStudentTaskIntent(next, draft.submitted_payload)
+    const next = cloneStudentTaskIssue({ ...form, ...change })
+    const changedIntent = invalidateIdentity || (draft.submitted_payload !== null && !sameStudentTaskIntent(next, draft.submitted_payload))
     setDraft({ ...draft, payload: changedIntent ? { ...next, task_id: crypto.randomUUID() } : next, submitted_payload: changedIntent ? null : draft.submitted_payload, reviewed: false })
     setError(''); setNotice('')
+  }
+  function updateHints(questionId: string, hints: string[]) {
+    const plan = cloneQuestionHints(form.question_hints)
+    const existing = plan.findIndex(entry => entry.question_id === questionId)
+    if (!hints.length) { if (existing >= 0) plan.splice(existing, 1) }
+    else if (existing >= 0) plan[existing] = { question_id: questionId, hints: [...hints] }
+    else plan.push({ question_id: questionId, hints: [...hints] })
+    if (!sameQuestionHints(form.question_hints, plan)) update({ question_hints: plan }, true)
   }
   async function clearForm() {
     if (locked || action.current) return
@@ -195,10 +236,11 @@ function ScopedTeacherTasks({ followup, workspaceId, disabled = false, canPublis
     if (!recipient?.can_receive) { setError(t('teacherTasks.invalidRecipient')); return }
     if (!form.title.trim() || [...form.title].length > 200) { setError(t('teacherTasks.invalidTitle')); return }
     if ([...form.instructions].length > 1000) { setError(t('teacherTasks.invalidInstructions')); return }
+    if (!hintsValid) { setError(t('teacherTaskHints.invalid')); return }
     if (!draft.reviewed) { setError(t('teacherTasks.reviewRequired')); return }
-    const payload = { ...form }
+    const payload = cloneStudentTaskIssue(form)
     const controller = new AbortController(); action.current = controller
-    setWorking('publish'); setError(''); setNotice(''); setDraft(value => ({ ...value, submitted_payload: payload }))
+    setWorking('publish'); setError(''); setNotice(''); setDraft(value => ({ ...value, submitted_payload: cloneStudentTaskIssue(payload) }))
     try {
       const value = await issueStudentTask(payload, workspaceId, controller.signal)
       if (!alive.current || controller.signal.aborted) return
@@ -212,7 +254,7 @@ function ScopedTeacherTasks({ followup, workspaceId, disabled = false, canPublis
     } finally { if (action.current === controller) action.current = null; if (alive.current && !controller.signal.aborted) setWorking(null) }
   }
   function matchesIssue(value: TeacherStudentTask, payload: IssueStudentTaskRequest) {
-    return value.task_id === payload.task_id && value.followup_id === payload.followup_id && value.followup_revision === payload.followup_revision && value.recipient_user_id === payload.recipient_user_id && value.title === payload.title && value.instructions === payload.instructions && sameSavedFollowup(value.source_snapshot, source)
+    return value.task_id === payload.task_id && value.followup_id === payload.followup_id && value.followup_revision === payload.followup_revision && value.recipient_user_id === payload.recipient_user_id && value.title === payload.title && value.instructions === payload.instructions && sameQuestionHints(value.question_hints, payload.question_hints) && sameSavedFollowup(value.source_snapshot, source)
   }
   async function recoverPublication() {
     const payload = draft.submitted_payload
@@ -264,13 +306,15 @@ function ScopedTeacherTasks({ followup, workspaceId, disabled = false, canPublis
         <Field className="sm:col-span-2" label={t('teacherTasks.instructions')}><textarea className={controlClass} rows={2} maxLength={1000} disabled={locked} value={form.instructions} onChange={event => update({ instructions: event.target.value })} /></Field>
       </div>
       {form.recipient_user_id && <p className="mt-3 text-xs text-muted-foreground">{t('teacherTasks.recipientIdentity', { name: recipient?.username ?? t('teacherTasks.unavailableAccount'), id: form.recipient_user_id })}{recipient?.can_receive === false && ` · ${recipient.reason || t('teacherTasks.recipientUnavailable')}`}</p>}
+      <HintPlanEditor source={source} plan={form.question_hints} disabled={locked} onChange={updateHints} />
       <section className="mt-4 rounded-xl border border-border bg-muted/20 p-4" aria-label={t('teacherTasks.previewTitle')}>
         <h4 className="text-sm font-semibold">{t('teacherTasks.previewTitle')}</h4><p className="mt-1 text-xs leading-5 text-muted-foreground">{t('teacherTasks.previewHint')}</p>
         <p className="mt-3 whitespace-pre-wrap break-words font-medium">{preview.title}</p>{preview.instructions && <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6">{preview.instructions}</p>}
-        <ol className="mt-3 grid gap-3">{preview.questions.map(question => <li key={question.question_id}><p className="text-xs font-medium text-muted-foreground">{question.question_id}</p><p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">{question.question}</p></li>)}</ol>
+        <ol className="mt-3 grid gap-3">{preview.questions.map(question => <li key={question.question_id}><p className="text-xs font-medium text-muted-foreground">{question.question_id}</p><p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">{question.question}</p>{preview.question_hints?.find(entry => entry.question_id === question.question_id) && <div className="mt-3 rounded-lg border border-border p-3"><p className="text-xs font-medium">{t('teacherTaskHints.previewTitle')}</p><ol className="mt-2 grid gap-2">{preview.question_hints.find(entry => entry.question_id === question.question_id)!.hints.map((hint, level) => <li key={level}><p className="text-xs text-muted-foreground">{t('teacherTaskHints.level', { n: level + 1 })}</p><p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">{hint}</p></li>)}</ol></div>}</li>)}</ol>
       </section>
       <p className="mt-3 text-xs leading-5 text-muted-foreground">{t('teacherTasks.privacyHint')}</p>
-      <label className="mt-4 flex items-start gap-2 text-sm leading-6"><input className="mt-1 accent-primary" type="checkbox" checked={draft.reviewed} disabled={locked || setupLoading || !sourceValid || !setup?.enabled} onChange={event => setDraft(value => ({ ...value, reviewed: event.target.checked }))} />{t('teacherTasks.reviewed')}</label>
+      {!hintsValid && <InlineAlert className="mt-3" tone="warning">{t('teacherTaskHints.invalid')}</InlineAlert>}
+      <label className="mt-4 flex items-start gap-2 text-sm leading-6"><input className="mt-1 accent-primary" type="checkbox" checked={draft.reviewed} disabled={locked || setupLoading || !sourceValid || !setup?.enabled || !hintsValid} onChange={event => setDraft(value => ({ ...value, reviewed: event.target.checked }))} />{t('teacherTasks.reviewed')}</label>
       <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" icon={<Send size={14} />} disabled={publishBlocked} loading={working === 'publish'} onClick={() => void publish()}>{t('teacherTasks.publish')}</Button><Button size="sm" variant="ghost" disabled={locked} onClick={() => void clearForm()}>{t('teacherTasks.clear')}</Button></div>
       {draft.submitted_payload && !acknowledged && <Button className="mt-3" size="sm" variant="secondary" disabled={disabled || working !== null} loading={working === 'recover'} onClick={() => void recoverPublication()}>{t('teacherTasks.checkReceipt')}</Button>}
       {error && <InlineAlert className="mt-3" tone="warning">{error}</InlineAlert>}{notice && <InlineAlert className="mt-3" tone="success">{notice}</InlineAlert>}
@@ -287,6 +331,7 @@ function ScopedTeacherTasks({ followup, workspaceId, disabled = false, canPublis
         {detail && !taskError && <><p className="text-xs leading-5 text-muted-foreground">{t('teacherTasks.readOnly')}</p><h4 className="mt-3 font-semibold">{detail.title}</h4><p className="mt-2 break-words text-xs text-muted-foreground">{t('teacherTasks.recipientIdentity', { name: setup?.recipients.find(value => value.user_id === detail.recipient_user_id)?.username ?? t('teacherTasks.unavailableAccount'), id: detail.recipient_user_id })}</p><p className="mt-1 text-xs text-muted-foreground">{t('teacherTasks.sourceVersion', { report: detail.source_snapshot.report_revision, practice: detail.followup_revision })}</p><StatusChip className="mt-3">{t(`teacherTasks.status.${detail.status}`)}</StatusChip>{detail.instructions && <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6">{detail.instructions}</p>}
           {detail.submission ? <section className="mt-4" aria-label={t('teacherTasks.finalAnswers')}><h4 className="text-sm font-semibold">{t('teacherTasks.finalAnswers')}</h4><p className="mt-1 text-xs text-muted-foreground">{t('teacherTasks.submittedAt', { time: date(detail.submission.submitted_at) })}</p><ol className="mt-3 grid gap-3">{detail.submission.responses.map(response => <li key={response.question_id} className="rounded-lg border border-border p-3"><p className="text-xs font-medium">{response.question_id}</p><p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">{detail.source_snapshot.questions.find(question => question.question_id === response.question_id)?.question}</p><div className="mt-2 flex flex-wrap gap-2"><StatusChip tone={response.response_status === 'needs_help' ? 'warning' : 'neutral'}>{t(`teacherTasks.response.${response.response_status}`)}</StatusChip><StatusChip>{t(`teaching.assistanceStatus.${response.assistance}`)}</StatusChip></div><p className="mt-3 text-xs text-muted-foreground">{t('teacherTasks.answer')}</p><p className="mt-1 whitespace-pre-wrap break-words border-l-2 border-primary/30 pl-3 text-sm leading-6">{response.answer ?? t('teaching.notProvided')}</p></li>)}</ol></section> : <InlineAlert className="mt-4">{t('teacherTasks.notSubmitted')}</InlineAlert>}
           {!detail.submission && <ol className="mt-4 grid gap-3">{detail.source_snapshot.questions.map(({ question_id, question }) => <li key={question_id} className="rounded-lg border border-border p-3"><p className="text-xs font-medium">{question_id}</p><p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6">{question}</p></li>)}</ol>}
+          <HintHistory task={detail} date={date} />
           {detail.revoke_reason && <p className="mt-4 whitespace-pre-wrap break-words text-sm">{t('teacherTasks.revokeReason')}：{detail.revoke_reason}</p>}{detail.status !== 'revoked' && <Button className="mt-4" size="sm" variant="danger" disabled={disabled || working !== null || Boolean(acknowledged)} onClick={() => { setDraft(value => ({ ...value, revoke: { task_id: detail.task_id, expected_revision: detail.task_revision, reason: '' } })); setRevokeError('') }}>{t('teacherTasks.revoke')}</Button>}</>}
       </Dialog>
       <Dialog open={draft.revoke !== null} title={t('teacherTasks.revokeTitle')} closeLabel={t('Close')} busy={working === 'revoke'} onClose={() => { if (working === null) setDraft(value => ({ ...value, revoke: null })) }} footer={<><Button variant="secondary" disabled={working !== null} onClick={() => setDraft(value => ({ ...value, revoke: null }))}>{t('Cancel')}</Button><Button variant="danger" loading={working === 'revoke'} disabled={disabled || working !== null || taskLoading || !detail || detail.task_revision !== draft.revoke?.expected_revision || detail.status === 'revoked'} onClick={() => void revoke()}>{t('teacherTasks.revokeConfirm')}</Button></>}>

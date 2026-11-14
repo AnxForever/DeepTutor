@@ -16,6 +16,7 @@ vi.mock('next/link', () => ({ default: ({ href, prefetch, ...props }: React.Anch
 vi.mock('@/components/common/MarkdownRenderer', () => ({ default: ({ content }: { content: string }) => <div>{content}</div> }))
 vi.mock('@/components/learning/student-tasks/StudentTaskVoiceControls', async original => ({ ...(await original<typeof import('@/components/learning/student-tasks/StudentTaskVoiceControls')>()), default: () => null }))
 vi.mock('@/components/learning/TaskTranslations', () => ({ TaskTranslations: ({ children }: { children: React.ReactNode }) => children }))
+vi.mock('@/lib/student-task-hints-api', async original => ({ ...(await original<typeof import('@/lib/student-task-hints-api')>()), getStudentTaskHints: async (id: string) => ({ task_id: id, hint_revision: 0, questions: ['Q1', 'Q2'].map(question_id => ({ question_id, total: 0, revealed: [] })) }) }))
 vi.mock('@/lib/student-tasks-api', async original => ({ ...(await original<typeof api>()), listStudentTasks: vi.fn(), getStudentTask: vi.fn(), saveStudentTaskProgress: vi.fn(), submitStudentTask: vi.fn() }))
 const i18n = initI18n('en')
 i18n.addResourceBundle('en', 'app', taskTranslations, true, true)

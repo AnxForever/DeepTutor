@@ -10502,6 +10502,40 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/student-tasks/{task_id}/hints": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Student Task Hints */
+    readonly get: operations["get_student_task_hints_api_student_tasks__task_id__hints_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/student-tasks/{task_id}/hints/reveal": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Reveal Student Task Hint */
+    readonly post: operations["reveal_student_task_hint_api_student_tasks__task_id__hints_reveal_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/student-tasks/{task_id}/progress": {
     readonly parameters: {
       readonly query?: never;
@@ -15358,6 +15392,8 @@ export interface components {
        * @default
        */
       readonly instructions: string;
+      /** Question Hints */
+      readonly question_hints?: readonly components["schemas"]["TaskQuestionHints"][];
       /** Recipient User Id */
       readonly recipient_user_id: string;
       /**
@@ -17679,6 +17715,18 @@ export interface components {
       /** Expected Revision */
       readonly expected_revision?: number | null;
     };
+    /** RevealTaskHintRequest */
+    readonly RevealTaskHintRequest: {
+      /** Expected Hint Revision */
+      readonly expected_hint_revision: number;
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+    };
     /** ReviewCardRequest */
     readonly ReviewCardRequest: {
       /** Card Id */
@@ -18604,6 +18652,9 @@ export interface components {
     };
     /** StudentSubmission */
     readonly StudentSubmission: {
+      /** Hint Usage */
+      readonly hint_usage?:
+        readonly components["schemas"]["TaskHintUsage"][] | null;
       /** Responses */
       readonly responses: readonly components["schemas"]["TaskResponse"][];
       /**
@@ -18905,6 +18956,48 @@ export interface components {
       /** Workspace Id */
       readonly workspace_id?: string | null;
     };
+    /** TaskHintsQuestion */
+    readonly TaskHintsQuestion: {
+      /** Question Id */
+      readonly question_id: string;
+      /** Revealed */
+      readonly revealed?: readonly components["schemas"]["TaskRevealedHint"][];
+      /** Total */
+      readonly total: number;
+    };
+    /** TaskHintsState */
+    readonly TaskHintsState: {
+      /** Hint Revision */
+      readonly hint_revision: number;
+      /** Questions */
+      readonly questions: readonly components["schemas"]["TaskHintsQuestion"][];
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+    };
+    /** TaskHintUsage */
+    readonly TaskHintUsage: {
+      /** Question Id */
+      readonly question_id: string;
+      /** Revealed */
+      readonly revealed: readonly components["schemas"]["TaskHintUse"][];
+    };
+    /** TaskHintUse */
+    readonly TaskHintUse: {
+      /** Level */
+      readonly level: number;
+      /** Revealed At */
+      readonly revealed_at: number;
+    };
+    /** TaskQuestionHints */
+    readonly TaskQuestionHints: {
+      /** Hints */
+      readonly hints: readonly string[];
+      /** Question Id */
+      readonly question_id: string;
+    };
     /** TaskReadAloudAvailability */
     readonly TaskReadAloudAvailability: {
       /** Available */
@@ -18952,6 +19045,15 @@ export interface components {
        * @enum {string}
        */
       readonly response_status: "unanswered" | "answered" | "needs_help";
+    };
+    /** TaskRevealedHint */
+    readonly TaskRevealedHint: {
+      /** Level */
+      readonly level: number;
+      /** Revealed At */
+      readonly revealed_at: number;
+      /** Text */
+      readonly text: string;
     };
     /** TaskSpeechTextResponse */
     readonly TaskSpeechTextResponse: {
@@ -19099,6 +19201,8 @@ export interface components {
       readonly followup_id: string;
       /** Followup Revision */
       readonly followup_revision: number;
+      /** Hint Usage */
+      readonly hint_usage?: readonly components["schemas"]["TaskHintUsage"][];
       /** Instructions */
       readonly instructions: string;
       /** Issued At */
@@ -19106,6 +19210,8 @@ export interface components {
       /** Issued By User Id */
       readonly issued_by_user_id: string;
       readonly progress: components["schemas"]["TeacherTaskProgress"];
+      /** Question Hints */
+      readonly question_hints?: readonly components["schemas"]["TaskQuestionHints"][];
       /** Recipient User Id */
       readonly recipient_user_id: string;
       /** Revoke Reason */
@@ -21055,6 +21161,8 @@ export type SchemaReportSummary = components["schemas"]["ReportSummary"];
 export type SchemaResolveRequest = components["schemas"]["ResolveRequest"];
 export type SchemaResumeBookRequest =
   components["schemas"]["ResumeBookRequest"];
+export type SchemaRevealTaskHintRequest =
+  components["schemas"]["RevealTaskHintRequest"];
 export type SchemaReviewCardRequest =
   components["schemas"]["ReviewCardRequest"];
 export type SchemaReviewDay = components["schemas"]["ReviewDay"];
@@ -21173,12 +21281,20 @@ export type SchemaSyncRequest = components["schemas"]["SyncRequest"];
 export type SchemaSyncResponse = components["schemas"]["SyncResponse"];
 export type SchemaTaskBoard = components["schemas"]["TaskBoard"];
 export type SchemaTaskCard = components["schemas"]["TaskCard"];
+export type SchemaTaskHintsQuestion =
+  components["schemas"]["TaskHintsQuestion"];
+export type SchemaTaskHintsState = components["schemas"]["TaskHintsState"];
+export type SchemaTaskHintUsage = components["schemas"]["TaskHintUsage"];
+export type SchemaTaskHintUse = components["schemas"]["TaskHintUse"];
+export type SchemaTaskQuestionHints =
+  components["schemas"]["TaskQuestionHints"];
 export type SchemaTaskReadAloudAvailability =
   components["schemas"]["TaskReadAloudAvailability"];
 export type SchemaTaskRecipient = components["schemas"]["TaskRecipient"];
 export type SchemaTaskRecipientSetup =
   components["schemas"]["TaskRecipientSetup"];
 export type SchemaTaskResponse = components["schemas"]["TaskResponse"];
+export type SchemaTaskRevealedHint = components["schemas"]["TaskRevealedHint"];
 export type SchemaTaskSpeechTextResponse =
   components["schemas"]["TaskSpeechTextResponse"];
 export type SchemaTaskVoiceAvailability =
@@ -44674,6 +44790,80 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["StudentTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_student_task_hints_api_student_tasks__task_id__hints_get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskHintsState"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly reveal_student_task_hint_api_student_tasks__task_id__hints_reveal_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["RevealTaskHintRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskHintsState"];
         };
       };
       /** @description Validation Error */

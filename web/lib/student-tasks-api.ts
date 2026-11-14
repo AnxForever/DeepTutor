@@ -9,7 +9,9 @@ type Complete<T> = T extends readonly (infer Item)[] ? Complete<Item>[] : T exte
 // Response models materialize their defaults; editors keep complete mutable data.
 export type TaskResponse = Complete<components['schemas']['TaskResponse']>
 export type StudentTaskSummary = Complete<components['schemas']['StudentTaskSummary']>
-export type StudentTaskView = Complete<components['schemas']['StudentTaskView']>
+type CompleteSubmission = Complete<components['schemas']['StudentSubmission']>
+export type StudentTaskSubmission = Omit<CompleteSubmission, 'hint_usage'> & { hint_usage?: CompleteSubmission['hint_usage'] }
+export type StudentTaskView = Omit<Complete<components['schemas']['StudentTaskView']>, 'submission'> & { submission: StudentTaskSubmission | null }
 export type StudentTaskStatus = StudentTaskSummary['status']
 export type SaveTaskProgressRequest = Complete<components['schemas']['SaveTaskProgressRequest']>
 export type SubmitTaskRequest = Complete<components['schemas']['SubmitTaskRequest']>

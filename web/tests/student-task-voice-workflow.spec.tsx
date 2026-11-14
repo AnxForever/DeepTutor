@@ -14,6 +14,7 @@ vi.mock('next/navigation', () => ({ useRouter: () => current.router, usePathname
 vi.mock('next/link', () => ({ default: ({ href, prefetch, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; prefetch?: boolean }) => { void prefetch; return <a href={href} {...props} /> } }))
 vi.mock('@/hooks/useAuthStatus', () => ({ useAuthStatus: () => ({ loading: false, enabled: true, authenticated: true, isAdmin: false, userId: current.actor, statusAvailable: true, preset: 'learner', learningPolicy: { allowedSurfaces: ['tasks'] } }) }))
 vi.mock('@/components/learning/TaskTranslations', () => ({ TaskTranslations: ({ children }: { children: React.ReactNode }) => children }))
+vi.mock('@/lib/student-task-hints-api', async original => ({ ...(await original<typeof import('@/lib/student-task-hints-api')>()), getStudentTaskHints: async (id: string) => ({ task_id: id, hint_revision: 0, questions: ['Q1', 'Q2'].map(question_id => ({ question_id, total: 0, revealed: [] })) }) }))
 vi.mock('@/components/common/MarkdownRenderer', () => ({ default: ({ content }: { content: string }) => <div>{content}</div> }))
 vi.mock('@/lib/student-tasks-api', async original => ({ ...(await original<typeof tasks>()), getStudentTask: vi.fn(), saveStudentTaskProgress: vi.fn(), submitStudentTask: vi.fn() }))
 vi.mock('@/lib/student-task-voice-api', async original => ({ ...(await original<typeof voice>()), getStudentVoiceCapabilities: vi.fn(), getStudentSpeechText: vi.fn(), transcribeStudentTaskAudio: vi.fn() }))

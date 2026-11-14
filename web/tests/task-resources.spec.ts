@@ -36,6 +36,14 @@ it('refreshes a legacy task bundle that has no task voice copy', async () => {
   expect(i18n.t('studentTaskVoice.listen')).toBe(enTasks['studentTaskVoice.listen'])
 })
 
+it.each(['studentTaskHints.first', 'teacherTaskHints.editorTitle'] as const)('refreshes cached task copy missing %s', async key => {
+  i18n.addResourceBundle('en', 'app', Object.fromEntries(Object.entries(enTasks).filter(([name]) => name !== key)), true, true)
+  expect(taskResourcesReady('en')).toBe(false)
+  await ensureTaskResources('en')
+  expect(taskResourcesReady('en')).toBe(true)
+  expect(i18n.t(key)).toBe(enTasks[key])
+})
+
 it('coalesces concurrent requests and supplies the English fallback', async () => {
   const add = vi.spyOn(i18n, 'addResourceBundle')
   await Promise.all([ensureTaskResources('en'), ensureTaskResources('de'), ensureTaskResources('ja')])

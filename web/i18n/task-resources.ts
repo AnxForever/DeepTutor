@@ -6,7 +6,9 @@ const pending = new Map<string, Promise<void>>()
 function hasLanguage(language: string) {
   return typeof i18n.getResource(language, 'app', 'studentTasks.subtitle') === 'string' &&
     typeof i18n.getResource(language, 'app', 'teacherTasks.hint') === 'string' &&
-    typeof i18n.getResource(language, 'app', 'studentTaskVoice.listen') === 'string'
+    typeof i18n.getResource(language, 'app', 'studentTaskVoice.listen') === 'string' &&
+    typeof i18n.getResource(language, 'app', 'studentTaskHints.first') === 'string' &&
+    typeof i18n.getResource(language, 'app', 'teacherTaskHints.editorTitle') === 'string'
 }
 
 /** Task copy is loaded with the task feature, outside the shared application bundle. */

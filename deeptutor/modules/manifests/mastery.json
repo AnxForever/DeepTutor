@@ -20,6 +20,7 @@
     "deeptutor/api/routers/teaching_student_tasks.py",
     "deeptutor/api/routers/student_tasks.py",
     "deeptutor/api/routers/student_task_voice.py",
+    "deeptutor/api/routers/student_task_hints.py",
     "deeptutor/api/routers/teaching_rubrics.py",
     "deeptutor/api/routers/teaching_followups.py",
     "deeptutor/api/routers/teaching_documents.py",
