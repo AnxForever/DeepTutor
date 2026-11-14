@@ -10519,6 +10519,23 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/student-tasks/{task_id}/speech-text": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Student Task Speech Text */
+    readonly get: operations["student_task_speech_text_api_student_tasks__task_id__speech_text_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/student-tasks/{task_id}/submit": {
     readonly parameters: {
       readonly query?: never;
@@ -10530,6 +10547,40 @@ export interface paths {
     readonly put?: never;
     /** Submit Student Task */
     readonly post: operations["submit_student_task_api_student_tasks__task_id__submit_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/student-tasks/{task_id}/transcribe": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Transcribe Student Task Recording */
+    readonly post: operations["transcribe_student_task_recording_api_student_tasks__task_id__transcribe_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/student-tasks/{task_id}/voice-capabilities": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Student Task Voice Capabilities */
+    readonly get: operations["student_task_voice_capabilities_api_student_tasks__task_id__voice_capabilities_get"];
+    readonly put?: never;
+    readonly post?: never;
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -15109,6 +15160,11 @@ export interface components {
       readonly allowed_surfaces: readonly string[];
       /** Extensions */
       readonly extensions: readonly string[];
+      /**
+       * Task Voice Input
+       * @default false
+       */
+      readonly task_voice_input: boolean;
     };
     /** HTTPValidationError */
     readonly HTTPValidationError: {
@@ -18849,6 +18905,15 @@ export interface components {
       /** Workspace Id */
       readonly workspace_id?: string | null;
     };
+    /** TaskReadAloudAvailability */
+    readonly TaskReadAloudAvailability: {
+      /** Available */
+      readonly available: boolean;
+      /** Locale */
+      readonly locale?: ("en" | "zh") | null;
+      /** Reason */
+      readonly reason: string | null;
+    };
     /** TaskRecipient */
     readonly TaskRecipient: {
       /** Can Receive */
@@ -18887,6 +18952,101 @@ export interface components {
        * @enum {string}
        */
       readonly response_status: "unanswered" | "answered" | "needs_help";
+    };
+    /** TaskSpeechTextResponse */
+    readonly TaskSpeechTextResponse: {
+      /**
+       * Locale
+       * @enum {string}
+       */
+      readonly locale: "en" | "zh";
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Task Revision */
+      readonly task_revision: number;
+      /** Text */
+      readonly text: string;
+    };
+    /** TaskVoiceAvailability */
+    readonly TaskVoiceAvailability: {
+      /** Available */
+      readonly available: boolean;
+      /** Reason */
+      readonly reason: string | null;
+    };
+    /** TaskVoiceCapabilities */
+    readonly TaskVoiceCapabilities: {
+      readonly limits?: components["schemas"]["TaskVoiceLimits"];
+      /** Question Id */
+      readonly question_id: string;
+      readonly read_aloud: components["schemas"]["TaskReadAloudAvailability"];
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Task Revision */
+      readonly task_revision: number;
+      readonly transcription: components["schemas"]["TaskVoiceAvailability"];
+    };
+    /** TaskVoiceLimits */
+    readonly TaskVoiceLimits: {
+      /**
+       * Max Audio Seconds
+       * @default 30
+       * @constant
+       */
+      readonly max_audio_seconds: 30;
+      /**
+       * Max Recording Seconds
+       * @default 25
+       * @constant
+       */
+      readonly max_recording_seconds: 25;
+      /**
+       * Max Transcript Chars
+       * @default 6000
+       * @constant
+       */
+      readonly max_transcript_chars: 6000;
+      /**
+       * Max Upload Bytes
+       * @default 1048576
+       * @constant
+       */
+      readonly max_upload_bytes: 1048576;
+    };
+    /** TaskVoiceTranscriptCandidate */
+    readonly TaskVoiceTranscriptCandidate: {
+      /** Basis Progress Revision */
+      readonly basis_progress_revision: number;
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+      /**
+       * Requires Confirmation
+       * @default true
+       * @constant
+       */
+      readonly requires_confirmation: true;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /** Task Revision */
+      readonly task_revision: number;
+      /** Text */
+      readonly text: string;
     };
     /** TeacherTaskProgress */
     readonly TeacherTaskProgress: {
@@ -21013,10 +21173,21 @@ export type SchemaSyncRequest = components["schemas"]["SyncRequest"];
 export type SchemaSyncResponse = components["schemas"]["SyncResponse"];
 export type SchemaTaskBoard = components["schemas"]["TaskBoard"];
 export type SchemaTaskCard = components["schemas"]["TaskCard"];
+export type SchemaTaskReadAloudAvailability =
+  components["schemas"]["TaskReadAloudAvailability"];
 export type SchemaTaskRecipient = components["schemas"]["TaskRecipient"];
 export type SchemaTaskRecipientSetup =
   components["schemas"]["TaskRecipientSetup"];
 export type SchemaTaskResponse = components["schemas"]["TaskResponse"];
+export type SchemaTaskSpeechTextResponse =
+  components["schemas"]["TaskSpeechTextResponse"];
+export type SchemaTaskVoiceAvailability =
+  components["schemas"]["TaskVoiceAvailability"];
+export type SchemaTaskVoiceCapabilities =
+  components["schemas"]["TaskVoiceCapabilities"];
+export type SchemaTaskVoiceLimits = components["schemas"]["TaskVoiceLimits"];
+export type SchemaTaskVoiceTranscriptCandidate =
+  components["schemas"]["TaskVoiceTranscriptCandidate"];
 export type SchemaTeacherTaskProgress =
   components["schemas"]["TeacherTaskProgress"];
 export type SchemaTeacherTaskSummary =
@@ -44555,6 +44726,44 @@ export interface operations {
       };
     };
   };
+  readonly student_task_speech_text_api_student_tasks__task_id__speech_text_get: {
+    readonly parameters: {
+      readonly query: {
+        readonly locale?: "en" | "zh";
+        readonly question_id: string;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskSpeechTextResponse"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   readonly submit_student_task_api_student_tasks__task_id__submit_post: {
     readonly parameters: {
       readonly query?: never;
@@ -44581,6 +44790,87 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["StudentTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly transcribe_student_task_recording_api_student_tasks__task_id__transcribe_post: {
+    readonly parameters: {
+      readonly query: {
+        readonly expected_revision: number;
+        readonly question_id: string;
+        readonly request_id: string;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "audio/wav": string;
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskVoiceTranscriptCandidate"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly student_task_voice_capabilities_api_student_tasks__task_id__voice_capabilities_get: {
+    readonly parameters: {
+      readonly query: {
+        readonly locale?: "en" | "zh";
+        readonly question_id: string;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskVoiceCapabilities"];
         };
       };
       /** @description Validation Error */

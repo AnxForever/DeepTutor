@@ -124,8 +124,9 @@ def _normalize_learning_policy(value: Any) -> dict[str, Any] | None:
         return {}
 
     capabilities = _normalize_tool_list(value.get("allowed_capabilities")) or []
-    has_reading = isinstance(value.get("reading"), dict)
-    raw_reading = value.get("reading") if has_reading else {}
+    reading = value.get("reading")
+    has_reading = isinstance(reading, dict)
+    raw_reading = reading if isinstance(reading, dict) else {}
     material_ids = _normalize_tool_list(raw_reading.get("material_ids")) or (
         [] if has_reading else ["*"]
     )
@@ -145,6 +146,10 @@ def _normalize_learning_policy(value: Any) -> dict[str, Any] | None:
     }
     if surfaces is not None:
         normalized["allowed_surfaces"] = surfaces
+    # Voice input is a separate explicit opt-in. Keep old policies absent and
+    # preserve invalid values until validation; truthy coercion could grant it.
+    if "task_voice_input" in value:
+        normalized["task_voice_input"] = deepcopy(value["task_voice_input"])
     normalized["reading"] = {
         "allow_upload": bool(raw_reading.get("allow_upload", True)),
         "material_ids": material_ids,
@@ -339,6 +344,8 @@ def validate_grant(grant: dict[str, Any]) -> None:
         return
     if not isinstance(policy, dict):
         raise ValueError("learning_policy must be an object or null")
+    if "task_voice_input" in policy and not isinstance(policy["task_voice_input"], bool):
+        raise ValueError("learning_policy.task_voice_input must be a boolean")
     if policy.get("age_band") not in LEARNING_AGE_BANDS:
         raise ValueError(
             f"learning_policy.age_band must be one of: {', '.join(sorted(LEARNING_AGE_BANDS))}"

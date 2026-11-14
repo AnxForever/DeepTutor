@@ -11,6 +11,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from deeptutor.api.routers import auth as auth_router
+from deeptutor.api.routers.student_task_voice import router as voice_router
 from deeptutor.api.routers.teaching_validation import TeachingAPIRoute
 from deeptutor.learning.teaching_analysis.learner_task_models import (
     SaveTaskProgressRequest,
@@ -34,6 +35,7 @@ from deeptutor.multi_user.learning_tasks_access import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter(route_class=TeachingAPIRoute, dependencies=[Depends(auth_router.require_auth)])
+router.include_router(voice_router)
 _T = TypeVar("_T")
 
 

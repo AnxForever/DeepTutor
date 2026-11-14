@@ -68,6 +68,15 @@ it('keeps partial needs-help text and the exact pending submission payload in th
   expect(isStudentTaskBuffer(stored)).toBe(true)
   expect(stored).toEqual(value)
 })
+it('keeps a versioned voice candidate separate from the answer and validates its exact source', async () => {
+  const value = { ...sample('Typed answer stays'), voiceCandidate: { version: 1 as const, task_id: TASK, task_revision: 1, question_id: 'Q1', request_id: TASK, basis_progress_revision: 0, text: 'Unaccepted spoken words', requires_confirmation: true as const } }
+  expect(isStudentTaskBuffer(value)).toBe(true)
+  expect(isStudentTaskBuffer({ ...sample(), voiceCandidate: null })).toBe(true)
+  for (const changed of [{ version: 2 }, { task_id: '22222222-2222-4222-8222-222222222222' }, { task_revision: 2 }, { question_id: 'Q2' }, { basis_progress_revision: 1 }, { requires_confirmation: false }, { audio: new Blob(['raw']) }]) expect(isStudentTaskBuffer({ ...value, voiceCandidate: { ...value.voiceCandidate, ...changed } })).toBe(false)
+  await repository.write(scope, slot, value)
+  expect((await repository.read(scope))[0].value).toEqual(value)
+  expect(value.responses[0].answer).toBe('Typed answer stays')
+})
 it('preserves unsupported stored records until an explicit discard rather than silently overwriting them', async () => {
   const raw = { kind: 'student-task-buffer', version: 500, answer: 'Keep the original' }
   await repository.write(scope, slot, raw)

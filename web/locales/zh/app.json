@@ -7071,5 +7071,7 @@
   "taskResources.retry": "再试一次",
   "studentTasks.title": "今天的学习",
   "teacherTasks.title": "发布练习给学生",
-  "Could not reach the server": "暂时无法连接服务，请重试。"
+  "Could not reach the server": "暂时无法连接服务，请重试。",
+  "studentTaskVoice.permissionLabel": "允许在已分配任务中使用语音输入",
+  "studentTaskVoice.permissionHint": "录音将发送至管理员选定的转写服务；同时需要启用任务权限。读题使用设备本地语音。"
 }

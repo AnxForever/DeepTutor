@@ -48,6 +48,106 @@ def test_existing_learner_with_user_role_and_opaque_id_can_open_tasks(accounts):
     assert access.require_task_learner(auth_enabled=True, actor=actor) == actor
 
 
+def test_task_voice_opt_in_is_live_and_does_not_grant_or_revoke_task_access(accounts):
+    actor = accounts["kid_actor"]
+    assert access.task_voice_input_allowed(actor.id) is False
+    with pytest.raises(access.LearningTaskAccessError) as error:
+        access.require_task_voice_learner(auth_enabled=True, actor=actor)
+    assert error.value.code == "task_voice_input_disabled"
+    grant = learner_grant(actor.id, include_tasks=True)
+    grant["learning_policy"]["task_voice_input"] = True
+    save_grant(actor.id, grant)
+    assert access.task_voice_input_allowed(actor.id) is True
+    assert access.require_task_voice_learner(auth_enabled=True, actor=actor) == actor
+    grant["learning_policy"]["task_voice_input"] = False
+    save_grant(actor.id, grant)
+    with pytest.raises(access.LearningTaskAccessError) as error:
+        access.require_task_voice_learner(auth_enabled=True, actor=actor)
+    assert error.value.code == "task_voice_input_disabled"
+    assert access.require_task_learner(auth_enabled=True, actor=actor) == actor
+
+
+def test_latent_voice_flag_never_overrides_disabled_tasks(accounts):
+    actor = accounts["kid_actor"]
+    grant = learner_grant(actor.id)
+    grant["learning_policy"]["task_voice_input"] = True
+    saved = save_grant(actor.id, grant)
+    assert saved["learning_policy"]["task_voice_input"] is True
+    assert access.task_voice_input_allowed(actor.id) is False
+    with pytest.raises(access.LearningTaskAccessError) as error:
+        access.require_task_voice_learner(auth_enabled=True, actor=actor)
+    assert error.value.code == "tasks_disabled"
+
+
+@pytest.mark.parametrize("value", [None, False, 1, "true", "false", [], {}, {"enabled": True}])
+def test_task_voice_projection_requires_actual_boolean_true(accounts, monkeypatch, value):
+    monkeypatch.setattr(
+        access,
+        "learning_policy_for_user",
+        lambda *_args, **_kwargs: {"allowed_surfaces": ["tasks"], "task_voice_input": value},
+    )
+    assert access.task_voice_input_allowed(accounts["kid_actor"].id) is False
+    with pytest.raises(access.LearningTaskAccessError) as error:
+        access.require_task_voice_learner(auth_enabled=True, actor=accounts["kid_actor"])
+    assert error.value.code == "task_voice_input_disabled"
+
+
+@pytest.mark.parametrize(
+    "change,code",
+    [
+        ("disabled", "account_disabled"),
+        ("role", "identity_changed"),
+        ("preset", "learner_access_required"),
+        ("deleted", "account_unavailable"),
+    ],
+)
+def test_task_voice_opt_in_cannot_survive_stale_signed_identity(accounts, change, code):
+    actor = accounts["kid_actor"]
+    grant = learner_grant(actor.id, include_tasks=True)
+    grant["learning_policy"]["task_voice_input"] = True
+    save_grant(actor.id, grant)
+    assert access.require_task_voice_learner(auth_enabled=True, actor=actor) == actor
+    if change in {"disabled", "deleted"}:
+        records = identity.load_users()
+        if change == "deleted":
+            records.pop("kid")
+        else:
+            records["kid"]["disabled"] = True
+        identity._write_users(records)
+    elif change == "role":
+        identity.set_role("kid", "teacher")
+    else:
+        identity.set_preset("kid", "standard")
+    with pytest.raises(access.LearningTaskAccessError) as error:
+        access.require_task_voice_learner(auth_enabled=True, actor=actor)
+    assert error.value.code == code
+    assert error.value.status_code == 403
+
+
+def test_task_voice_policy_change_between_checks_does_not_keep_tasks_access(accounts, monkeypatch):
+    policies = iter(
+        [
+            {"allowed_surfaces": ["tasks"], "task_voice_input": True},
+            {"allowed_surfaces": ["reading"], "task_voice_input": True},
+        ]
+    )
+    monkeypatch.setattr(
+        access, "learning_policy_for_user", lambda *_args, **_kwargs: next(policies)
+    )
+    with pytest.raises(access.LearningTaskAccessError):
+        access.require_task_voice_learner(auth_enabled=True, actor=accounts["kid_actor"])
+
+
+def test_task_voice_policy_read_failure_remains_unavailable(accounts, monkeypatch):
+    def failed(*_args, **_kwargs):
+        raise RuntimeError("private grant path")
+
+    monkeypatch.setattr(access, "learning_policy_for_user", failed)
+    with pytest.raises(access.LearningTaskAccessUnavailable) as error:
+        access.task_voice_input_allowed(accounts["kid_actor"].id)
+    assert "private" not in str(error.value)
+
+
 @pytest.mark.parametrize(
     "change,code",
     [
@@ -133,6 +233,7 @@ def test_native_auth_off_allows_only_local_adult_setup_without_identity_reads(
     for operation in (
         lambda: access.require_task_admin(auth_enabled=False, publishing=True, actor=local),
         lambda: access.require_task_learner(auth_enabled=False, actor=local),
+        lambda: access.require_task_voice_learner(auth_enabled=False, actor=local),
         lambda: access.require_task_recipient("u_any", auth_enabled=False, actor=local),
     ):
         with pytest.raises(access.LearningTaskAccessError) as error:

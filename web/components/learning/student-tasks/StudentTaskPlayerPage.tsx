@@ -15,6 +15,8 @@ import { Button, Dialog, Field, InlineAlert, StatusChip } from '@/shared/ui'
 import { LearningShell, LearningSkeleton } from '../LearningShell'
 import { StudentTaskAccess } from './StudentTaskAccess'
 import { TaskTranslations } from '../TaskTranslations'
+import StudentTaskVoiceControls, { appendedStudentAnswer } from './StudentTaskVoiceControls'
+import type { StudentVoiceCandidate } from '@/lib/student-task-voice-api'
 
 const responseLabel = (response: TaskResponse) => response.response_status === 'answered' ? 'studentTasks.answered' : response.response_status === 'needs_help' ? 'studentTasks.helpMarked' : 'studentTasks.unanswered'
 const copyResponses = (responses: TaskResponse[]) => responses.map(response => ({ ...response }))
@@ -59,19 +61,23 @@ function StudentTaskPlayer({ initialTask, accountId }: { initialTask: StudentTas
   const [discardDialog, setDiscardDialog] = useState(false)
   const [restoreMismatch, setRestoreMismatch] = useState(false)
   const [baseRevision, setBaseRevision] = useState(initialTask.progress.revision)
+  const [baseTaskRevision, setBaseTaskRevision] = useState(initialTask.task_revision)
+  const [voiceCandidate, setVoiceCandidate] = useState<StudentVoiceCandidate | null>(null)
+  const [voiceBusy, setVoiceBusy] = useState(false)
   const request = useRef<AbortController | null>(null)
   const alive = useRef(true)
   useEffect(() => { alive.current = true; return () => { alive.current = false; request.current?.abort() } }, [])
-  const value = useMemo<StudentTaskBuffer>(() => ({ kind: 'student-task-buffer', version: 1, taskId: task.task_id, taskRevision: task.task_revision, baseRevision, questionIds: task.questions.map(question => question.question_id), currentQuestionIndex: operation?.kind === 'progress' ? operation.body.current_question_index : index, responses, operation }), [task, baseRevision, index, responses, operation])
+  const value = useMemo<StudentTaskBuffer>(() => ({ kind: 'student-task-buffer', version: 1, taskId: task.task_id, taskRevision: baseTaskRevision, baseRevision, questionIds: task.questions.map(question => question.question_id), currentQuestionIndex: operation?.kind === 'progress' ? operation.body.current_question_index : index, responses, operation, voiceCandidate }), [task, baseTaskRevision, baseRevision, index, responses, operation, voiceCandidate])
   const buffer = useStudentTaskBuffer({ accountId, taskId: task.task_id, value, dirty: dirty || operation !== null, onRestore: restored => {
     if (restored.questionIds.join('\u0000') !== task.questions.map(question => question.question_id).join('\u0000')) { setRestoreMismatch(true); return }
-    setResponses(copyResponses(restored.responses)); setIndex(restored.currentQuestionIndex); setBaseRevision(restored.baseRevision); setOperation(restored.operation); setDirty(true); setServerSaved(false); setReviewing(restored.operation?.kind === 'submit')
-    setError(restored.operation ? restored.operation.kind === 'submit' ? 'submit' : 'save' : restored.baseRevision !== task.progress.revision ? 'changed' : null)
+    setResponses(copyResponses(restored.responses)); setIndex(restored.currentQuestionIndex); setBaseRevision(restored.baseRevision); setBaseTaskRevision(restored.taskRevision); setVoiceCandidate(restored.voiceCandidate ?? null); setOperation(restored.operation); setDirty(true); setServerSaved(false); setReviewing(restored.operation?.kind === 'submit')
+    setError(restored.operation ? restored.operation.kind === 'submit' ? 'submit' : 'save' : restored.baseRevision !== task.progress.revision || Boolean(restored.voiceCandidate && restored.taskRevision !== task.task_revision) ? 'changed' : null)
   } })
   const submitted = task.submission !== null
   const revoked = task.status === 'revoked' || error === 'revoked'
   const blocked = busy || operation !== null || clearPending || buffer.phase === 'reading' || buffer.phase === 'pending' || error === 'changed' || restoreMismatch
-  const editable = !submitted && !revoked && !blocked
+  const baseEditable = !submitted && !revoked && !blocked
+  const editable = baseEditable && !voiceBusy && voiceCandidate === null
   const currentQuestion = task.questions[index]
   const currentResponse = responses[index]
 
@@ -84,7 +90,14 @@ function StudentTaskPlayer({ initialTask, accountId }: { initialTask: StudentTas
     setResponses(previous => previous.map((response, position) => position === index ? { ...response, response_status: response.response_status === 'needs_help' ? response.answer?.trim() ? 'answered' : 'unanswered' : 'needs_help' } : response)); setDirty(true); setServerSaved(false); setError(null)
   }
   function adopt(saved: StudentTaskView) {
-    setTask(saved); setBaseRevision(saved.progress.revision); setResponses(copyResponses(saved.submission?.responses ?? saved.progress.responses)); setIndex(saved.progress.current_question_index); setOperation(null); setDirty(false); setError(null); setRestoreMismatch(false); setServerSaved(!saved.submission)
+    setTask(saved); setBaseRevision(saved.progress.revision); setBaseTaskRevision(saved.task_revision); setVoiceCandidate(null); setResponses(copyResponses(saved.submission?.responses ?? saved.progress.responses)); setIndex(saved.progress.current_question_index); setOperation(null); setDirty(false); setError(null); setRestoreMismatch(false); setServerSaved(!saved.submission)
+  }
+  function updateVoiceCandidate(candidate: StudentVoiceCandidate | null) { setVoiceCandidate(candidate); setDirty(true); setServerSaved(false) }
+  function acceptVoiceCandidate() {
+    if (!baseEditable || voiceBusy || !voiceCandidate || voiceCandidate.task_id !== task.task_id || voiceCandidate.task_revision !== task.task_revision || voiceCandidate.basis_progress_revision !== baseRevision || voiceCandidate.question_id !== currentQuestion.question_id) return
+    const accepted = appendedStudentAnswer(currentResponse, voiceCandidate.text)
+    if (!accepted) return
+    setResponses(previous => previous.map((response, position) => position === index ? accepted : response)); setVoiceCandidate(null); setDirty(true); setServerSaved(false)
   }
   async function clearAfterAcknowledgment() {
     try { await buffer.clear(); if (alive.current) setClearPending(false) }
@@ -151,6 +164,7 @@ function StudentTaskPlayer({ initialTask, accountId }: { initialTask: StudentTas
         {currentResponse.response_status === 'needs_help' ? <><InlineAlert className="mb-4">{t('studentTasks.helpMarked')}</InlineAlert>{currentResponse.answer !== null && <Field label={t('studentTasks.answer')}><textarea id="student-task-answer" readOnly className="mt-1 min-h-32 w-full resize-y rounded-xl border border-border bg-muted/30 p-4 text-lg leading-8 text-foreground outline-none focus:ring-2 focus:ring-ring" rows={4} value={currentResponse.answer} /></Field>}</> : <Field label={t('studentTasks.answer')}><textarea id="student-task-answer" className="mt-1 min-h-32 w-full resize-y rounded-xl border border-border bg-background p-4 text-lg leading-8 text-foreground outline-none focus:ring-2 focus:ring-ring disabled:opacity-60" rows={4} maxLength={6000} disabled={!editable} value={currentResponse.answer ?? ''} placeholder={t('studentTasks.answerPlaceholder')} onChange={event => editAnswer(event.target.value)} /></Field>}
         <Button className="mt-4" size="lg" variant="secondary" disabled={!editable} aria-pressed={currentResponse.response_status === 'needs_help'} onClick={needsHelp}>{t(currentResponse.response_status === 'needs_help' ? 'studentTasks.editAnswer' : 'studentTasks.needsHelp')}</Button>
         {currentResponse.response_status === 'unanswered' && <p className="mt-4 text-sm leading-6 text-muted-foreground">{t('studentTasks.unansweredHint')}</p>}
+        <StudentTaskVoiceControls key={`${accountId}:${task.task_id}:${task.task_revision}:${currentQuestion.question_id}`} accountId={accountId} taskId={task.task_id} taskRevision={task.task_revision} progressRevision={baseRevision} questionId={currentQuestion.question_id} locale={i18n.language.startsWith('zh') ? 'zh' : 'en'} currentResponse={currentResponse} disabled={!baseEditable} candidate={voiceCandidate} onCandidateChange={updateVoiceCandidate} onAccept={acceptVoiceCandidate} onBusyChange={setVoiceBusy} />
         <div className="mt-8 flex flex-wrap justify-between gap-3"><Button size="lg" variant="ghost" disabled={!editable || index === 0} icon={<ArrowLeft size={18} />} onClick={() => saveAndMove(index - 1)}>{t('studentTasks.previous')}</Button><Button size="lg" disabled={!editable || currentResponse.response_status === 'unanswered'} loading={busy} icon={<ArrowRight size={18} />} onClick={() => saveAndMove(Math.min(index + 1, task.questions.length - 1), index === task.questions.length - 1)}>{t(index === task.questions.length - 1 ? 'studentTasks.review' : 'studentTasks.next')}</Button></div>
       </section>}
       {serverSaved && !submitted && <p role="status" className="mt-4 text-sm text-muted-foreground">{t('studentTasks.serverSaved')}</p>}

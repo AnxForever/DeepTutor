@@ -75,12 +75,14 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 function CheckRow({
   label,
   description,
+  wrapDescription = false,
   checked,
   disabled,
   onToggle,
 }: {
   label: string;
   description?: string;
+  wrapDescription?: boolean;
   checked: boolean;
   disabled: boolean;
   onToggle: () => void;
@@ -97,7 +99,7 @@ function CheckRow({
       <span className="min-w-0">
         <span className="block truncate">{label}</span>
         {description ? (
-          <span className="block truncate text-[11px] text-[var(--muted-foreground)]">
+          <span className={`block ${wrapDescription ? "" : "truncate "}text-[11px] text-[var(--muted-foreground)]`}>
             {description}
           </span>
         ) : null}
@@ -509,6 +511,22 @@ export function GrantEditor({
                             },
                           };
                         })}
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <CheckRow
+                        label={t("studentTaskVoice.permissionLabel")}
+                        description={t("studentTaskVoice.permissionHint")}
+                        wrapDescription
+                        checked={grant.learning_policy.task_voice_input === true}
+                        disabled={controlsDisabled}
+                        onToggle={() => setGrant(current => current.learning_policy ? {
+                          ...current,
+                          learning_policy: {
+                            ...current.learning_policy,
+                            task_voice_input: current.learning_policy.task_voice_input !== true,
+                          },
+                        } : current)}
                       />
                     </div>
                     <label className="text-xs text-[var(--foreground)]">

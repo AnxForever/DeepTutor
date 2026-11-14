@@ -107,6 +107,7 @@ class GuardianRestrictionsPayload(BaseModel):
     allow_upload: StrictBool
     allowed_surfaces: list[str]
     extensions: list[str]
+    task_voice_input: StrictBool = False
 
     @field_validator("age_band")
     @classmethod
@@ -624,12 +625,15 @@ def _guardian_restrictions(grant: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(policy, dict):
         raise HTTPException(status_code=409, detail="Learner account has no learning policy")
     reading = policy.get("reading") if isinstance(policy.get("reading"), dict) else {}
-    return {
+    restrictions = {
         "age_band": policy.get("age_band"),
         "allow_upload": bool(reading.get("allow_upload", False)),
         "allowed_surfaces": list(policy.get("allowed_surfaces") or ["chat", "reading"]),
         "extensions": list(reading.get("extensions") or []),
     }
+    if "task_voice_input" in policy:
+        restrictions["task_voice_input"] = policy["task_voice_input"]
+    return restrictions
 
 
 def _restriction_grant(learner_user_id: str, learner_record: dict[str, Any]) -> dict[str, Any]:
@@ -694,6 +698,8 @@ async def put_guardian_restrictions(
         policy["reading"] = reading
     policy["age_band"] = payload.age_band
     policy["allowed_surfaces"] = payload.allowed_surfaces
+    if "task_voice_input" in payload.model_fields_set:
+        policy["task_voice_input"] = payload.task_voice_input
     reading["allow_upload"] = payload.allow_upload
     reading["extensions"] = payload.extensions
     needs_preset_update = learner_record.get("preset") != "learner"

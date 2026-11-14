@@ -6412,6 +6412,11 @@
             },
             "title": "Extensions",
             "type": "array"
+          },
+          "task_voice_input": {
+            "default": false,
+            "title": "Task Voice Input",
+            "type": "boolean"
           }
         },
         "required": [
@@ -14754,6 +14759,47 @@
         "title": "TaskCard",
         "type": "object"
       },
+      "TaskReadAloudAvailability": {
+        "additionalProperties": false,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "enum": [
+                  "en",
+                  "zh"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "available",
+          "reason"
+        ],
+        "title": "TaskReadAloudAvailability",
+        "type": "object"
+      },
       "TaskRecipient": {
         "additionalProperties": false,
         "properties": {
@@ -14874,6 +14920,189 @@
           "response_status"
         ],
         "title": "TaskResponse",
+        "type": "object"
+      },
+      "TaskSpeechTextResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "enum": [
+              "en",
+              "zh"
+            ],
+            "title": "Locale",
+            "type": "string"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_revision": {
+            "title": "Task Revision",
+            "type": "integer"
+          },
+          "text": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "task_revision",
+          "question_id",
+          "text",
+          "locale"
+        ],
+        "title": "TaskSpeechTextResponse",
+        "type": "object"
+      },
+      "TaskVoiceAvailability": {
+        "additionalProperties": false,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "available",
+          "reason"
+        ],
+        "title": "TaskVoiceAvailability",
+        "type": "object"
+      },
+      "TaskVoiceCapabilities": {
+        "additionalProperties": false,
+        "properties": {
+          "limits": {
+            "$ref": "#/components/schemas/TaskVoiceLimits"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "read_aloud": {
+            "$ref": "#/components/schemas/TaskReadAloudAvailability"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_revision": {
+            "title": "Task Revision",
+            "type": "integer"
+          },
+          "transcription": {
+            "$ref": "#/components/schemas/TaskVoiceAvailability"
+          }
+        },
+        "required": [
+          "task_id",
+          "task_revision",
+          "question_id",
+          "read_aloud",
+          "transcription"
+        ],
+        "title": "TaskVoiceCapabilities",
+        "type": "object"
+      },
+      "TaskVoiceLimits": {
+        "additionalProperties": false,
+        "properties": {
+          "max_audio_seconds": {
+            "const": 30,
+            "default": 30,
+            "title": "Max Audio Seconds",
+            "type": "integer"
+          },
+          "max_recording_seconds": {
+            "const": 25,
+            "default": 25,
+            "title": "Max Recording Seconds",
+            "type": "integer"
+          },
+          "max_transcript_chars": {
+            "const": 6000,
+            "default": 6000,
+            "title": "Max Transcript Chars",
+            "type": "integer"
+          },
+          "max_upload_bytes": {
+            "const": 1048576,
+            "default": 1048576,
+            "title": "Max Upload Bytes",
+            "type": "integer"
+          }
+        },
+        "title": "TaskVoiceLimits",
+        "type": "object"
+      },
+      "TaskVoiceTranscriptCandidate": {
+        "additionalProperties": false,
+        "properties": {
+          "basis_progress_revision": {
+            "title": "Basis Progress Revision",
+            "type": "integer"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "requires_confirmation": {
+            "const": true,
+            "default": true,
+            "title": "Requires Confirmation",
+            "type": "boolean"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_revision": {
+            "title": "Task Revision",
+            "type": "integer"
+          },
+          "text": {
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "task_revision",
+          "question_id",
+          "request_id",
+          "basis_progress_revision",
+          "text"
+        ],
+        "title": "TaskVoiceTranscriptCandidate",
         "type": "object"
       },
       "TeacherTaskProgress": {
@@ -67026,6 +67255,106 @@
         ]
       }
     },
+    "/api/student-tasks/{task_id}/speech-text": {
+      "get": {
+        "operationId": "student_task_speech_text_api_student_tasks__task_id__speech_text_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Question Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "default": "zh",
+              "enum": [
+                "en",
+                "zh"
+              ],
+              "title": "Locale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskSpeechTextResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Student Task Speech Text",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
     "/api/student-tasks/{task_id}/submit": {
       "post": {
         "operationId": "submit_student_task_api_student_tasks__task_id__submit_post",
@@ -67106,6 +67435,223 @@
           }
         },
         "summary": "Submit Student Task",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}/transcribe": {
+      "post": {
+        "operationId": "transcribe_student_task_recording_api_student_tasks__task_id__transcribe_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Question Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "expected_revision",
+            "required": true,
+            "schema": {
+              "minimum": 0,
+              "title": "Expected Revision",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "audio/wav": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskVoiceTranscriptCandidate"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Transcribe Student Task Recording",
+        "tags": [
+          "student-tasks"
+        ]
+      }
+    },
+    "/api/student-tasks/{task_id}/voice-capabilities": {
+      "get": {
+        "operationId": "student_task_voice_capabilities_api_student_tasks__task_id__voice_capabilities_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Question Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "default": "zh",
+              "enum": [
+                "en",
+                "zh"
+              ],
+              "title": "Locale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskVoiceCapabilities"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Student Task Voice Capabilities",
         "tags": [
           "student-tasks"
         ]

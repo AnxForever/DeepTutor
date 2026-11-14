@@ -1,5 +1,5 @@
 {
-  "fingerprint": "8ec493af231e632e4491a2567be67a3f7c09725840f1e91f3ca70628df1588ae",
+  "fingerprint": "5c82c488117a96bdd4826031df5c6ec0b14a6fe5ddef6be546d30b3c7bcccc9e",
   "routers": {
     "deeptutor.api.routers.auth:router": [
       {
@@ -1484,40 +1484,6 @@
       {
         "path": "/progress/{book_id}/generate-from-reading",
         "name": "generate_from_reading",
-        "kind": "http",
-        "methods": [
-          "POST"
-        ]
-      }
-    ],
-    "deeptutor.api.routers.student_tasks:router": [
-      {
-        "path": "",
-        "name": "list_student_tasks",
-        "kind": "http",
-        "methods": [
-          "GET"
-        ]
-      },
-      {
-        "path": "/{task_id}",
-        "name": "get_student_task",
-        "kind": "http",
-        "methods": [
-          "GET"
-        ]
-      },
-      {
-        "path": "/{task_id}/progress",
-        "name": "save_student_task_progress",
-        "kind": "http",
-        "methods": [
-          "PUT"
-        ]
-      },
-      {
-        "path": "/{task_id}/submit",
-        "name": "submit_student_task",
         "kind": "http",
         "methods": [
           "POST"

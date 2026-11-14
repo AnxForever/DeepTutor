@@ -35,6 +35,7 @@ export interface GuardianRestrictions {
   age_band: "6-8" | "9-12" | "13-15";
   allow_upload: boolean;
   allowed_surfaces: Array<"books" | "chat" | "reading" | "tasks">;
+  task_voice_input?: boolean;
   extensions: string[];
 }
 

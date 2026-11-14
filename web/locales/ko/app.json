@@ -1087,5 +1087,7 @@
   "taskResources.retry": "Try again",
   "studentTasks.title": "Today's learning",
   "teacherTasks.title": "Send practice to a student",
-  "Could not reach the server": "Could not reach the server"
+  "Could not reach the server": "Could not reach the server",
+  "studentTaskVoice.permissionLabel": "Allow voice input for assigned tasks",
+  "studentTaskVoice.permissionHint": "Recordings are sent to the administrator's selected transcription service. Task access must also be enabled. Read aloud uses a local device voice."
 }

@@ -1,6 +1,7 @@
 import { createTeachingDraftRepository } from './teaching-drafts'
 import { draftObject, draftText, draftUuid, isPlainTeachingJson } from './teaching-draft-validation'
 import type { SaveTaskProgressRequest, SubmitTaskRequest, TaskResponse } from './student-tasks-api'
+import type { StudentVoiceCandidate } from './student-task-voice-api'
 
 export type StudentTaskOperation = { kind: 'progress'; body: SaveTaskProgressRequest; reviewAfter: boolean } | { kind: 'submit'; body: SubmitTaskRequest }
 export interface StudentTaskBuffer {
@@ -13,6 +14,7 @@ export interface StudentTaskBuffer {
   currentQuestionIndex: number
   responses: TaskResponse[]
   operation: StudentTaskOperation | null
+  voiceCandidate?: StudentVoiceCandidate | null
 }
 /** Each mounted editor owns its CAS observations, including duplicate views. */
 export const createStudentTaskBufferRepository = () => createTeachingDraftRepository('deeptutor-student-task-buffers')
@@ -36,13 +38,17 @@ export function isTaskResponse(value: unknown): value is TaskResponse {
   const actualAnswer = draftText(value.answer, 6000) && Boolean(value.answer.trim())
   return value.response_status === 'answered' ? actualAnswer : value.response_status === 'needs_help' ? value.answer === null || actualAnswer : value.response_status === 'unanswered' && value.answer === null
 }
+export function isStudentVoiceCandidate(value: unknown): value is StudentVoiceCandidate {
+  return draftObject(value) && keys(value, ['version', 'task_id', 'task_revision', 'question_id', 'request_id', 'basis_progress_revision', 'text', 'requires_confirmation']) && value.version === 1 && draftUuid(value.task_id) && revision(value.task_revision, 1) && draftText(value.question_id, 128) && Boolean(value.question_id.trim()) && draftUuid(value.request_id) && revision(value.basis_progress_revision) && draftText(value.text, 6000) && value.requires_confirmation === true
+}
 function exactResponses(value: unknown, ids: string[]): value is TaskResponse[] {
   return Array.isArray(value) && value.length === ids.length && value.every((response, index) => isTaskResponse(response) && response.question_id === ids[index])
 }
 export function isStudentTaskBuffer(value: unknown): value is StudentTaskBuffer {
-  if (!isPlainTeachingJson(value) || !draftObject(value) || !keys(value, ['kind', 'version', 'taskId', 'taskRevision', 'baseRevision', 'questionIds', 'currentQuestionIndex', 'responses', 'operation']) || value.kind !== 'student-task-buffer' || value.version !== 1 || !draftUuid(value.taskId) || !revision(value.taskRevision, 1) || !revision(value.baseRevision) ||
+  if (!isPlainTeachingJson(value) || !draftObject(value) || !keys(value, ['kind', 'version', 'taskId', 'taskRevision', 'baseRevision', 'questionIds', 'currentQuestionIndex', 'responses', 'operation', 'voiceCandidate']) || value.kind !== 'student-task-buffer' || value.version !== 1 || !draftUuid(value.taskId) || !revision(value.taskRevision, 1) || !revision(value.baseRevision) ||
     !Array.isArray(value.questionIds) || value.questionIds.length < 1 || value.questionIds.length > 3 || !value.questionIds.every(id => draftText(id, 128) && Boolean(id.trim())) || new Set(value.questionIds).size !== value.questionIds.length ||
     !revision(value.currentQuestionIndex) || value.currentQuestionIndex >= value.questionIds.length || !exactResponses(value.responses, value.questionIds)) return false
+  if (value.voiceCandidate !== undefined && value.voiceCandidate !== null && (!isStudentVoiceCandidate(value.voiceCandidate) || value.voiceCandidate.task_id !== value.taskId || value.voiceCandidate.task_revision !== value.taskRevision || value.voiceCandidate.basis_progress_revision !== value.baseRevision || value.voiceCandidate.question_id !== value.questionIds[value.currentQuestionIndex] || value.operation !== null)) return false
   if (value.operation === null) return true
   if (!draftObject(value.operation) || !keys(value.operation, value.operation.kind === 'progress' ? ['kind', 'body', 'reviewAfter'] : ['kind', 'body']) || !draftObject(value.operation.body)) return false
   const { body } = value.operation

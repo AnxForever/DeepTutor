@@ -101,11 +101,14 @@ def _fresh_actor(actor: CurrentUser) -> dict[str, Any]:
     return record
 
 
-def _tasks_allowed(user_id: str) -> bool:
+def _task_policy(user_id: str) -> dict[str, Any] | None:
     try:
-        policy = learning_policy_for_user(user_id, is_admin=False)
+        return learning_policy_for_user(user_id, is_admin=False)
     except Exception:
         raise LearningTaskAccessUnavailable() from None
+
+
+def _has_task_surface(policy: dict[str, Any] | None) -> bool:
     # Unlike unrestricted adult accounts, a learner must have an explicit
     # tasks surface. The legacy fallback contains only chat/reading.
     surfaces = policy.get("allowed_surfaces") if isinstance(policy, dict) else None
@@ -113,6 +116,26 @@ def _tasks_allowed(user_id: str) -> bool:
         isinstance(surfaces, list)
         and all(isinstance(surface, str) for surface in surfaces)
         and "tasks" in surfaces
+    )
+
+
+def _tasks_allowed(user_id: str) -> bool:
+    return _has_task_surface(_task_policy(user_id))
+
+
+def task_voice_input_allowed(user_id: str) -> bool:
+    """Read the explicit task-only recognition opt-in without expanding grants.
+
+    This policy projection is not authentication. Request handlers must use
+    ``require_task_voice_learner`` and still check task assignment and state.
+    Both permissions come from one fresh snapshot so a latent voice flag never
+    overrides a disabled tasks surface.
+    """
+    policy = _task_policy(user_id)
+    return (
+        _has_task_surface(policy)
+        and isinstance(policy, dict)
+        and policy.get("task_voice_input") is True
     )
 
 
@@ -149,6 +172,26 @@ def require_task_learner(
     if not _tasks_allowed(actor.id):
         raise _deny(
             "Tasks are not enabled for this learner. Ask an administrator.", "tasks_disabled"
+        )
+    return actor
+
+
+def require_task_voice_learner(
+    *,
+    auth_enabled: bool,
+    identity_backend_supported: bool = True,
+    actor: CurrentUser | None = None,
+) -> CurrentUser:
+    """Require a fresh learner identity plus the task voice-input opt-in."""
+    actor = require_task_learner(
+        auth_enabled=auth_enabled,
+        identity_backend_supported=identity_backend_supported,
+        actor=actor,
+    )
+    if not task_voice_input_allowed(actor.id):
+        raise _deny(
+            "Voice input is not enabled for this learner. Ask an administrator or guardian.",
+            "task_voice_input_disabled",
         )
     return actor
 
@@ -263,7 +306,9 @@ __all__ = [
     "TeacherTaskScope",
     "require_task_admin",
     "require_task_learner",
+    "require_task_voice_learner",
     "require_task_recipient",
     "task_recipient_setup",
+    "task_voice_input_allowed",
     "teacher_task_scope",
 ]

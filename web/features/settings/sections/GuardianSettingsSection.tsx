@@ -384,6 +384,27 @@ export default function GuardianSettingsPage() {
                 />
                 {t("studentTasks.accessLabel")}
               </label>
+              <label className="mt-3 flex items-start gap-2 rounded-md border border-[var(--border)] px-3 py-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={restrictions.task_voice_input === true}
+                  disabled={busy !== null}
+                  className="mt-0.5"
+                  onChange={(event) => {
+                    const enabled = event.target.checked;
+                    setRestrictions(current => current ? {
+                      ...current,
+                      task_voice_input: enabled,
+                    } : current);
+                  }}
+                />
+                <span>
+                  <span className="block">{t("studentTaskVoice.permissionLabel")}</span>
+                  <span className="mt-1 block text-[var(--muted-foreground)]">
+                    {t("studentTaskVoice.permissionHint")}
+                  </span>
+                </span>
+              </label>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {extensions.map((extension) => (
                   <label

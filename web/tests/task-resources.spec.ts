@@ -25,6 +25,17 @@ it('loads task copy on demand and preserves existing global labels', async () =>
   expect(i18n.t('studentTasks.title')).toBe(enApp['studentTasks.title'])
 })
 
+it('refreshes a legacy task bundle that has no task voice copy', async () => {
+  i18n.addResourceBundle('en', 'app', {
+    'studentTasks.subtitle': 'legacy tasks',
+    'teacherTasks.hint': 'legacy teacher tasks',
+  }, true, true)
+  expect(taskResourcesReady('en')).toBe(false)
+  await ensureTaskResources('en')
+  expect(taskResourcesReady('en')).toBe(true)
+  expect(i18n.t('studentTaskVoice.listen')).toBe(enTasks['studentTaskVoice.listen'])
+})
+
 it('coalesces concurrent requests and supplies the English fallback', async () => {
   const add = vi.spyOn(i18n, 'addResourceBundle')
   await Promise.all([ensureTaskResources('en'), ensureTaskResources('de'), ensureTaskResources('ja')])

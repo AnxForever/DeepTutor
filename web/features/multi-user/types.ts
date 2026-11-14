@@ -23,6 +23,8 @@ export type LearningPolicy = {
   allowed_capabilities: Array<"chat" | "immersive_reading">;
   default_capability: "chat" | "immersive_reading";
   allowed_surfaces: Array<"books" | "chat" | "reading" | "tasks">;
+  /** Explicit opt-in for recognition within assigned tasks; absent means off. */
+  task_voice_input?: boolean;
   reading: {
     allow_upload: boolean;
     material_ids: string[];
