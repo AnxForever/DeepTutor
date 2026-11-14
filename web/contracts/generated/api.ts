@@ -11454,6 +11454,41 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/teaching-analysis/student-cases/{case_id}/task-review-evidence": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Case Review Evidence */
+    readonly get: operations["get_teaching_case_review_evidence_api_teaching_analysis_student_cases__case_id__task_review_evidence_get"];
+    readonly put?: never;
+    /** Save Teaching Case Review Evidence */
+    readonly post: operations["save_teaching_case_review_evidence_api_teaching_analysis_student_cases__case_id__task_review_evidence_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-cases/{case_id}/task-review-evidence/revisions": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Case Review Evidence Revisions */
+    readonly get: operations["list_teaching_case_review_evidence_revisions_api_teaching_analysis_student_cases__case_id__task_review_evidence_revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/teaching-analysis/student-cases/{case_id}/timeline": {
     readonly parameters: {
       readonly query?: never;
@@ -11500,6 +11535,75 @@ export interface paths {
     readonly get: operations["get_teaching_student_task_api_teaching_analysis_student_tasks__task_id__get"];
     readonly put?: never;
     readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/{task_id}/review": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Task Review */
+    readonly get: operations["get_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_get"];
+    readonly put?: never;
+    /** Save Teaching Task Review */
+    readonly post: operations["save_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/{task_id}/review/revisions": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List Teaching Task Review Revisions */
+    readonly get: operations["list_teaching_task_review_revisions_api_teaching_analysis_student_tasks__task_id__review_revisions_get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/{task_id}/review/revisions/{revision}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get Teaching Task Review Revision */
+    readonly get: operations["get_teaching_task_review_revision_api_teaching_analysis_student_tasks__task_id__review_revisions__revision__get"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/teaching-analysis/student-tasks/{task_id}/review/withdraw": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Withdraw Teaching Task Review */
+    readonly post: operations["withdraw_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_withdraw_post"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -13491,6 +13595,153 @@ export interface components {
        * @default 0
        */
       readonly ungraded: number;
+    };
+    /** CaseReviewEvidenceLink */
+    readonly CaseReviewEvidenceLink: {
+      /**
+       * Next Teaching Action
+       * @default
+       */
+      readonly next_teaching_action: string;
+      /** Question Ids */
+      readonly question_ids: readonly string[];
+      /** Review Revision */
+      readonly review_revision: number;
+      /**
+       * Submission Id
+       * Format: uuid
+       */
+      readonly submission_id: string;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /**
+       * Teacher Observation
+       * @default
+       */
+      readonly teacher_observation: string;
+    };
+    /** CaseReviewEvidenceSourceState */
+    readonly CaseReviewEvidenceSourceState: {
+      /** Knowledge Point */
+      readonly knowledge_point?: string | null;
+      /** Latest Recorded At */
+      readonly latest_recorded_at?: number | null;
+      /** Latest Review Revision */
+      readonly latest_review_revision?: number | null;
+      /** Latest Review Status */
+      readonly latest_review_status?: ("confirmed" | "withdrawn") | null;
+      /** Questions */
+      readonly questions?: readonly components["schemas"]["CaseReviewQuestionEvidence"][];
+      /** Recipient User Id */
+      readonly recipient_user_id?: string | null;
+      /** Recorded At */
+      readonly recorded_at?: number | null;
+      /** Report Id */
+      readonly report_id?: string | null;
+      /** Report Revision */
+      readonly report_revision?: number | null;
+      /** Review Revision */
+      readonly review_revision: number;
+      /** Review Status */
+      readonly review_status?: ("confirmed" | "withdrawn") | null;
+      /** Reviewer User Id */
+      readonly reviewer_user_id?: string | null;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status:
+        | "current"
+        | "stale"
+        | "withdrawn"
+        | "task_revoked"
+        | "unavailable"
+        | "report_unlinked";
+      /** Subject */
+      readonly subject?: string | null;
+      /**
+       * Submission Id
+       * Format: uuid
+       */
+      readonly submission_id: string;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+    };
+    /** CaseReviewEvidenceView */
+    readonly CaseReviewEvidenceView: {
+      readonly acknowledged?:
+        components["schemas"]["SavedCaseReviewEvidence"] | null;
+      /** Case Archived */
+      readonly case_archived: boolean;
+      /**
+       * Case Id
+       * Format: uuid
+       */
+      readonly case_id: string;
+      /** Case Revision */
+      readonly case_revision: number;
+      /** Focus Cards */
+      readonly focus_cards: readonly components["schemas"]["CaseReviewFocusCard"][];
+      readonly overlay: components["schemas"]["SavedCaseReviewEvidence"] | null;
+      /** Source States */
+      readonly source_states: readonly components["schemas"]["CaseReviewEvidenceSourceState"][];
+    };
+    /** CaseReviewFocusCard */
+    readonly CaseReviewFocusCard: {
+      /** Independent Correct */
+      readonly independent_correct: number;
+      /** Knowledge Point */
+      readonly knowledge_point: string;
+      /** Needs Independent Check */
+      readonly needs_independent_check: number;
+      /** Needs Teaching */
+      readonly needs_teaching: number;
+      /** Question Count */
+      readonly question_count: number;
+      /**
+       * Requested Help
+       * @default 0
+       */
+      readonly requested_help: number;
+      /** Subject */
+      readonly subject: string;
+      /** Ungraded */
+      readonly ungraded: number;
+    };
+    /** CaseReviewQuestionEvidence */
+    readonly CaseReviewQuestionEvidence: {
+      /** Answer */
+      readonly answer: string | null;
+      /**
+       * Assistance
+       * @enum {string}
+       */
+      readonly assistance: "independent" | "assisted" | "unknown";
+      /** Feedback */
+      readonly feedback: string;
+      /** Hint Usage */
+      readonly hint_usage:
+        readonly components["schemas"]["TaskRevealedHint"][] | null;
+      /** Question */
+      readonly question: string;
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Response Status
+       * @enum {string}
+       */
+      readonly response_status: "unanswered" | "answered" | "needs_help";
+      /**
+       * Result
+       * @enum {string}
+       */
+      readonly result: "correct" | "partial" | "incorrect" | "ungraded";
     };
     /** CaseSourceState */
     readonly CaseSourceState: {
@@ -17967,6 +18218,55 @@ export interface components {
       /** Worker Id */
       readonly worker_id: string;
     };
+    /** SaveCaseReviewEvidence */
+    readonly SaveCaseReviewEvidence: {
+      /** Expected Case Revision */
+      readonly expected_case_revision: number;
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /**
+       * Identity Confirmed
+       * @constant
+       */
+      readonly identity_confirmed: true;
+      /** Links */
+      readonly links: readonly components["schemas"]["CaseReviewEvidenceLink"][];
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+    };
+    /** SavedCaseReviewEvidence */
+    readonly SavedCaseReviewEvidence: {
+      /** Actor User Id */
+      readonly actor_user_id: string;
+      /**
+       * Case Id
+       * Format: uuid
+       */
+      readonly case_id: string;
+      /** Case Revision */
+      readonly case_revision: number;
+      /**
+       * Identity Confirmed
+       * @constant
+       */
+      readonly identity_confirmed: true;
+      /** Links */
+      readonly links: readonly components["schemas"]["CaseReviewEvidenceLink"][];
+      /** Recipient User Id */
+      readonly recipient_user_id?: string | null;
+      /** Recorded At */
+      readonly recorded_at: number;
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+      /** Revision */
+      readonly revision: number;
+    };
     /** SavedFollowup */
     readonly SavedFollowup: {
       /** Assignment Ref */
@@ -18132,6 +18432,69 @@ export interface components {
       /** Updated At */
       readonly updated_at: number;
     };
+    /** SavedTaskReview */
+    readonly SavedTaskReview: {
+      /**
+       * Change Reason
+       * @default
+       */
+      readonly change_reason: string;
+      /**
+       * Followup Id
+       * Format: uuid
+       */
+      readonly followup_id: string;
+      /** Followup Revision */
+      readonly followup_revision: number;
+      /** Items */
+      readonly items: readonly components["schemas"]["TaskReviewItem"][];
+      /** Knowledge Point */
+      readonly knowledge_point: string;
+      /** Recipient User Id */
+      readonly recipient_user_id: string;
+      /** Recorded At */
+      readonly recorded_at: number;
+      /**
+       * Report Id
+       * Format: uuid
+       */
+      readonly report_id: string;
+      /** Report Revision */
+      readonly report_revision: number;
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+      /** Reviewer User Id */
+      readonly reviewer_user_id: string;
+      /** Revision */
+      readonly revision: number;
+      /**
+       * Status
+       * @enum {string}
+       */
+      readonly status: "confirmed" | "withdrawn";
+      /** Subject */
+      readonly subject: string;
+      /**
+       * Submission Id
+       * Format: uuid
+       */
+      readonly submission_id: string;
+      /** Submission Receipt Hash */
+      readonly submission_receipt_hash: string;
+      /**
+       * Summary
+       * @default
+       */
+      readonly summary: string;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+    };
     /** SaveFollowupAttemptRequest */
     readonly SaveFollowupAttemptRequest: {
       /**
@@ -18286,6 +18649,33 @@ export interface components {
       readonly request_id: string;
       /** Responses */
       readonly responses: readonly components["schemas"]["TaskResponse"][];
+    };
+    /** SaveTaskReviewRequest */
+    readonly SaveTaskReviewRequest: {
+      /**
+       * Change Reason
+       * @default
+       */
+      readonly change_reason: string;
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /** Items */
+      readonly items: readonly components["schemas"]["TaskReviewItem"][];
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+      /**
+       * Submission Id
+       * Format: uuid
+       */
+      readonly submission_id: string;
+      /**
+       * Summary
+       * @default
+       */
+      readonly summary: string;
     };
     /**
      * ServerPayload
@@ -19054,6 +19444,37 @@ export interface components {
       readonly revealed_at: number;
       /** Text */
       readonly text: string;
+    };
+    /** TaskReviewItem */
+    readonly TaskReviewItem: {
+      /**
+       * Feedback
+       * @default
+       */
+      readonly feedback: string;
+      /** Question Id */
+      readonly question_id: string;
+      /**
+       * Result
+       * @enum {string}
+       */
+      readonly result: "correct" | "partial" | "incorrect" | "ungraded";
+    };
+    /** TaskReviewState */
+    readonly TaskReviewState: {
+      readonly current_review: components["schemas"]["SavedTaskReview"] | null;
+      /** Submission Id */
+      readonly submission_id: string | null;
+      /**
+       * Task Id
+       * Format: uuid
+       */
+      readonly task_id: string;
+      /**
+       * Task Status
+       * @enum {string}
+       */
+      readonly task_status: "pending" | "in_progress" | "submitted" | "revoked";
     };
     /** TaskSpeechTextResponse */
     readonly TaskSpeechTextResponse: {
@@ -20556,6 +20977,18 @@ export interface components {
       /** Event Id */
       readonly event_id: string;
     };
+    /** WithdrawTaskReviewRequest */
+    readonly WithdrawTaskReviewRequest: {
+      /** Expected Revision */
+      readonly expected_revision: number;
+      /** Reason */
+      readonly reason: string;
+      /**
+       * Request Id
+       * Format: uuid
+       */
+      readonly request_id: string;
+    };
     /** WorkspaceCreateRequest */
     readonly WorkspaceCreateRequest: {
       /**
@@ -20753,6 +21186,16 @@ export type SchemaCaseReportEvent = components["schemas"]["CaseReportEvent"];
 export type SchemaCaseReportSnapshot =
   components["schemas"]["CaseReportSnapshot"];
 export type SchemaCaseResultCounts = components["schemas"]["CaseResultCounts"];
+export type SchemaCaseReviewEvidenceLink =
+  components["schemas"]["CaseReviewEvidenceLink"];
+export type SchemaCaseReviewEvidenceSourceState =
+  components["schemas"]["CaseReviewEvidenceSourceState"];
+export type SchemaCaseReviewEvidenceView =
+  components["schemas"]["CaseReviewEvidenceView"];
+export type SchemaCaseReviewFocusCard =
+  components["schemas"]["CaseReviewFocusCard"];
+export type SchemaCaseReviewQuestionEvidence =
+  components["schemas"]["CaseReviewQuestionEvidence"];
 export type SchemaCaseSourceState = components["schemas"]["CaseSourceState"];
 export type SchemaCaseTimelineCounts =
   components["schemas"]["CaseTimelineCounts"];
@@ -21182,11 +21625,16 @@ export type SchemaRubricSnapshot = components["schemas"]["RubricSnapshot"];
 export type SchemaRubricTemplate = components["schemas"]["RubricTemplate"];
 export type SchemaRunStartRequest = components["schemas"]["RunStartRequest"];
 export type SchemaRuntimeStatus = components["schemas"]["RuntimeStatus"];
+export type SchemaSaveCaseReviewEvidence =
+  components["schemas"]["SaveCaseReviewEvidence"];
+export type SchemaSavedCaseReviewEvidence =
+  components["schemas"]["SavedCaseReviewEvidence"];
 export type SchemaSavedFollowup = components["schemas"]["SavedFollowup"];
 export type SchemaSavedFollowupAttempt =
   components["schemas"]["SavedFollowupAttempt"];
 export type SchemaSavedReport = components["schemas"]["SavedReport"];
 export type SchemaSavedStudentCase = components["schemas"]["SavedStudentCase"];
+export type SchemaSavedTaskReview = components["schemas"]["SavedTaskReview"];
 export type SchemaSaveFollowupAttemptRequest =
   components["schemas"]["SaveFollowupAttemptRequest"];
 export type SchemaSaveFollowupRequest =
@@ -21199,6 +21647,8 @@ export type SchemaSaveStudentCaseRequest =
   components["schemas"]["SaveStudentCaseRequest"];
 export type SchemaSaveTaskProgressRequest =
   components["schemas"]["SaveTaskProgressRequest"];
+export type SchemaSaveTaskReviewRequest =
+  components["schemas"]["SaveTaskReviewRequest"];
 export type SchemaServerPayload = components["schemas"]["ServerPayload"];
 export type SchemaServicePreviewPayload =
   components["schemas"]["ServicePreviewPayload"];
@@ -21295,6 +21745,8 @@ export type SchemaTaskRecipientSetup =
   components["schemas"]["TaskRecipientSetup"];
 export type SchemaTaskResponse = components["schemas"]["TaskResponse"];
 export type SchemaTaskRevealedHint = components["schemas"]["TaskRevealedHint"];
+export type SchemaTaskReviewItem = components["schemas"]["TaskReviewItem"];
+export type SchemaTaskReviewState = components["schemas"]["TaskReviewState"];
 export type SchemaTaskSpeechTextResponse =
   components["schemas"]["TaskSpeechTextResponse"];
 export type SchemaTaskVoiceAvailability =
@@ -21393,6 +21845,8 @@ export type SchemaWebSourceSyncJobInfo =
   components["schemas"]["WebSourceSyncJobInfo"];
 export type SchemaWhiteboardPinRequest =
   components["schemas"]["WhiteboardPinRequest"];
+export type SchemaWithdrawTaskReviewRequest =
+  components["schemas"]["WithdrawTaskReviewRequest"];
 export type SchemaWorkspaceCreateRequest =
   components["schemas"]["WorkspaceCreateRequest"];
 export type SchemaWorkspaceMaterialRequest =
@@ -46946,6 +47400,117 @@ export interface operations {
       };
     };
   };
+  readonly get_teaching_case_review_evidence_api_teaching_analysis_student_cases__case_id__task_review_evidence_get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly case_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CaseReviewEvidenceView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_teaching_case_review_evidence_api_teaching_analysis_student_cases__case_id__task_review_evidence_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly case_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveCaseReviewEvidence"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CaseReviewEvidenceView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_case_review_evidence_revisions_api_teaching_analysis_student_cases__case_id__task_review_evidence_revisions_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly case_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedCaseReviewEvidence"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   readonly get_teaching_student_case_timeline_api_teaching_analysis_student_cases__case_id__timeline_get: {
     readonly parameters: {
       readonly query?: {
@@ -47080,6 +47645,193 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["TeacherTaskView"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["TaskReviewState"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly save_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveTaskReviewRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedTaskReview"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly list_teaching_task_review_revisions_api_teaching_analysis_student_tasks__task_id__review_revisions_get: {
+    readonly parameters: {
+      readonly query?: {
+        readonly limit?: number;
+        readonly offset?: number;
+      };
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": readonly components["schemas"]["SavedTaskReview"][];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly get_teaching_task_review_revision_api_teaching_analysis_student_tasks__task_id__review_revisions__revision__get: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly revision: number;
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedTaskReview"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly withdraw_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_withdraw_post: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: {
+        readonly Authorization?: string | null;
+      };
+      readonly path: {
+        readonly task_id: string;
+      };
+      readonly cookie?: {
+        readonly dt_token?: string | null;
+      };
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["WithdrawTaskReviewRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["SavedTaskReview"];
         };
       };
       /** @description Validation Error */

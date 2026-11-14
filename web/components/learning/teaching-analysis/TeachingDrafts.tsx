@@ -16,7 +16,7 @@ interface DraftContext {
   block(slot: string, dirty: boolean): () => void
 }
 const Context = createContext<DraftContext | null>(null)
-export const acceptsWorkbenchDraftSlot = (slot: string) => typeof slot !== 'string' || (slot !== 'student-case-create' && !slot.startsWith('student-case:'))
+export const acceptsWorkbenchDraftSlot = (slot: string) => typeof slot !== 'string' || (slot !== 'student-case-create' && !slot.startsWith('student-case:') && !slot.startsWith('task-review:'))
 export const acceptsStudentCaseCreateSlot = (slot: string) => slot === 'student-case-create'
 
 export function TeachingDraftProvider({ accountId, workspaceId, children, repository: suppliedRepository, namespace = 'workbench', acceptsSlot = acceptsWorkbenchDraftSlot }: TeachingDraftScope & { children: ReactNode; repository?: TeachingDraftRepository; namespace?: string; acceptsSlot?: (slot: string) => boolean }) {

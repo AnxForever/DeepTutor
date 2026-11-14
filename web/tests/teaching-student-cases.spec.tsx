@@ -18,6 +18,7 @@ vi.mock('@/components/learning/teaching-analysis/TeachingDrafts', () => ({
   TeachingDraftProvider: ({ children }: { children: React.ReactNode }) => children,
   acceptsStudentCaseCreateSlot: (slot: string) => slot === 'student-case-create',
   useTeachingDraftSlot: () => ({ clear: current.clear }),
+  useTeachingDraftControls: () => ({ clearAll: current.clear, clearSlot: current.clear }),
 }))
 vi.mock('@/components/learning/teaching-analysis/StudentEvidenceTimeline', () => ({ StudentEvidenceTimeline: ({ refreshKey, onReloadCase }: { refreshKey: number; onReloadCase?: () => void }) => <section aria-label="Evidence timeline" data-revision={refreshKey}><button onClick={onReloadCase}>Reload case from timeline</button></section> }))
 vi.mock('@/lib/teaching-student-cases-api', async original => ({ ...(await original<typeof api>()), listStudentCases: vi.fn(), getStudentCase: vi.fn(), saveStudentCase: vi.fn(), getStudentCaseRevisions: vi.fn(), getTeachingReportRevision: vi.fn() }))

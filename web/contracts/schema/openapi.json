@@ -2454,6 +2454,441 @@
         "title": "CaseResultCounts",
         "type": "object"
       },
+      "CaseReviewEvidenceLink": {
+        "additionalProperties": false,
+        "properties": {
+          "next_teaching_action": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Next Teaching Action",
+            "type": "string"
+          },
+          "question_ids": {
+            "items": {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Question Ids",
+            "type": "array"
+          },
+          "review_revision": {
+            "minimum": 1.0,
+            "title": "Review Revision",
+            "type": "integer"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "teacher_observation": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Teacher Observation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "submission_id",
+          "review_revision",
+          "question_ids"
+        ],
+        "title": "CaseReviewEvidenceLink",
+        "type": "object"
+      },
+      "CaseReviewEvidenceSourceState": {
+        "additionalProperties": false,
+        "properties": {
+          "knowledge_point": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Knowledge Point"
+          },
+          "latest_recorded_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Recorded At"
+          },
+          "latest_review_revision": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Review Revision"
+          },
+          "latest_review_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "confirmed",
+                  "withdrawn"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Review Status"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/CaseReviewQuestionEvidence"
+            },
+            "maxItems": 3,
+            "title": "Questions",
+            "type": "array"
+          },
+          "recipient_user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient User Id"
+          },
+          "recorded_at": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded At"
+          },
+          "report_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Id"
+          },
+          "report_revision": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Revision"
+          },
+          "review_revision": {
+            "minimum": 1.0,
+            "title": "Review Revision",
+            "type": "integer"
+          },
+          "review_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "confirmed",
+                  "withdrawn"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Review Status"
+          },
+          "reviewer_user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer User Id"
+          },
+          "status": {
+            "enum": [
+              "current",
+              "stale",
+              "withdrawn",
+              "task_revoked",
+              "unavailable",
+              "report_unlinked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "submission_id",
+          "review_revision",
+          "status"
+        ],
+        "title": "CaseReviewEvidenceSourceState",
+        "type": "object"
+      },
+      "CaseReviewEvidenceView": {
+        "additionalProperties": false,
+        "properties": {
+          "acknowledged": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SavedCaseReviewEvidence"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "case_archived": {
+            "title": "Case Archived",
+            "type": "boolean"
+          },
+          "case_id": {
+            "format": "uuid",
+            "title": "Case Id",
+            "type": "string"
+          },
+          "case_revision": {
+            "minimum": 1.0,
+            "title": "Case Revision",
+            "type": "integer"
+          },
+          "focus_cards": {
+            "items": {
+              "$ref": "#/components/schemas/CaseReviewFocusCard"
+            },
+            "maxItems": 20,
+            "title": "Focus Cards",
+            "type": "array"
+          },
+          "overlay": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SavedCaseReviewEvidence"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_states": {
+            "items": {
+              "$ref": "#/components/schemas/CaseReviewEvidenceSourceState"
+            },
+            "maxItems": 20,
+            "title": "Source States",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id",
+          "case_revision",
+          "case_archived",
+          "overlay",
+          "source_states",
+          "focus_cards"
+        ],
+        "title": "CaseReviewEvidenceView",
+        "type": "object"
+      },
+      "CaseReviewFocusCard": {
+        "additionalProperties": false,
+        "properties": {
+          "independent_correct": {
+            "minimum": 0.0,
+            "title": "Independent Correct",
+            "type": "integer"
+          },
+          "knowledge_point": {
+            "title": "Knowledge Point",
+            "type": "string"
+          },
+          "needs_independent_check": {
+            "minimum": 0.0,
+            "title": "Needs Independent Check",
+            "type": "integer"
+          },
+          "needs_teaching": {
+            "minimum": 0.0,
+            "title": "Needs Teaching",
+            "type": "integer"
+          },
+          "question_count": {
+            "minimum": 1.0,
+            "title": "Question Count",
+            "type": "integer"
+          },
+          "requested_help": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Requested Help",
+            "type": "integer"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "ungraded": {
+            "minimum": 0.0,
+            "title": "Ungraded",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "subject",
+          "knowledge_point",
+          "question_count",
+          "needs_teaching",
+          "needs_independent_check",
+          "ungraded",
+          "independent_correct"
+        ],
+        "title": "CaseReviewFocusCard",
+        "type": "object"
+      },
+      "CaseReviewQuestionEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "assistance": {
+            "enum": [
+              "independent",
+              "assisted",
+              "unknown"
+            ],
+            "title": "Assistance",
+            "type": "string"
+          },
+          "feedback": {
+            "title": "Feedback",
+            "type": "string"
+          },
+          "hint_usage": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/TaskRevealedHint"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hint Usage"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "response_status": {
+            "enum": [
+              "unanswered",
+              "answered",
+              "needs_help"
+            ],
+            "title": "Response Status",
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "correct",
+              "partial",
+              "incorrect",
+              "ungraded"
+            ],
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "question",
+          "answer",
+          "response_status",
+          "assistance",
+          "result",
+          "feedback",
+          "hint_usage"
+        ],
+        "title": "CaseReviewQuestionEvidence",
+        "type": "object"
+      },
       "CaseSourceState": {
         "additionalProperties": false,
         "properties": {
@@ -12324,6 +12759,48 @@
         "title": "RuntimeStatus",
         "type": "object"
       },
+      "SaveCaseReviewEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_case_revision": {
+            "minimum": 1.0,
+            "title": "Expected Case Revision",
+            "type": "integer"
+          },
+          "expected_revision": {
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "identity_confirmed": {
+            "const": true,
+            "title": "Identity Confirmed",
+            "type": "boolean"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/CaseReviewEvidenceLink"
+            },
+            "maxItems": 20,
+            "title": "Links",
+            "type": "array"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "identity_confirmed",
+          "links",
+          "request_id",
+          "expected_revision",
+          "expected_case_revision"
+        ],
+        "title": "SaveCaseReviewEvidence",
+        "type": "object"
+      },
       "SaveFollowupAttemptRequest": {
         "additionalProperties": false,
         "properties": {
@@ -12658,6 +13135,129 @@
           "current_question_index"
         ],
         "title": "SaveTaskProgressRequest",
+        "type": "object"
+      },
+      "SaveTaskReviewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "change_reason": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Change Reason",
+            "type": "string"
+          },
+          "expected_revision": {
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TaskReviewItem"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "summary": {
+            "default": "",
+            "maxLength": 3000,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "items",
+          "request_id",
+          "submission_id",
+          "expected_revision"
+        ],
+        "title": "SaveTaskReviewRequest",
+        "type": "object"
+      },
+      "SavedCaseReviewEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "actor_user_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Actor User Id",
+            "type": "string"
+          },
+          "case_id": {
+            "format": "uuid",
+            "title": "Case Id",
+            "type": "string"
+          },
+          "case_revision": {
+            "minimum": 1.0,
+            "title": "Case Revision",
+            "type": "integer"
+          },
+          "identity_confirmed": {
+            "const": true,
+            "title": "Identity Confirmed",
+            "type": "boolean"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/CaseReviewEvidenceLink"
+            },
+            "maxItems": 20,
+            "title": "Links",
+            "type": "array"
+          },
+          "recipient_user_id": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient User Id"
+          },
+          "recorded_at": {
+            "minimum": 0.0,
+            "title": "Recorded At",
+            "type": "number"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "identity_confirmed",
+          "links",
+          "case_id",
+          "revision",
+          "case_revision",
+          "request_id",
+          "actor_user_id",
+          "recorded_at"
+        ],
+        "title": "SavedCaseReviewEvidence",
         "type": "object"
       },
       "SavedFollowup": {
@@ -13057,6 +13657,132 @@
           "updated_at"
         ],
         "title": "SavedStudentCase",
+        "type": "object"
+      },
+      "SavedTaskReview": {
+        "additionalProperties": false,
+        "properties": {
+          "change_reason": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Change Reason",
+            "type": "string"
+          },
+          "followup_id": {
+            "format": "uuid",
+            "title": "Followup Id",
+            "type": "string"
+          },
+          "followup_revision": {
+            "minimum": 1.0,
+            "title": "Followup Revision",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TaskReviewItem"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "knowledge_point": {
+            "maxLength": 200,
+            "title": "Knowledge Point",
+            "type": "string"
+          },
+          "recipient_user_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Recipient User Id",
+            "type": "string"
+          },
+          "recorded_at": {
+            "minimum": 0.0,
+            "title": "Recorded At",
+            "type": "number"
+          },
+          "report_id": {
+            "format": "uuid",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_revision": {
+            "minimum": 1.0,
+            "title": "Report Revision",
+            "type": "integer"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "reviewer_user_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Reviewer User Id",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "confirmed",
+              "withdrawn"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "subject": {
+            "maxLength": 200,
+            "title": "Subject",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "submission_receipt_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Submission Receipt Hash",
+            "type": "string"
+          },
+          "summary": {
+            "default": "",
+            "maxLength": 3000,
+            "title": "Summary",
+            "type": "string"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "items",
+          "task_id",
+          "submission_id",
+          "request_id",
+          "revision",
+          "status",
+          "recipient_user_id",
+          "report_id",
+          "report_revision",
+          "followup_id",
+          "followup_revision",
+          "subject",
+          "knowledge_point",
+          "submission_receipt_hash",
+          "reviewer_user_id",
+          "recorded_at"
+        ],
+        "title": "SavedTaskReview",
         "type": "object"
       },
       "ServerPayload": {
@@ -15138,6 +15864,89 @@
           "text"
         ],
         "title": "TaskRevealedHint",
+        "type": "object"
+      },
+      "TaskReviewItem": {
+        "additionalProperties": false,
+        "properties": {
+          "feedback": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Feedback",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "correct",
+              "partial",
+              "incorrect",
+              "ungraded"
+            ],
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id",
+          "result"
+        ],
+        "title": "TaskReviewItem",
+        "type": "object"
+      },
+      "TaskReviewState": {
+        "additionalProperties": false,
+        "properties": {
+          "current_review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SavedTaskReview"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "submission_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submission Id"
+          },
+          "task_id": {
+            "format": "uuid",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "task_status": {
+            "enum": [
+              "pending",
+              "in_progress",
+              "submitted",
+              "revoked"
+            ],
+            "title": "Task Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "submission_id",
+          "task_status",
+          "current_review"
+        ],
+        "title": "TaskReviewState",
         "type": "object"
       },
       "TaskSpeechTextResponse": {
@@ -18608,6 +19417,34 @@
           "event_id"
         ],
         "title": "WhiteboardPinRequest",
+        "type": "object"
+      },
+      "WithdrawTaskReviewRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "expected_revision",
+          "reason"
+        ],
+        "title": "WithdrawTaskReviewRequest",
         "type": "object"
       },
       "WorkspaceCreateRequest": {
@@ -72076,6 +72913,255 @@
         ]
       }
     },
+    "/api/teaching-analysis/student-cases/{case_id}/task-review-evidence": {
+      "get": {
+        "operationId": "get_teaching_case_review_evidence_api_teaching_analysis_student_cases__case_id__task_review_evidence_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseReviewEvidenceView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Case Review Evidence",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "save_teaching_case_review_evidence_api_teaching_analysis_student_cases__case_id__task_review_evidence_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveCaseReviewEvidence"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseReviewEvidenceView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Teaching Case Review Evidence",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-cases/{case_id}/task-review-evidence/revisions": {
+      "get": {
+        "operationId": "list_teaching_case_review_evidence_revisions_api_teaching_analysis_student_cases__case_id__task_review_evidence_revisions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedCaseReviewEvidence"
+                  },
+                  "title": "Response List Teaching Case Review Evidence Revisions Api Teaching Analysis Student Cases  Case Id  Task Review Evidence Revisions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Case Review Evidence Revisions",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
     "/api/teaching-analysis/student-cases/{case_id}/timeline": {
       "get": {
         "operationId": "get_teaching_student_case_timeline_api_teaching_analysis_student_cases__case_id__timeline_get",
@@ -72498,6 +73584,436 @@
           }
         },
         "summary": "Get Teaching Student Task",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/{task_id}/review": {
+      "get": {
+        "operationId": "get_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskReviewState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Task Review",
+        "tags": [
+          "teaching-analysis"
+        ]
+      },
+      "post": {
+        "operationId": "save_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveTaskReviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedTaskReview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Save Teaching Task Review",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/{task_id}/review/revisions": {
+      "get": {
+        "operationId": "list_teaching_task_review_revisions_api_teaching_analysis_student_tasks__task_id__review_revisions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedTaskReview"
+                  },
+                  "title": "Response List Teaching Task Review Revisions Api Teaching Analysis Student Tasks  Task Id  Review Revisions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Teaching Task Review Revisions",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/{task_id}/review/revisions/{revision}": {
+      "get": {
+        "operationId": "get_teaching_task_review_revision_api_teaching_analysis_student_tasks__task_id__review_revisions__revision__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedTaskReview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Teaching Task Review Revision",
+        "tags": [
+          "teaching-analysis"
+        ]
+      }
+    },
+    "/api/teaching-analysis/student-tasks/{task_id}/review/withdraw": {
+      "post": {
+        "operationId": "withdraw_teaching_task_review_api_teaching_analysis_student_tasks__task_id__review_withdraw_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "dt_token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dt Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithdrawTaskReviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedTaskReview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Withdraw Teaching Task Review",
         "tags": [
           "teaching-analysis"
         ]

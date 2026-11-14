@@ -8,7 +8,9 @@ function hasLanguage(language: string) {
     typeof i18n.getResource(language, 'app', 'teacherTasks.hint') === 'string' &&
     typeof i18n.getResource(language, 'app', 'studentTaskVoice.listen') === 'string' &&
     typeof i18n.getResource(language, 'app', 'studentTaskHints.first') === 'string' &&
-    typeof i18n.getResource(language, 'app', 'teacherTaskHints.editorTitle') === 'string'
+    typeof i18n.getResource(language, 'app', 'teacherTaskHints.editorTitle') === 'string' &&
+    typeof i18n.getResource(language, 'app', 'teacherTaskReviews.title') === 'string' &&
+    typeof i18n.getResource(language, 'app', 'caseTaskReviews.title') === 'string'
 }
 
 /** Task copy is loaded with the task feature, outside the shared application bundle. */

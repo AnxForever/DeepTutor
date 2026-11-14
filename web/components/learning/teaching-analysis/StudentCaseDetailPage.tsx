@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Archive, Download, Users } from 'lucide-react'
 import { Button, Dialog, InlineAlert, StatusChip } from '@/shared/ui'
@@ -16,7 +16,8 @@ import { StudentCaseFields } from './StudentCaseFields'
 import { StudentCaseHistory } from './StudentCaseHistory'
 import { StudentCaseReportPicker } from './StudentCaseReportPicker'
 import { StudentEvidenceTimeline } from './StudentEvidenceTimeline'
-import { useTeachingDraftSlot } from './TeachingDrafts'
+import { CaseTaskReviewEvidencePanel } from './CaseTaskReviewEvidencePanel'
+import { useTeachingDraftControls, useTeachingDraftSlot } from './TeachingDrafts'
 
 export default function StudentCaseDetailPage({ caseId }: { caseId: string }) {
   return <StudentCaseAccess caseId={caseId}>{workspaceId => <StudentCaseDetail key={`${workspaceId}:${caseId}`} caseId={caseId} workspaceId={workspaceId} />}</StudentCaseAccess>
@@ -27,6 +28,9 @@ function StudentCaseDetail({ caseId, workspaceId }: { caseId: string; workspaceI
   const [saved, setSaved] = useState<SavedStudentCase | null>(null)
   const [editor, setEditor] = useState<SaveStudentCaseRequest>(() => ({ case_id: caseId, expected_revision: 0, label: '', subject: null, archived: false, report_refs: [] }))
   const [dirty, setDirty] = useState(false)
+  const [reviewEvidenceDirty, setReviewEvidenceDirty] = useState(false)
+  const [reviewEvidenceBusy, setReviewEvidenceBusy] = useState(false)
+  const [reviewEvidenceEpoch, setReviewEvidenceEpoch] = useState(0)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -42,6 +46,9 @@ function StudentCaseDetail({ caseId, workspaceId }: { caseId: string; workspaceI
   const alive = useRef(true)
   const snapshot = useMemo<StudentCaseDraft>(() => ({ kind: 'student-case-editor', version: 1, editor }), [editor])
   const { clear: clearLocalDraft } = useTeachingDraftSlot({ slot: studentCaseEditorSlot(caseId), value: snapshot, dirty, validate: (value): value is StudentCaseDraft => isStudentCaseDraft(value) && value.editor.case_id === caseId, onRestore: value => { restoredOrEdited.current = true; setEditor(value.editor); setDirty(true); setNotice('') } })
+  const { clearAll: clearCaseDrafts } = useTeachingDraftControls()
+  const clearCaseDraftsRef = useRef(clearCaseDrafts)
+  useLayoutEffect(() => { clearCaseDraftsRef.current = clearCaseDrafts }, [clearCaseDrafts])
   const staleCase = conflict || Boolean(saved && editor.expected_revision !== saved.revision)
   const disabled = loading || saving
   const archivedReadOnly = Boolean(saved?.archived)
@@ -55,23 +62,24 @@ function StudentCaseDetail({ caseId, workspaceId }: { caseId: string; workspaceI
     try {
       const value = await getStudentCase(caseId, workspaceId, controller.signal)
       if (controller.signal.aborted || !alive.current || sequence !== readSequence.current) return
-      if (replace) await clearLocalDraft()
+      if (replace) await clearCaseDraftsRef.current()
       if (controller.signal.aborted || !alive.current || sequence !== readSequence.current) return
       setSaved(value); setSourceStates([])
       if (replace || !restoredOrEdited.current) {
         restoredOrEdited.current = false; setEditor(editorForStudentCase(value)); setDirty(false); setConflict(false); setNotice('')
       }
+      if (replace) { setReviewEvidenceDirty(false); setReviewEvidenceEpoch(value => value + 1) }
       setReloadConfirmation(false)
     } catch (reason) {
       if (!controller.signal.aborted && alive.current) setError(t(isApiError(reason) && reason.status === 404 ? 'teaching.cases.notFound' : 'teaching.cases.loadFailed'))
     } finally { if (!controller.signal.aborted && alive.current && sequence === readSequence.current) setLoading(false) }
-  }, [caseId, workspaceId, clearLocalDraft, t])
+  }, [caseId, workspaceId, t])
   useEffect(() => { void load(false); return () => readController.current?.abort() }, [load])
   function update(value: SaveStudentCaseRequest) { restoredOrEdited.current = true; setEditor(value); setDirty(true); setNotice('') }
-  function requestReload() { if (dirty) setReloadConfirmation(true); else void load(true) }
+  function requestReload() { if (reviewEvidenceBusy) return; if (dirty || reviewEvidenceDirty) setReloadConfirmation(true); else void load(true) }
 
   async function save(archive?: boolean) {
-    if (writeController.current || !saved || staleCase) return
+    if (writeController.current || !saved || staleCase || reviewEvidenceDirty) return
     if (!editor.label.trim() || Array.from(editor.label).length > 200) { setError(t('teaching.cases.required')); return }
     const payload = archive === undefined ? editor : { ...editor, archived: archive }
     const controller = new AbortController(); writeController.current = controller
@@ -107,11 +115,13 @@ function StudentCaseDetail({ caseId, workspaceId }: { caseId: string; workspaceI
     {!saved && !dirty ? (loading ? <LearningSkeleton count={2} /> : null) : <>
       <section aria-label={t('teaching.cases.metadata')} className="rounded-xl border border-border bg-card p-4 sm:p-5"><StudentCaseFields value={editor} disabled={disabled || archivedReadOnly} onChange={update} /></section>
       <StudentCaseReportPicker workspaceId={workspaceId} reportRefs={editor.report_refs} sourceStates={sourceStates} disabled={disabled || archivedReadOnly} onChange={report_refs => update({ ...editor, report_refs })} />
-      <div className="mt-5 flex flex-wrap gap-2"><Button loading={saving} disabled={disabled || archivedReadOnly || !saved || staleCase || !dirty} onClick={() => void save()}>{t('teaching.cases.save')}</Button><Button size="sm" variant="ghost" icon={<Download size={14} />} onClick={exportDraft}>{t('teaching.cases.export')}</Button>{saved && <Button size="sm" variant="secondary" icon={<Archive size={14} />} disabled={disabled || staleCase} onClick={() => setArchiveConfirmation(!saved.archived)}>{t(saved.archived ? 'teaching.cases.unarchive' : 'teaching.cases.archive')}</Button>}</div>
+      <div className="mt-5 flex flex-wrap gap-2"><Button loading={saving} disabled={disabled || archivedReadOnly || !saved || staleCase || !dirty || reviewEvidenceDirty} onClick={() => void save()}>{t('teaching.cases.save')}</Button><Button size="sm" variant="ghost" icon={<Download size={14} />} onClick={exportDraft}>{t('teaching.cases.export')}</Button>{saved && <Button size="sm" variant="secondary" icon={<Archive size={14} />} disabled={disabled || staleCase || reviewEvidenceDirty} onClick={() => setArchiveConfirmation(!saved.archived)}>{t(saved.archived ? 'teaching.cases.unarchive' : 'teaching.cases.archive')}</Button>}</div>
+      {reviewEvidenceDirty && <p className="mt-3 text-xs text-muted-foreground">{t('caseTaskReviews.pendingChild')}</p>}
     </>}
     {saved && <>
       <StudentCaseHistory caseId={caseId} revision={saved.revision} workspaceId={workspaceId} />
       {dirty && <p className="mt-6 text-xs text-muted-foreground">{t('teaching.cases.savedLinksOnly')}</p>}
+      <CaseTaskReviewEvidencePanel key={`${workspaceId}:${caseId}:${reviewEvidenceEpoch}`} caseId={caseId} workspaceId={workspaceId} caseRevision={saved.revision} caseLabel={saved.label} disabled={disabled} onDirtyChange={setReviewEvidenceDirty} onBusyChange={setReviewEvidenceBusy} onReloadCase={requestReload} />
       <StudentEvidenceTimeline key={`${workspaceId}:${caseId}:${saved.revision}`} caseId={caseId} workspaceId={workspaceId} refreshKey={saved.revision} onSourceStates={setSourceStates} onReloadCase={requestReload} />
     </>}
     <Dialog open={reloadConfirmation} onClose={() => setReloadConfirmation(false)} title={t('teaching.cases.replaceTitle')} closeLabel={t('Close')} busy={loading} footer={<><Button size="sm" variant="secondary" disabled={loading} onClick={() => setReloadConfirmation(false)}>{t('Cancel')}</Button><Button size="sm" loading={loading} onClick={() => void load(true)}>{t('teaching.cases.replaceConfirm')}</Button></>}><p className="text-sm text-muted-foreground">{t('teaching.cases.replaceHint')}</p></Dialog>
